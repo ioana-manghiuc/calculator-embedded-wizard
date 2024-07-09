@@ -5,14 +5,14 @@ $rect <20,20,220,60>
 $output false
 class Application : Core::Root
 {
-  $rect <820,10,1020,50>
-  inherited property Bounds = <0,0,300,400>;
+  $rect <350,0,550,40>
+  inherited property Bounds = <0,0,299,399>;
 
   $rect <20,20,160,60>
   object Views::Image Image
   {
     preset StackingPriority = 1;
-    preset Bounds = <-4,0,304,400>;
+    preset Bounds = <-3,-7,307,415>;
     preset Bitmap = Application::BgkImg;
     preset AlphaBlended = false;
   }
@@ -21,9 +21,11 @@ class Application : Core::Root
   object Views::Text Text
   {
     preset StackingPriority = 3;
-    preset Bounds = <-228,265,-128,295>;
-    preset String = "Text";
-    preset Font = Resources::DefaultFont;
+    preset Bounds = <68,45,266,110>;
+    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
+    preset String = "result here";
+    preset Font = Application::MidNumFont;
+    preset Color = #0D1A38FF;
   }
 
   $rect <20,20,160,60>
@@ -32,6 +34,79 @@ class Application : Core::Root
     preset StackingPriority = 2;
     preset Bounds = <32,145,272,385>;
   }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset StackingPriority = 2;
+    preset Bounds = <32,40,272,115>;
+    preset Color = #BDB6AAFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset StackingPriority = 2;
+    preset Bounds = <32,40,272,115>;
+    preset Color = #000000FF;
+  }
+
+  $rect <360,70,560,110>
+  object Core::KeyPressHandler KeyHandler
+  {
+    preset OnPress = KeySlotMethod;
+    preset OnHold = KeySlotMethod;
+  }
+
+  $rect <360,130,560,170>
+  slot KeySlotMethod
+  {
+    sender; /* the method is called from the sender object */
+    if(Text.String == "result here" || KeyHandler.CharCode == 'C')
+      Text.String = "";
+
+    var string str = KeyHandler.CharCode;
+    var bool firstOpSet = false;
+    var bool operatorSet = false;
+
+    if((str >= "0") && (str <= "9"))
+    {
+      Text.String =  Text.String + KeyHandler.CharCode;
+    }
+    else
+    {
+      if(firstOpSet == false)
+      {
+        FirstOperand = Text.String.parse_float(-1.0);
+        firstOpSet = true;
+        Operator = KeyHandler.CharCode;
+      }
+      else
+      {
+        SecondOperand = Text.String.parse_float(-1.0);
+      }
+
+      if( KeyHandler.CharCode == '=')
+      {
+        Result = FirstOperand + SecondOperand;
+        Text.String = Result;
+      }
+    }
+
+
+  }
+
+  $rect <355,225,555,265>
+  var float FirstOperand;
+
+  $rect <350,270,550,310>
+  var float SecondOperand;
+
+  $rect <350,320,550,360>
+  var string Operator;
+
+  $rect <560,220,760,260>
+  var float Result;
 }
 
 $rect <290,70,490,110>
@@ -90,7 +165,7 @@ resource Resources::Font MidNumFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <20,80,220,120>
+$rect <20,140,220,180>
 $output false
 class NumPadClass : Core::Group
 {
@@ -110,7 +185,7 @@ class NumPadClass : Core::Group
   $rect <20,20,160,60>
   object Views::Rectangle Rectangle
   {
-    preset StackingPriority = 1;
+    preset StackingPriority;
     preset Bounds = <0,0,240,240>;
     preset Color = #AAB6BDFF;
   }
@@ -229,7 +304,7 @@ class NumPadClass : Core::Group
   object Views::Text Clear
   {
     preset StackingPriority = 2;
-    preset Bounds = <7,174,57,226>;
+    preset Bounds = <14,165,64,217>;
     preset String = "C";
     preset Font = Application::MidNumFont;
     preset Color = #000000FF;
@@ -280,7 +355,7 @@ class NumPadClass : Core::Group
     // in the UpdateViewState() method.
     InvalidateViewState();
 
-    trace "onPressTouch slot method";                    
+    //trace "onPressTouch slot method";                    
     // The keyboard is still performing the feedback flash effect from the preceding
     // tap. This can occur when the user taps the keyboard in a very rapid succession. 
     // Thus complete this preceding tap (simulate the timer expiration) before 
@@ -293,7 +368,7 @@ class NumPadClass : Core::Group
 
     // Remember the new position where the user has touched the screen
     recentPosition = TouchHandler.CurrentPos;
-    trace recentPosition;
+    //trace recentPosition;
   }
 
   // This internal slot method is called when the user releases the touch screen \
@@ -305,6 +380,7 @@ class NumPadClass : Core::Group
     // a key area request the keyboard update its appearance. The update will occur
     // in the UpdateViewState() method.
     InvalidateViewState();
+    //trace "onReleaseTouch slot method entered";
 
     // Did the user moved the finger outside the keyboard's area? In such case
     // the keyboard is not activated.
@@ -379,26 +455,12 @@ class NumPadClass : Core::Group
     attr Bounds = <240,320,460,490>;
   }
 
-  // The method UpdateViewState() is invoked automatically after the state of the \
-  // component has been changed. This method can be overridden and filled with logic \
-  // to ensure the visual aspect of the component does reflect its current state. \
-  // For example, the 'enabled' state of the component can affect its colors (disabled \
-  // components may appear pale). In this case the logic of the method should modify \
-  // the respective color properties accordingly to the current 'enabled' state. 
-  // The current state of the component is passed as a set in the parameter aState. \
-  // It reflects the very basic component state like its visibility or the ability \
-  // to react to user inputs. Beside this common state, the method can also involve \
-  // any other variables used in the component as long as they reflect its current \
-  // state. For example, the toggle switch component can take in account its toggle \
-  // state 'on' or 'off' and change accordingly the location of the slider, etc.
-  // Usually, this method will be invoked automatically by the framework. Optionally \
-  // you can request its invocation by using the method @InvalidateViewState().
   $rect <250,360,450,400>
-  method void UpdateViewState( arg Core::ViewState aState )
+  inherited method UpdateViewState()
   {
     // Always invoke the inherited method.
     super( aState );
-    trace "entered UpdateViewState method";
+    //trace "entered UpdateViewState method";
 
     var Core::View isKeyView = null; // --> the 'text' or 'image' view representing the pressed key.
     var bool       isPressed = ( TouchHandler.Down && TouchHandler.Inside ) || 
@@ -512,6 +574,7 @@ class NumPadClass : Core::Group
       {
         Highlight.Bounds  = isKeyView.GetExtent();
         Highlight.Visible = true;
+        
       }
       else
         Highlight.Visible = false;
@@ -519,8 +582,9 @@ class NumPadClass : Core::Group
       // If the user has pressed a key represented by a 'text' view, change the
       // color of the text to appear highlighted.
       if ( isTextKeyView != null )
-        isTextKeyView.Color = #FFFFFFFF;
-
+        {
+          isTextKeyView.Color = #FFFFFFFF;
+        }
       // If the user has released a key represented by a 'text' view, restore
       // the color of the text.
       if ( textKeyView != null )
@@ -540,47 +604,40 @@ class NumPadClass : Core::Group
   $rect <250,400,450,440>
   slot activateKey
   {
-    // Applying the object runtime casting to test whether the user is
-    // touching a key with 'text' caption.
+    // Example assuming 'keyView' is set correctly elsewhere in your application
     var Views::Text textKeyView = (Views::Text)keyView;
 
-    // Depending on the pressed key, the following variables will be
-    // initialized with the corresponding code.
-    var char          charCode = '\0';
-    var Core::KeyCode keyCode  = Core::KeyCode.NoKey;
-    trace "Entered activateKey slot method";
-    // Has the user touched (activated) one of the keys with text
-    // as caption? Use the text as character code to feed the application 
-    // with a keyboard event.
-    if ( textKeyView != null )
-    {
-      // NU INTRA AICI INCA  
-      charCode = textKeyView.String[0];
-      trace "Key Pressed: " + charCode;
-    }
-    // Has the user touched the 'Enter' key?
-    if ( textKeyView != null && textKeyView.String[0] == '=' )
-      keyCode = Core::KeyCode.Enter;
+    // Verify if 'keyView' is not null before attempting to access 'textKeyView'
+    if (keyView != null) {
+        // Depending on the pressed key, initialize 'charCode' and 'keyCode'
+        var char charCode = '\0';
+        var Core::KeyCode keyCode = Core::KeyCode.NoKey;
 
-    // Has the user touched the 'Clear' key?
-    if ( textKeyView != null && textKeyView.String == "C" )
-      keyCode = Core::KeyCode.Delete;
+        charCode = textKeyView.String[0];
+        //trace "Key Pressed: " + charCode;    
 
-    // The user has pressed a regular character/digit key. Feed it as keyboard
-    // event to the application.
-    if ( charCode != '\0' && keyCode == Core::KeyCode.NoKey )
-    {
-      GetRoot().DriveKeyboardHitting( Core::KeyCode.NoKey, charCode, true );
-      GetRoot().DriveKeyboardHitting( Core::KeyCode.NoKey, charCode, false );
+        if (textKeyView.String[0] == '=') {
+            keyCode = Core::KeyCode.Enter;
+        }
+
+        if (textKeyView.String == "C") {
+            keyCode = Core::KeyCode.Delete;
+        }
+
+        // Handle key events based on 'charCode' and 'keyCode'
+        if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) {
+            GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, true);
+            GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, false);
+        }
+
+        if (keyCode != Core::KeyCode.NoKey) {
+            GetRoot().DriveKeyboardHitting(keyCode, '\0', true);
+            GetRoot().DriveKeyboardHitting(keyCode, '\0', false);
+        }
+    } else {
+        trace "keyView is null";
     }
 
-    // The user has pressed a special key (e.g. Enter or Delete). Feed it as keyboard
-    // event to the application.
-    if ( keyCode != Core::KeyCode.NoKey )
-    {
-      GetRoot().DriveKeyboardHitting( keyCode, '\0', true );
-      GetRoot().DriveKeyboardHitting( keyCode, '\0', false );
-    }
 
   }
 
@@ -593,7 +650,7 @@ class NumPadClass : Core::Group
   object Views::Rectangle Highlight
   {
     preset StackingPriority = 2;
-    preset Bounds = <0,0,50,50>;
+    preset Bounds = <-120,42,-70,92>;
     preset Color = #123D4AFF;
     preset Visible = false;
   }
@@ -601,7 +658,7 @@ class NumPadClass : Core::Group
   $rect <20,20,160,60>
   object Core::SimpleTouchHandler TouchHandler
   {
-    preset StackingPriority = 3;
+    preset StackingPriority;
     preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
     preset Point4 = <0,235>;
     preset Point3 = <240,236>;
@@ -618,10 +675,24 @@ class NumPadClass : Core::Group
   $rect <20,20,160,60>
   object Views::Border Border
   {
-    preset StackingPriority = 2;
+    preset StackingPriority;
     preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,240,240>;
     preset Width = 2;
+    preset ColorTL = #FFFFFFFF;
+    preset Color = #000000FF;
+  }
+
+  $rect <0,520,200,560>
+  var string KeyValue;
+
+  $rect <20,20,160,60>
+  object Views::Text Point
+  {
+    preset StackingPriority = 2;
+    preset Bounds = <114,165,164,209>;
+    preset String = ".";
+    preset Font = Application::MidNumFont;
     preset Color = #000000FF;
   }
 
@@ -630,68 +701,68 @@ class NumPadClass : Core::Group
   // classes. The numbers indicate the order-displacement to apply on the respective 
   // member once all members have been loaded and combined with members from the 
   // ancestor classes.
-  $reorder InvalidateLayout 5
-  $reorder InvalidateViewState 5
-  $reorder InvalidateArea 5
-  $reorder GetIndexOfView 5
-  $reorder GetViewAtIndex 5
-  $reorder CountViews 5
-  $reorder FindViewWithStackingPriority 5
-  $reorder FindViewInDirection 5
-  $reorder FindViewWithinArea 5
-  $reorder FindViewAtPosition 5
-  $reorder FindPrevView 5
-  $reorder FindNextView 5
-  $reorder FindSiblingView 5
-  $reorder GetContentArea 5
-  $reorder FadeGroup 5
-  $reorder RestackBehind 5
-  $reorder RestackBack 5
-  $reorder RestackTop 5
-  $reorder Restack 5
-  $reorder RemoveAll 5
-  $reorder Remove 5
-  $reorder AddBehind 5
-  $reorder Add 5
-  $reorder DeriveEnabledState 5
-  $reorder Focus 5
-  $reorder ClipViews 5
-  $reorder Buffered 5
-  $reorder Enabled 5
-  $reorder Opacity 5
-  $reorder Embedded 5
-  $reorder AlphaBlended 5
-  $reorder Visible 5
-  $reorder One 5
-  $reorder Rectangle 5
-  $reorder Zero 5
-  $reorder Nine 5
-  $reorder Six 5
-  $reorder Three 5
-  $reorder Eight 5
-  $reorder Five 5
-  $reorder Seven 5
-  $reorder Four 5
-  $reorder Two 5
-  $reorder Divide 5
-  $reorder Equals 5
-  $reorder Clear 5
-  $reorder Multiply 5
-  $reorder Subtract 5
-  $reorder Plus 5
-  $reorder Note1 5
-  $reorder onPressTouch 5
-  $reorder onReleaseTouch 5
-  $reorder onDragTouch 5
-  $reorder recentPosition 5
-  $reorder Note2 5
-  $reorder FlashTimer 5
-  $reorder onFlashTimer 5
-  $reorder Note3 5
+  $reorder InvalidateLayout 7
+  $reorder InvalidateViewState 7
+  $reorder InvalidateArea 7
+  $reorder GetIndexOfView 7
+  $reorder GetViewAtIndex 7
+  $reorder CountViews 7
+  $reorder FindViewWithStackingPriority 7
+  $reorder FindViewInDirection 7
+  $reorder FindViewWithinArea 7
+  $reorder FindViewAtPosition 7
+  $reorder FindPrevView 7
+  $reorder FindNextView 7
+  $reorder FindSiblingView 7
+  $reorder GetContentArea 7
+  $reorder FadeGroup 7
+  $reorder RestackBehind 7
+  $reorder RestackBack 7
+  $reorder RestackTop 7
+  $reorder Restack 7
+  $reorder RemoveAll 7
+  $reorder Remove 7
+  $reorder AddBehind 7
+  $reorder Add 7
+  $reorder DeriveEnabledState 7
+  $reorder Focus 7
+  $reorder ClipViews 7
+  $reorder Buffered 7
+  $reorder Enabled 7
+  $reorder Opacity 7
+  $reorder Embedded 7
+  $reorder AlphaBlended 7
+  $reorder Visible 7
+  $reorder One 7
+  $reorder Rectangle 7
+  $reorder Zero 7
+  $reorder Nine 7
+  $reorder Six 7
+  $reorder Three 7
+  $reorder Eight 7
+  $reorder Five 7
+  $reorder Seven 7
+  $reorder Four 7
+  $reorder Two 7
+  $reorder Divide 7
+  $reorder Equals 7
+  $reorder Clear 7
+  $reorder Multiply 7
+  $reorder Subtract 7
+  $reorder Plus 7
+  $reorder Note1 7
+  $reorder onPressTouch 7
+  $reorder onReleaseTouch 7
+  $reorder onDragTouch 7
+  $reorder recentPosition 7
+  $reorder Note2 7
+  $reorder FlashTimer 7
+  $reorder onFlashTimer 7
+  $reorder Note3 7
 }
 
 // This component implements a virtual keyboard.
-$rect <20,140,220,180>
+$rect <20,200,220,240>
 $output false
 class NumKeyboard : Templates::NumKeyboard
 {
@@ -1221,4 +1292,226 @@ class NumKeyboard : Templates::NumKeyboard
     preset Bitmap = Resources::KeyIconsMedium;
     preset Color = #000000FF;
   }
+}
+
+$rect <20,80,220,120>
+$output false
+class NumKeyBtns : Core::Group
+{
+  $rect <360,0,560,40>
+  inherited property Bounds = <0,0,240,240>;
+
+  $rect <350,90,550,130>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+  }
+
+  $rect <360,50,560,90>
+  inherited method UpdateViewState()
+  {
+     // Always invoke the inherited method.
+    super( aState );
+
+  }
+
+  $rect <570,0,810,40>
+  object WidgetSet::PushButtonConfig DigitConfig
+  {
+    preset AccentColorFocused = #03040000;
+    preset AccentColorDefault = #00000000;
+    preset LabelFont = Application::NumFont;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton One
+  {
+    preset Bounds = <10,9,65,64>;
+    preset OnPress = null;
+    preset OnActivate = SetOperand;
+    preset Label = "1";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Two
+  {
+    preset Bounds = <65,9,120,64>;
+    preset Label = "2";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Three
+  {
+    preset Bounds = <120,9,175,64>;
+    preset Label = "3";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Four
+  {
+    preset Bounds = <10,64,65,119>;
+    preset Label = "4";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Five
+  {
+    preset Bounds = <65,64,120,119>;
+    preset Label = "5";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Six
+  {
+    preset Bounds = <120,64,175,119>;
+    preset Label = "6";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Seven
+  {
+    preset Bounds = <10,119,65,174>;
+    preset Label = "7";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Eight
+  {
+    preset Bounds = <65,120,120,175>;
+    preset Label = "8";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Nine
+  {
+    preset Bounds = <120,119,175,174>;
+    preset Label = "9";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Zero
+  {
+    preset Bounds = <65,174,120,229>;
+    preset Label = "0";
+    preset Appearance = DigitConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Clear
+  {
+    preset Bounds = <10,174,65,229>;
+    preset Label = "C";
+    preset Appearance = OperatorConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Equals
+  {
+    preset Bounds = <120,174,175,229>;
+    preset Label = "=";
+    preset Appearance = EqualsConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Plus
+  {
+    preset Bounds = <184,14,229,59>;
+    preset Label = "+";
+    preset Appearance = OperatorConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Minus
+  {
+    preset Bounds = <184,56,229,101>;
+    preset Label = "-";
+    preset Appearance = OperatorConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Multiply
+  {
+    preset Bounds = <184,101,229,146>;
+    preset Label = "*";
+    preset Appearance = OperatorConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Divide
+  {
+    preset Bounds = <184,147,229,192>;
+    preset Label = "/";
+    preset Appearance = OperatorConfig;
+  }
+
+  $rect <570,50,810,90>
+  object WidgetSet::PushButtonConfig OperatorConfig
+  {
+    preset LabelFont = Application::MidNumFont;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset StackingPriority = -1;
+    preset Bounds = <0,-1,240,239>;
+    preset Color = #AAB6BDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset StackingPriority = -1;
+    preset Bounds = <0,0,240,240>;
+    preset Color = #0C1040FF;
+  }
+
+  $rect <570,100,810,140>
+  object WidgetSet::PushButtonConfig EqualsConfig
+  {
+    preset LabelColorDefault = #9C0343FF;
+    preset LabelFont = Application::NumFont;
+  }
+
+  // This variable stores the recent position inside the keyboard area where the \
+  // user is touching the screen.
+  $rect <570,200,770,240>
+  var point recentPosition;
+
+  // This variable refers to the view representing the actually pressed key or it \
+  // is 'null' if the user is not touching a key.
+  $rect <570,160,770,200>
+  var Core::View keyView;
 }

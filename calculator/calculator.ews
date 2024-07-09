@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::NumPadClass;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::NumPadClass.UpdateViewState;
+attr currentCodeInspector = Application::Application.KeySlotMethod;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -17,9 +17,10 @@ attr extractDoc_Variants = false;
 attr generateClut_ReservedColors = 0;
 attr heapMonitor_Show = false;
 attr language = Default;
-attr profile = Profile;
+attr profile = Win32;
 attr profilerMonitor_Show = false;
 attr search_CaseSensitive = false;
+attr search_History = keyView;
 attr search_IgnoreDescription = false;
 attr search_IgnoreMosaic = false;
 attr search_LimitToComposer = true;
@@ -30,7 +31,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-7,-55>;
   attr zoom = 1.0;
@@ -38,69 +38,43 @@ view Project
 
 view unit Application
 {
-  attr enableWireMode = false;
-  attr scrollTo = <-233,-224>;
-  attr zoom = 1.0;
+  attr scrollTo = <-154,-112>;
+  attr zoom = 1.25;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-637,-199>;
-  attr zoom = 1.0;
+  attr scrollTo = <-739,-177>;
+  attr zoom = 0.75;
 }
 
 view class Application::NumPadClass
 {
   attr enableWireMode = false;
-  attr scrollTo = <-745,66>;
-  attr zoom = 0.75;
+  attr scrollTo = <-749,-151>;
+  attr zoom = 1.0;
 }
 
-codeview Application::NumPadClass.onPressTouch
+view class Application::NumKeyBtns
 {
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <21,18>;
-  attr codeSelStart = <21,18>;
-}
-
-codeview Application::NumPadClass.onReleaseTouch
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <31,13>;
-  attr codeSelStart = <31,13>;
-}
-
-codeview Application::NumPadClass.onDragTouch
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::NumPadClass.onFlashTimer
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <23,5>;
-  attr codeSelStart = <23,5>;
-}
-
-codeview Application::NumPadClass.UpdateViewState
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <30,2>;
-  attr codeSelStart = <30,2>;
+  attr enableWireMode = false;
+  attr scrollTo = <-191,-151>;
+  attr zoom = 1.0;
 }
 
 codeview Application::NumPadClass.activateKey
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <43,10>;
-  attr codeSelStart = <43,10>;
+  attr codeFirstPos = <0,20>;
+  attr codeSelEnd = <55,33>;
+  attr codeSelStart = <55,33>;
+}
+
+codeview Application::Application.KeySlotMethod
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,15>;
+  attr codeSelEnd = <48,22>;
+  attr codeSelStart = <48,22>;
 }
