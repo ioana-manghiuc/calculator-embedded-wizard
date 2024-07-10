@@ -12,7 +12,7 @@ class Application : Core::Root
   object Views::Image Image
   {
     preset StackingPriority = 1;
-    preset Bounds = <-3,-7,307,415>;
+    preset Bounds = <-3,-12,307,410>;
     preset Bitmap = Application::BgkImg;
     preset AlphaBlended = false;
   }
@@ -32,7 +32,7 @@ class Application : Core::Root
   object Application::NumKeyBtns Outline
   {
     preset StackingPriority = 2;
-    preset Bounds = <32,145,272,385>;
+    preset Bounds = <32,134,272,374>;
   }
 
   $rect <20,20,160,60>
@@ -40,7 +40,7 @@ class Application : Core::Root
   {
     preset StackingPriority = 2;
     preset Bounds = <32,40,272,115>;
-    preset Color = #BDB6AAFF;
+    preset Color = #D4CDD4FF;
   }
 
   $rect <20,20,160,60>
@@ -73,8 +73,6 @@ class Application : Core::Root
       str = Outline.keyString;
     }
 
-    //trace "KeySlotMethod: " + str;
-
     if(Text.String == "result here" || str == "C")
     {
       Text.String = "";
@@ -92,17 +90,12 @@ class Application : Core::Root
         FirstOperand = Text.String.parse_float(-1.0);
         Operator = str;
         Text.String = "";
-        //trace FirstOperand;
-        //trace Operator;
       } 
       else 
       {  
-        //trace "operatorset = true";
         if(str == "=") 
         {     
-          //trace "entered if condition";  
           SecondOperand = Text.String.parse_float(-1.0);
-          trace SecondOperand;
           switch (Operator[0])
           {
             case '+':
@@ -119,7 +112,6 @@ class Application : Core::Root
             default:
               Result = 0.0;
           }
-          //trace Result;
           Text.String = Result;
           OperatorSet = false; 
         } 
@@ -180,10 +172,10 @@ class Application : Core::Root
       Text.String = value;
     }
 
-    trace FirstOperand;
-    trace SecondOperand;
-    trace Operator;
-    trace "second operand setter";
+    //trace FirstOperand;
+    //trace SecondOperand;
+    //trace Operator;
+    //trace "second operand setter";
 
 
   }
@@ -1469,10 +1461,10 @@ $rect <20,80,220,120>
 $output false
 class NumKeyBtns : Core::Group
 {
-  $rect <340,0,540,40>
+  $rect <880,240,1080,280>
   inherited property Bounds = <0,0,240,240>;
 
-  $rect <340,90,540,130>
+  $rect <360,100,560,140>
   inherited method UpdateLayout()
   {
     // Always invoke the inherited method.
@@ -1501,19 +1493,22 @@ class NumKeyBtns : Core::Group
     */
   }
 
-  $rect <340,50,540,90>
+  $rect <360,50,560,90>
   inherited method UpdateViewState()
   {
     // Always invoke the inherited method.
     super(aState);
   }
 
-  $rect <570,0,810,40>
+  $rect <900,50,1140,90>
   object WidgetSet::PushButtonConfig DigitConfig
   {
     preset AccentColorFocused = #03040000;
     preset AccentColorDefault = #00000000;
+    preset AccentLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset LabelColorDefault = #000000FF;
     preset LabelFont = Application::NumFont;
+    preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
   }
 
   $rect <20,20,160,60>
@@ -1661,7 +1656,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = OperatorConfig;
   }
 
-  $rect <570,40,810,80>
+  $rect <900,100,1140,140>
   object WidgetSet::PushButtonConfig OperatorConfig
   {
     preset OnUpdate = null;
@@ -1686,7 +1681,7 @@ class NumKeyBtns : Core::Group
     preset Color = #0C1040FF;
   }
 
-  $rect <570,80,810,120>
+  $rect <900,150,1140,190>
   object WidgetSet::PushButtonConfig EqualsConfig
   {
     preset OnUpdate = null;
@@ -1695,22 +1690,26 @@ class NumKeyBtns : Core::Group
     preset LabelFont = Application::NumFont;
   }
 
-  $rect <340,170,540,210>
+  $rect <360,150,560,190>
   slot onActivateKey
   {
     sender; /* the method is called from the sender object */
     var WidgetSet::PushButton currentSender = (WidgetSet::PushButton )sender;
 
+    FlashKeyTimer.Enabled = false;
+
     if (currentSender != null) 
     {
       keyString = currentSender.Label;
       if (keyString != "") 
-      {       
+      {    
+        Highlight.Bounds = currentSender.Bounds; 
+        Highlight.Visible = true;   
+        FlashKeyTimer.Enabled = true;
         var char charCode = '\0';
         var Core::KeyCode keyCode = Core::KeyCode.NoKey;
 
         charCode = keyString[0];
-
         if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) 
         {
           GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, true);
@@ -1730,14 +1729,13 @@ class NumKeyBtns : Core::Group
     else 
         trace "focusedView is null";
 
-
     //trace "onActivateKey - watching keyString: " + keyString;
   }
 
-  $rect <880,0,1080,40>
+  $rect <600,50,800,90>
   property string keyString;
 
-  $rect <880,40,1080,80>
+  $rect <600,100,800,140>
   onset keyString
   {
     // The value doesn't change - nothing to do.
@@ -1750,7 +1748,7 @@ class NumKeyBtns : Core::Group
 
   }
 
-  $rect <880,80,1080,120>
+  $rect <600,150,800,190>
   onget keyString
   {
     return pure keyString;
@@ -1770,8 +1768,43 @@ class NumKeyBtns : Core::Group
   object Views::Rectangle Highlight
   {
     preset StackingPriority = 2;
-    preset Bounds = <-65,9,-15,59>;
+    preset Bounds = <884,290,934,340>;
     preset Color = #123D4AFF;
     preset Visible = false;
+  }
+
+  $rect <360,280,560,320>
+  object Core::Timer FlashKeyTimer
+  {
+    preset OnTrigger = triggerTimer;
+    preset Period = 0;
+    preset Begin = 100;
+    preset Enabled = false;
+  }
+
+  $rect <600,280,800,320>
+  slot triggerTimer
+  {
+    sender; /* the method is called from the sender object */
+    InvalidateViewState();
+    Highlight.Visible = false;
+  }
+
+  // Flash effect
+  note group Note
+  {
+    attr Bounds = <340,230,820,350>;
+  }
+
+  // Handling pressed key
+  note group Note1
+  {
+    attr Bounds = <340,0,820,210>;
+  }
+
+  // Push Button Configurations
+  note group Note2
+  {
+    attr Bounds = <870,0,1170,210>;
   }
 }
