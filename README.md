@@ -1,2 +1,2 @@
-# embedded-wizard
+# calculator-embedded-wizard
 Learning Embedded Wizard
