@@ -5,7 +5,7 @@ $rect <20,20,220,60>
 $output false
 class Application : Core::Root
 {
-  $rect <350,0,550,40>
+  $rect <1000,360,1200,400>
   inherited property Bounds = <0,0,299,399>;
 
   $rect <20,20,160,60>
@@ -29,7 +29,7 @@ class Application : Core::Root
   }
 
   $rect <20,20,160,60>
-  object Application::NumPadClass Outline
+  object Application::NumKeyBtns Outline
   {
     preset StackingPriority = 2;
     preset Bounds = <32,145,272,385>;
@@ -51,62 +51,225 @@ class Application : Core::Root
     preset Color = #000000FF;
   }
 
-  $rect <360,70,560,110>
+  $rect <410,50,610,90>
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = KeySlotMethod;
     preset OnHold = KeySlotMethod;
   }
 
-  $rect <360,130,560,170>
+  $rect <410,100,610,140>
   slot KeySlotMethod
   {
     sender; /* the method is called from the sender object */
-    if(Text.String == "result here" || KeyHandler.CharCode == 'C')
-      Text.String = "";
+    var string str;
 
-    var string str = KeyHandler.CharCode;
-    var bool firstOpSet = false;
-    var bool operatorSet = false;
+    if(KeyHandler.CharCode != '\0')
+      str = KeyHandler.CharCode;
+    else
+      str = Outline.keyString;
 
-    if((str >= "0") && (str <= "9"))
+    if(Text.String == "result here" || str == "C")
     {
-      Text.String =  Text.String + KeyHandler.CharCode;
+      Text.String = "";
+      Result = 0.0;
     }
+
+    if((str >= "0") && (str <= "9") || str == ".")
+    {
+      Text.String = Text.String + str;
+    } 
     else
     {
-      if(firstOpSet == false)
+      if (OperatorSet == false)
       {
         FirstOperand = Text.String.parse_float(-1.0);
-        firstOpSet = true;
-        Operator = KeyHandler.CharCode;
-      }
-      else
-      {
-        SecondOperand = Text.String.parse_float(-1.0);
-      }
+        Operator = str;
+        Text.String = "";
+      } 
+      else 
+      {  
+        if(str == "=" || str == "Enter") 
+        {
+          SecondOperand = Text.String.parse_float(-1.0);
 
-      if( KeyHandler.CharCode == '=')
-      {
-        Result = FirstOperand + SecondOperand;
-        Text.String = Result;
+          switch (Operator[0])
+          {
+            case '+':
+              Result = FirstOperand + SecondOperand;
+            case '-':
+              Result = FirstOperand - SecondOperand;
+            case '*':
+              Result = FirstOperand * SecondOperand;
+            case '/':
+              if (SecondOperand != 0.0)
+                Result = FirstOperand / SecondOperand;
+              else
+                Result = 0.0; 
+            default:
+              Result = 0.0;
+          }
+          Text.String = Result;
+          OperatorSet = false; 
+        } 
+        else 
+        {
+          Operator = str; 
+        }
       }
     }
+
 
 
   }
 
-  $rect <355,225,555,265>
-  var float FirstOperand;
+  $rect <750,70,950,110>
+  property float FirstOperand;
 
-  $rect <350,270,550,310>
-  var float SecondOperand;
+  $rect <750,110,950,150>
+  onset FirstOperand
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure FirstOperand == value )
+      return;
 
-  $rect <350,320,550,360>
-  var string Operator;
+    var string str = value;
+    if((str >= "0") && (str <= "9"))
+    {
+      pure FirstOperand = value;
+      Text.String = value;
+    }
 
-  $rect <560,220,760,260>
-  var float Result;
+    //trace "first operand setter";
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <750,150,950,190>
+  onget FirstOperand
+  {
+    return pure FirstOperand;
+  }
+
+  $rect <750,210,950,250>
+  property float SecondOperand;
+
+  $rect <750,250,950,290>
+  onset SecondOperand
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure SecondOperand == value )
+      return;
+
+    var string str = value;
+    if((str >= "0") && (str <= "9") && OperatorSet == true)
+    {
+      pure SecondOperand = value;
+      Text.String = value;
+    }
+
+    trace FirstOperand;
+    trace SecondOperand;
+    trace Operator;
+    trace "second operand setter";
+
+
+  }
+
+  $rect <750,290,950,330>
+  onget SecondOperand
+  {
+    return pure SecondOperand;
+  }
+
+  $rect <750,360,950,400>
+  property float Result;
+
+  $rect <750,400,950,440>
+  onset Result
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Result == value )
+      return;
+
+    // Remember the property's new value.
+    pure Result = value;
+    Text.String = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <750,440,950,480>
+  onget Result
+  {
+    return pure Result;
+  }
+
+  $rect <1010,70,1210,110>
+  property string Operator;
+
+  $rect <1010,110,1210,150>
+  onset Operator
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Operator == value )
+      return;
+
+    // Remember the property's new value.
+    pure Operator = value;
+    OperatorSet = true;
+    Text.String = value;
+
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <1010,150,1210,190>
+  onget Operator
+  {
+    return pure Operator;
+  }
+
+  $rect <1000,210,1200,250>
+  property bool OperatorSet = false;
+
+  $rect <1000,250,1200,290>
+  onset OperatorSet
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure OperatorSet == value )
+      return;
+
+    // Remember the property's new value.
+    pure OperatorSet = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <1000,290,1200,330>
+  onget OperatorSet
+  {
+    return pure OperatorSet;
+  }
+
+  // Properties
+  note group Note
+  {
+    attr Bounds = <730,10,1230,510>;
+  }
+
+  // Key Event Handler
+  note group Note1
+  {
+    attr Bounds = <360,10,650,160>;
+  }
 }
 
 $rect <290,70,490,110>
@@ -169,7 +332,7 @@ $rect <20,140,220,180>
 $output false
 class NumPadClass : Core::Group
 {
-  $rect <0,470,200,510>
+  $rect <0,460,200,500>
   inherited property Bounds = <0,0,240,240>;
 
   $rect <20,20,160,60>
@@ -682,9 +845,6 @@ class NumPadClass : Core::Group
     preset ColorTL = #FFFFFFFF;
     preset Color = #000000FF;
   }
-
-  $rect <0,520,200,560>
-  var string KeyValue;
 
   $rect <20,20,160,60>
   object Views::Text Point
@@ -1298,10 +1458,10 @@ $rect <20,80,220,120>
 $output false
 class NumKeyBtns : Core::Group
 {
-  $rect <360,0,560,40>
+  $rect <340,0,540,40>
   inherited property Bounds = <0,0,240,240>;
 
-  $rect <350,90,550,130>
+  $rect <340,90,540,130>
   inherited method UpdateLayout()
   {
     // Always invoke the inherited method.
@@ -1330,7 +1490,7 @@ class NumKeyBtns : Core::Group
     */
   }
 
-  $rect <360,50,560,90>
+  $rect <340,50,540,90>
   inherited method UpdateViewState()
   {
      // Always invoke the inherited method.
@@ -1351,7 +1511,7 @@ class NumKeyBtns : Core::Group
   {
     preset Bounds = <10,9,65,64>;
     preset OnPress = null;
-    preset OnActivate = SetOperand;
+    preset OnActivate = onActivateKey;
     preset Label = "1";
     preset Appearance = DigitConfig;
   }
@@ -1360,6 +1520,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Two
   {
     preset Bounds = <65,9,120,64>;
+    preset OnActivate = onActivateKey;
     preset Label = "2";
     preset Appearance = DigitConfig;
   }
@@ -1368,6 +1529,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Three
   {
     preset Bounds = <120,9,175,64>;
+    preset OnActivate = onActivateKey;
     preset Label = "3";
     preset Appearance = DigitConfig;
   }
@@ -1376,6 +1538,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Four
   {
     preset Bounds = <10,64,65,119>;
+    preset OnActivate = onActivateKey;
     preset Label = "4";
     preset Appearance = DigitConfig;
   }
@@ -1384,6 +1547,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Five
   {
     preset Bounds = <65,64,120,119>;
+    preset OnActivate = onActivateKey;
     preset Label = "5";
     preset Appearance = DigitConfig;
   }
@@ -1392,6 +1556,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Six
   {
     preset Bounds = <120,64,175,119>;
+    preset OnActivate = onActivateKey;
     preset Label = "6";
     preset Appearance = DigitConfig;
   }
@@ -1400,6 +1565,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Seven
   {
     preset Bounds = <10,119,65,174>;
+    preset OnActivate = onActivateKey;
     preset Label = "7";
     preset Appearance = DigitConfig;
   }
@@ -1408,6 +1574,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Eight
   {
     preset Bounds = <65,120,120,175>;
+    preset OnActivate = onActivateKey;
     preset Label = "8";
     preset Appearance = DigitConfig;
   }
@@ -1416,6 +1583,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Nine
   {
     preset Bounds = <120,119,175,174>;
+    preset OnActivate = onActivateKey;
     preset Label = "9";
     preset Appearance = DigitConfig;
   }
@@ -1424,6 +1592,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Zero
   {
     preset Bounds = <65,174,120,229>;
+    preset OnActivate = onActivateKey;
     preset Label = "0";
     preset Appearance = DigitConfig;
   }
@@ -1431,7 +1600,8 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Clear
   {
-    preset Bounds = <10,174,65,229>;
+    preset Bounds = <10,184,65,239>;
+    preset OnActivate = onActivateKey;
     preset Label = "C";
     preset Appearance = OperatorConfig;
   }
@@ -1439,7 +1609,8 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Equals
   {
-    preset Bounds = <120,174,175,229>;
+    preset Bounds = <120,175,175,230>;
+    preset OnActivate = onActivateKey;
     preset Label = "=";
     preset Appearance = EqualsConfig;
   }
@@ -1448,6 +1619,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Plus
   {
     preset Bounds = <184,14,229,59>;
+    preset OnActivate = onActivateKey;
     preset Label = "+";
     preset Appearance = OperatorConfig;
   }
@@ -1456,6 +1628,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Minus
   {
     preset Bounds = <184,56,229,101>;
+    preset OnActivate = onActivateKey;
     preset Label = "-";
     preset Appearance = OperatorConfig;
   }
@@ -1464,6 +1637,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Multiply
   {
     preset Bounds = <184,101,229,146>;
+    preset OnActivate = onActivateKey;
     preset Label = "*";
     preset Appearance = OperatorConfig;
   }
@@ -1472,14 +1646,18 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Divide
   {
     preset Bounds = <184,147,229,192>;
+    preset OnActivate = onActivateKey;
     preset Label = "/";
     preset Appearance = OperatorConfig;
   }
 
-  $rect <570,50,810,90>
+  $rect <570,40,810,80>
   object WidgetSet::PushButtonConfig OperatorConfig
   {
+    preset OnUpdate = null;
+    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignVertTop];
     preset LabelFont = Application::MidNumFont;
+    preset FaceLayout = Core::Layout[AlignToTop];
   }
 
   $rect <20,20,160,60>
@@ -1498,20 +1676,90 @@ class NumKeyBtns : Core::Group
     preset Color = #0C1040FF;
   }
 
-  $rect <570,100,810,140>
+  $rect <570,80,810,120>
   object WidgetSet::PushButtonConfig EqualsConfig
   {
+    preset OnUpdate = null;
     preset LabelColorDefault = #9C0343FF;
     preset LabelFont = Application::NumFont;
   }
 
-  // This variable stores the recent position inside the keyboard area where the \
-  // user is touching the screen.
-  $rect <570,200,770,240>
-  var point recentPosition;
+  $rect <330,170,530,210>
+  slot onActivateKey
+  {
+    sender; /* the method is called from the sender object */
+    var WidgetSet::PushButton currentSender = (WidgetSet::PushButton )sender;
 
-  // This variable refers to the view representing the actually pressed key or it \
-  // is 'null' if the user is not touching a key.
-  $rect <570,160,770,200>
-  var Core::View keyView;
+    if (currentSender != null) 
+    {
+      keyString = currentSender.Label;
+      if (keyString != "") 
+      {       
+        var char charCode = '\0';
+        var Core::KeyCode keyCode = Core::KeyCode.NoKey;
+
+        charCode = keyString[0];
+        if (keyString == "=") 
+        {
+          keyCode = Core::KeyCode.Enter;
+        } 
+        else if (keyString == "C") 
+        {
+          keyCode = Core::KeyCode.Delete;
+        }
+
+        if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) 
+        {
+          GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, true);
+          GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, false);
+        }
+
+        if (keyCode != Core::KeyCode.NoKey) 
+        {
+          GetRoot().DriveKeyboardHitting(keyCode, '\0', true);
+          GetRoot().DriveKeyboardHitting(keyCode, '\0', false);
+        }
+
+      } 
+      else
+        trace "textKeyView is null";
+    } 
+    else 
+        trace "focusedView is null";
+
+
+    //trace "onActivateKey - watching keyString: " + keyString;
+  }
+
+  $rect <880,0,1080,40>
+  property string keyString;
+
+  $rect <880,40,1080,80>
+  onset keyString
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure keyString == value )
+      return;
+
+    // Remember the property's new value.
+    pure keyString = value;
+
+
+  }
+
+  $rect <880,80,1080,120>
+  onget keyString
+  {
+    return pure keyString;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Dot
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop];
+    preset Bounds = <184,185,229,230>;
+    preset OnActivate = onActivateKey;
+    preset Label = ".";
+    preset Appearance = OperatorConfig;
+  }
 }

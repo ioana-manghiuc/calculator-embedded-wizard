@@ -74,7 +74,7 @@ note group Note5
 // This is a profile member for the project. This profile controls the code generation \
 // for the target system.
 $rect <290,70,490,110>
-profile Profile : Windows.Software.RGBA8888
+profile Win32 : Windows.Software.RGBA8888
 {
   attr Verbose = false;
   attr ScreenSize = <300,400>;
@@ -93,6 +93,12 @@ profile Profile : Windows.Software.RGBA8888
 
 $rect <40,270,240,310>
 unit Templates
+{
+  attr Directory = $Mosaic\;
+}
+
+$rect <40,310,240,350>
+unit WidgetSet
 {
   attr Directory = $Mosaic\;
 }

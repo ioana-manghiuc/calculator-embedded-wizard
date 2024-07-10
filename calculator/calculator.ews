@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.KeySlotMethod;
+attr currentCodeInspector = Application::Application.OnSetSecondOperand;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -31,6 +31,7 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
+  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-7,-55>;
   attr zoom = 1.0;
@@ -38,6 +39,7 @@ view Project
 
 view unit Application
 {
+  attr enableWireMode = false;
   attr scrollTo = <-154,-112>;
   attr zoom = 1.25;
 }
@@ -45,36 +47,45 @@ view unit Application
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-739,-177>;
+  attr scrollTo = <-181,-129>;
   attr zoom = 0.75;
-}
-
-view class Application::NumPadClass
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-749,-151>;
-  attr zoom = 1.0;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-191,-151>;
-  attr zoom = 1.0;
-}
-
-codeview Application::NumPadClass.activateKey
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,20>;
-  attr codeSelEnd = <55,33>;
-  attr codeSelStart = <55,33>;
+  attr scrollTo = <-329,-309>;
+  attr zoom = 0.75;
 }
 
 codeview Application::Application.KeySlotMethod
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,15>;
-  attr codeSelEnd = <48,22>;
-  attr codeSelStart = <48,22>;
+  attr codeFirstPos = <0,3>;
+  attr codeSelEnd = <3,27>;
+  attr codeSelStart = <3,27>;
+}
+
+codeview Application::Application.OnSetFirstOperand
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <27,11>;
+  attr codeSelStart = <27,11>;
+}
+
+codeview Application::Application.OnSetSecondOperand
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,16>;
+  attr codeSelStart = <0,16>;
+}
+
+codeview Application::NumKeyBtns.onActivateKey
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,22>;
+  attr codeSelEnd = <2,41>;
+  attr codeSelStart = <2,41>;
 }
