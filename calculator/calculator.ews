@@ -3,7 +3,7 @@ $version 1.0
 attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.OnSetSecondOperand;
+attr currentCodeInspector = Application::NumKeyBtns.UpdateViewState;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -58,34 +58,25 @@ view class Application::NumKeyBtns
   attr zoom = 0.75;
 }
 
-codeview Application::Application.KeySlotMethod
+view class Application::NumPadClass
 {
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,3>;
-  attr codeSelEnd = <3,27>;
-  attr codeSelStart = <3,27>;
+  attr enableWireMode = false;
+  attr scrollTo = <-795,38>;
+  attr zoom = 0.75;
 }
 
-codeview Application::Application.OnSetFirstOperand
+codeview Application::NumKeyBtns.UpdateViewState
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <27,11>;
-  attr codeSelStart = <27,11>;
-}
-
-codeview Application::Application.OnSetSecondOperand
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,16>;
-  attr codeSelStart = <0,16>;
+  attr codeSelEnd = <14,1>;
+  attr codeSelStart = <14,1>;
 }
 
 codeview Application::NumKeyBtns.onActivateKey
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,22>;
-  attr codeSelEnd = <2,41>;
-  attr codeSelStart = <2,41>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <18,5>;
+  attr codeSelStart = <18,5>;
 }

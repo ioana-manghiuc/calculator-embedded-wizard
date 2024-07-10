@@ -65,9 +65,15 @@ class Application : Core::Root
     var string str;
 
     if(KeyHandler.CharCode != '\0')
+    {  
       str = KeyHandler.CharCode;
+    }
     else
+    {
       str = Outline.keyString;
+    }
+
+    //trace "KeySlotMethod: " + str;
 
     if(Text.String == "result here" || str == "C")
     {
@@ -86,13 +92,17 @@ class Application : Core::Root
         FirstOperand = Text.String.parse_float(-1.0);
         Operator = str;
         Text.String = "";
+        //trace FirstOperand;
+        //trace Operator;
       } 
       else 
       {  
-        if(str == "=" || str == "Enter") 
-        {
+        //trace "operatorset = true";
+        if(str == "=") 
+        {     
+          //trace "entered if condition";  
           SecondOperand = Text.String.parse_float(-1.0);
-
+          trace SecondOperand;
           switch (Operator[0])
           {
             case '+':
@@ -109,6 +119,7 @@ class Application : Core::Root
             default:
               Result = 0.0;
           }
+          //trace Result;
           Text.String = Result;
           OperatorSet = false; 
         } 
@@ -1493,9 +1504,8 @@ class NumKeyBtns : Core::Group
   $rect <340,50,540,90>
   inherited method UpdateViewState()
   {
-     // Always invoke the inherited method.
-    super( aState );
-
+    // Always invoke the inherited method.
+    super(aState);
   }
 
   $rect <570,0,810,40>
@@ -1680,11 +1690,12 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButtonConfig EqualsConfig
   {
     preset OnUpdate = null;
+    preset KeyCode = Core::KeyCode.Enter;
     preset LabelColorDefault = #9C0343FF;
     preset LabelFont = Application::NumFont;
   }
 
-  $rect <330,170,530,210>
+  $rect <340,170,540,210>
   slot onActivateKey
   {
     sender; /* the method is called from the sender object */
@@ -1699,14 +1710,6 @@ class NumKeyBtns : Core::Group
         var Core::KeyCode keyCode = Core::KeyCode.NoKey;
 
         charCode = keyString[0];
-        if (keyString == "=") 
-        {
-          keyCode = Core::KeyCode.Enter;
-        } 
-        else if (keyString == "C") 
-        {
-          keyCode = Core::KeyCode.Delete;
-        }
 
         if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) 
         {
@@ -1761,5 +1764,14 @@ class NumKeyBtns : Core::Group
     preset OnActivate = onActivateKey;
     preset Label = ".";
     preset Appearance = OperatorConfig;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Highlight
+  {
+    preset StackingPriority = 2;
+    preset Bounds = <-65,9,-15,59>;
+    preset Color = #123D4AFF;
+    preset Visible = false;
   }
 }
