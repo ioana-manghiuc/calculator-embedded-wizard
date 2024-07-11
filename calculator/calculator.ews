@@ -1,5 +1,6 @@
 $version 1.0
 
+attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
 attr currentCodeInspector = Application::Application.KeySlotMethod;
@@ -33,19 +34,21 @@ view Project
   attr enableGrid = true;
   attr enableWireMode = false;
   attr grid = 10;
-  attr scrollTo = <-399,-343>;
+  attr scrollTo = <-399,-247>;
   attr zoom = 1.0;
 }
 
 view unit Application
 {
-  attr scrollTo = <-154,-112>;
+  attr enableWireMode = false;
+  attr scrollTo = <-286,-112>;
   attr zoom = 1.25;
 }
 
 view class Application::Application
 {
-  attr scrollTo = <-181,-81>;
+  attr enableWireMode = false;
+  attr scrollTo = <-302,-129>;
   attr zoom = 0.75;
 }
 
@@ -56,10 +59,25 @@ view class Application::NumKeyBtns
   attr zoom = 0.75;
 }
 
+view class WidgetSet::PushButton
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-7,-7>;
+  attr zoom = 1.0;
+}
+
 codeview Application::Application.KeySlotMethod
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,11>;
-  attr codeSelStart = <0,11>;
+  attr codeFirstPos = <0,12>;
+  attr codeSelEnd = <163,22>;
+  attr codeSelStart = <163,22>;
+}
+
+codeview Application::NumKeyBtns.onActivateKey
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,12>;
+  attr codeSelEnd = <2,3>;
+  attr codeSelStart = <2,3>;
 }
