@@ -37,11 +37,11 @@ unit Views
 
 // The 'default' Language. Each project has to contain at least one language brick \
 // called 'Default'
-$rect <540,70,740,110>
+$rect <580,230,780,270>
 language Default;
 
 // This unit is intended to contain the application class and other GUI components.
-$rect <300,190,500,230>
+$rect <300,230,500,270>
 unit Application
 {
   attr Directory = .\;
@@ -56,24 +56,24 @@ note group Note1
 // Profile Configuration
 note group Note2
 {
-  attr Bounds = <270,20,510,130>;
+  attr Bounds = <270,20,800,150>;
 }
 
 // Languages
 note group Note3
 {
-  attr Bounds = <520,20,760,130>;
+  attr Bounds = <550,180,800,300>;
 }
 
-// Project Units
+// Project Unit
 note group Note5
 {
-  attr Bounds = <270,140,760,290>;
+  attr Bounds = <270,180,520,300>;
 }
 
 // This is a profile member for the project. This profile controls the code generation \
 // for the target system.
-$rect <290,70,490,110>
+$rect <300,70,500,110>
 profile Win32 : Windows.Software.RGBA8888
 {
   attr Verbose = false;
@@ -101,4 +101,16 @@ $rect <40,310,240,350>
 unit WidgetSet
 {
   attr Directory = $Mosaic\;
+}
+
+$rect <570,70,770,110>
+profile Web : Web.WebGL.RGBA8888
+{
+  attr Verbose = false;
+  attr ScreenSize = <800,640>;
+  attr Optimization = High;
+  attr FontConversion = Windows;
+  attr CleanOutputDirectories = false;
+  attr Obfuscation = true;
+  attr ApplicationClass = Application::Application;
 }
