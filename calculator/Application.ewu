@@ -6,16 +6,16 @@ $output false
 class Application : Core::Root
 {
   $rect <1000,360,1200,400>
-  inherited property Bounds = <0,0,300,460>;
+  inherited property Bounds = <0,0,340,520>;
 
   $rect <20,20,160,60>
   object Views::Text TextTxt
   {
     preset StackingPriority = 3;
-    preset Bounds = <362,198,560,263>;
+    preset Bounds = <1250,21,1448,86>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #0D1A38FF;
   }
 
@@ -23,24 +23,28 @@ class Application : Core::Root
   object Application::NumKeyBtns Outline
   {
     preset StackingPriority = 2;
-    preset Bounds = <30,129,270,429>;
+    preset Bounds = <20,129,320,499>;
   }
 
   $rect <20,20,160,60>
-  object Views::Rectangle Rectangle
+  object Views::Rectangle OutputBgk
   {
     preset StackingPriority = 2;
-    preset Bounds = <30,30,270,105>;
+    preset Bounds = <20,30,320,105>;
+    preset ColorBL = #99A8B7FF;
+    preset ColorBR = #99A8B7FF;
     preset ColorTR = #FFFFFFFF;
     preset ColorTL = #FFFFFFFF;
-    preset Color = #99A8B7FF;
+    preset Radius = 5;
+    preset Color = #CFE4F8FF;
   }
 
   $rect <20,20,160,60>
   object Views::Border Border
   {
     preset StackingPriority = 2;
-    preset Bounds = <30,30,270,105>;
+    preset Bounds = <20,30,320,105>;
+    preset Radius = 5;
     preset Width = 2;
     preset Color = #030324FF;
   }
@@ -70,6 +74,7 @@ class Application : Core::Root
     if(Text.String == "result here" || str == "C")
     {
       Text.String = "";
+      KeyHandler.CharCode = '\0';
       Result = 0.0;
     }
 
@@ -90,22 +95,7 @@ class Application : Core::Root
         if(str == "=") 
         {     
           SecondOperand = Text.String.parse_float(-1.0);
-          switch (Operator[0])
-          {
-            case '+':
-              Result = FirstOperand + SecondOperand;
-            case '-':
-              Result = FirstOperand - SecondOperand;
-            case '*':
-              Result = FirstOperand * SecondOperand;
-            case '/':
-              if (SecondOperand != 0.0)
-                Result = FirstOperand / SecondOperand;
-              else
-                Result = 0.0; 
-            default:
-              Result = 0.0;
-          }
+          Result = ExecuteOperation(FirstOperand, SecondOperand, Operator);
           Text.String = Result;
           OperatorSet = false; 
         } 
@@ -257,21 +247,21 @@ class Application : Core::Root
   }
 
   // Properties
-  note group Note
+  note group PropertiesNote
   {
     attr Bounds = <730,10,1230,510>;
   }
 
   // Key Event Handler
-  note group Note1
+  note group KeyHandlerNote
   {
-    attr Bounds = <360,10,650,160>;
+    attr Bounds = <360,10,650,210>;
   }
 
   $rect <20,20,160,60>
   object Views::Rectangle Bgk
   {
-    preset Bounds = <0,0,300,460>;
+    preset Bounds = <0,0,340,520>;
     preset Color = #E2E6E9FF;
   }
 
@@ -280,11 +270,73 @@ class Application : Core::Root
   {
     preset StackingPriority = 3;
     preset Layout = Core::Layout[AlignToLeft, AlignToTop];
-    preset Bounds = <60,35,258,100>;
+    preset Bounds = <20,35,320,100>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
   }
+
+  $rect <410,150,610,190>
+  method float ExecuteOperation( arg float first, arg float second, arg string op )
+  {
+    var float res = 0.0;
+
+    switch (op[0])
+          {
+            case '+':
+              res = first + second;
+            case '-':
+              res = first - second;
+            case '*':
+              res = first * second;
+            case '/':
+              if (second != 0.0)
+                res = first / second;
+              else
+                res = 0.0;
+            case '%':
+             { var float temp = first * second;
+              res = temp / 100;     }
+            case '^': 
+              res =  math_pow(first, second);
+            default:
+              res = 0.0;
+          }
+
+    return res;
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Bounds
+  $member TextTxt
+  $member PropertiesNote
+  $member KeyHandlerNote
+  $member Bgk
+  $member OutputBgk
+  $member Border
+  $member Outline
+  $member KeyHandler
+  $member KeySlotMethod
+  $member FirstOperand
+  $member OnSetFirstOperand
+  $member OnGetFirstOperand
+  $member SecondOperand
+  $member OnSetSecondOperand
+  $member OnGetSecondOperand
+  $member Result
+  $member OnSetResult
+  $member OnGetResult
+  $member Operator
+  $member OnSetOperator
+  $member OnGetOperator
+  $member OperatorSet
+  $member OnSetOperatorSet
+  $member OnGetOperatorSet
+  $member Text
+  $member ExecuteOperation
 }
 
 $rect <290,70,490,110>
@@ -303,13 +355,13 @@ $rect <500,20,700,60>
 $output false
 resource Resources::Font NumFont
 {
-  attr fontname FontName = Cascadia Mono SemiBold;
-  attr fontheight Height = 35;
+  attr fontname FontName = Digital-7;
+  attr fontheight Height = 55;
   attr fontheightmode HeightMode = Popular;
   attr fontquality Quality = High;
   attr fontranges Ranges = 0x20-0xFF;
   attr fontaspectratio AspectRatio = 1.0;
-  attr fontbold Bold = false;
+  attr fontbold Bold = true;
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
@@ -317,10 +369,10 @@ resource Resources::Font NumFont
 
 $rect <500,70,700,110>
 $output false
-resource Resources::Font MidNumFont
+resource Resources::Font DigitalResFont
 {
-  attr fontname FontName = Cascadia Mono SemiBold;
-  attr fontheight Height = 27;
+  attr fontname FontName = Digital-7;
+  attr fontheight Height = 60;
   attr fontheightmode HeightMode = Popular;
   attr fontquality Quality = High;
   attr fontranges Ranges = 0x20-0xFF;
@@ -452,7 +504,7 @@ class NumPadClass : Core::Group
     preset StackingPriority = 2;
     preset Bounds = <175,131,225,183>;
     preset String = "/";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
@@ -472,7 +524,7 @@ class NumPadClass : Core::Group
     preset StackingPriority = 2;
     preset Bounds = <14,165,64,217>;
     preset String = "C";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
@@ -482,7 +534,7 @@ class NumPadClass : Core::Group
     preset StackingPriority = 2;
     preset Bounds = <175,87,225,139>;
     preset String = "*";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
@@ -492,7 +544,7 @@ class NumPadClass : Core::Group
     preset StackingPriority = 2;
     preset Bounds = <175,42,225,94>;
     preset String = "-";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
@@ -502,7 +554,7 @@ class NumPadClass : Core::Group
     preset StackingPriority = 2;
     preset Bounds = <175,4,225,56>;
     preset String = "+";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
@@ -855,7 +907,7 @@ class NumPadClass : Core::Group
     preset StackingPriority = 2;
     preset Bounds = <114,165,164,209>;
     preset String = ".";
-    preset Font = Application::MidNumFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
@@ -1461,8 +1513,8 @@ $rect <20,80,220,120>
 $output false
 class NumKeyBtns : Core::Group
 {
-  $rect <880,240,1080,280>
-  inherited property Bounds = <0,0,240,300>;
+  $rect <880,300,1080,340>
+  inherited property Bounds = <0,0,300,370>;
 
   $rect <360,100,560,140>
   inherited method UpdateLayout()
@@ -1525,7 +1577,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Two
   {
-    preset Bounds = <65,9,120,64>;
+    preset Bounds = <80,79,150,149>;
     preset OnActivate = onActivateKey;
     preset Label = "2";
     preset Appearance = DigitOpConfig;
@@ -1534,7 +1586,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Three
   {
-    preset Bounds = <120,9,175,64>;
+    preset Bounds = <150,79,220,149>;
     preset OnActivate = onActivateKey;
     preset Label = "3";
     preset Appearance = DigitOpConfig;
@@ -1543,7 +1595,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Four
   {
-    preset Bounds = <10,64,65,119>;
+    preset Bounds = <10,149,80,219>;
     preset OnActivate = onActivateKey;
     preset Label = "4";
     preset Appearance = DigitOpConfig;
@@ -1552,7 +1604,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Five
   {
-    preset Bounds = <65,64,120,119>;
+    preset Bounds = <80,149,150,219>;
     preset OnActivate = onActivateKey;
     preset Label = "5";
     preset Appearance = DigitOpConfig;
@@ -1561,7 +1613,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Six
   {
-    preset Bounds = <120,64,175,119>;
+    preset Bounds = <150,149,220,219>;
     preset OnActivate = onActivateKey;
     preset Label = "6";
     preset Appearance = DigitOpConfig;
@@ -1570,7 +1622,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Seven
   {
-    preset Bounds = <10,119,65,174>;
+    preset Bounds = <10,219,80,289>;
     preset OnActivate = onActivateKey;
     preset Label = "7";
     preset Appearance = DigitOpConfig;
@@ -1579,7 +1631,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Eight
   {
-    preset Bounds = <65,120,120,175>;
+    preset Bounds = <80,219,150,289>;
     preset OnActivate = onActivateKey;
     preset Label = "8";
     preset Appearance = DigitOpConfig;
@@ -1588,7 +1640,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Nine
   {
-    preset Bounds = <120,119,175,174>;
+    preset Bounds = <150,219,220,289>;
     preset OnActivate = onActivateKey;
     preset Label = "9";
     preset Appearance = DigitOpConfig;
@@ -1597,7 +1649,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Zero
   {
-    preset Bounds = <65,174,120,229>;
+    preset Bounds = <80,289,150,359>;
     preset OnActivate = onActivateKey;
     preset Label = "0";
     preset Appearance = DigitOpConfig;
@@ -1606,7 +1658,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Clear
   {
-    preset Bounds = <175,9,230,64>;
+    preset Bounds = <10,10,80,80>;
     preset OnActivate = onActivateKey;
     preset Label = "C";
     preset Appearance = DigitOpConfig;
@@ -1615,7 +1667,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Equals
   {
-    preset Bounds = <120,230,230,285>;
+    preset Bounds = <150,289,292,357>;
     preset OnActivate = onActivateKey;
     preset Label = "=";
     preset Appearance = EqualsConfig;
@@ -1624,7 +1676,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Plus
   {
-    preset Bounds = <175,64,230,119>;
+    preset Bounds = <220,219,290,289>;
     preset OnActivate = onActivateKey;
     preset Label = "+";
     preset Appearance = DigitOpConfig;
@@ -1633,7 +1685,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Minus
   {
-    preset Bounds = <175,120,230,175>;
+    preset Bounds = <220,149,290,219>;
     preset OnActivate = onActivateKey;
     preset Label = "-";
     preset Appearance = DigitOpConfig;
@@ -1642,7 +1694,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Multiply
   {
-    preset Bounds = <175,174,230,229>;
+    preset Bounds = <220,79,290,149>;
     preset OnActivate = onActivateKey;
     preset Label = "*";
     preset Appearance = DigitOpConfig;
@@ -1651,30 +1703,23 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Divide
   {
-    preset Bounds = <120,174,175,229>;
+    preset Bounds = <220,10,290,80>;
     preset OnActivate = onActivateKey;
     preset Label = "/";
     preset Appearance = DigitOpConfig;
   }
 
   $rect <20,20,160,60>
-  object Views::Rectangle Rectangle
-  {
-    preset StackingPriority = -1;
-    preset Bounds = <-164,315,76,615>;
-    preset Color = #E2E6E9FF;
-  }
-
-  $rect <20,20,160,60>
   object Views::Border Border
   {
     preset StackingPriority = -1;
-    preset Bounds = <1,0,240,299>;
+    preset Bounds = <1,1,300,370>;
+    preset Radius = 5;
     preset Width = 2;
     preset Color = #030324FF;
   }
 
-  $rect <900,100,1140,140>
+  $rect <900,230,1140,270>
   object WidgetSet::PushButtonConfig EqualsConfig
   {
     preset OnUpdate = null;
@@ -1762,19 +1807,10 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Dot
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop];
-    preset Bounds = <10,174,65,229>;
+    preset Bounds = <10,289,80,359>;
     preset OnActivate = onActivateKey;
     preset Label = ".";
     preset Appearance = DigitOpConfig;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Rectangle Highlight
-  {
-    preset StackingPriority = 2;
-    preset Bounds = <884,290,934,340>;
-    preset Color = #123D4AFF;
-    preset Visible = false;
   }
 
   $rect <360,280,560,320>
@@ -1791,7 +1827,6 @@ class NumKeyBtns : Core::Group
   {
     sender; /* the method is called from the sender object */
     InvalidateViewState();
-    Highlight.Visible = false;
   }
 
   // Flash effect
@@ -1809,7 +1844,7 @@ class NumKeyBtns : Core::Group
   // Push Button Configurations
   note group Note2
   {
-    attr Bounds = <870,0,1170,170>;
+    attr Bounds = <870,0,1170,290>;
   }
 
   $rect <20,20,160,60>
@@ -1823,9 +1858,63 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton One
   {
-    preset Bounds = <10,9,65,64>;
+    preset Bounds = <10,79,80,149>;
     preset Label = "1";
     preset Appearance = DigitOpConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Power
+  {
+    preset Bounds = <80,10,150,80>;
+    preset OnActivate = onActivateKey;
+    preset IconFrameActive = 1;
+    preset IconFrameFocused = 1;
+    preset IconFrameDefault = 0;
+    preset IconFrame = 0;
+    preset Icon = null;
+    preset Label = "^";
+    preset Appearance = PowConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton Percentage
+  {
+    preset Bounds = <150,9,220,79>;
+    preset OnActivate = onActivateKey;
+    preset Label = "%";
+    preset Appearance = PercentConfig;
+  }
+
+  $rect <910,160,1150,200>
+  object WidgetSet::PushButtonConfig PowConfig
+  {
+    preset IconMarginBottom = 2;
+    preset IconMarginTop = 2;
+    preset IconMarginRight = 2;
+    preset IconMarginLeft = 2;
+    preset IconAlignment = Views::ImageAlignment[AlignHorzCenter, AlignVertCenter];
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::PowBtn;
+    preset FaceBitmapFocused = Application::PowBtn;
+    preset FaceBitmapDisabled = Application::PowBtn;
+    preset FaceBitmapDefault = Application::PowBtn;
+  }
+
+  $rect <910,110,1150,150>
+  object WidgetSet::PushButtonConfig PercentConfig
+  {
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::PercentBtn;
+    preset FaceBitmapFocused = Application::PercentBtn;
+    preset FaceBitmapDisabled = Application::PercentBtn;
+    preset FaceBitmapDefault = Application::PercentBtn;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -1835,15 +1924,13 @@ class NumKeyBtns : Core::Group
   $member Bounds
   $member UpdateLayout
   $member UpdateViewState
-  $member DigitOpConfig
-  $member Rectangle
   $member Border
+  $member DigitOpConfig
   $member EqualsConfig
   $member onActivateKey
   $member keyString
   $member OnSetkeyString
   $member OnGetkeyString
-  $member Highlight
   $member FlashKeyTimer
   $member triggerTimer
   $member Note
@@ -1866,7 +1953,11 @@ class NumKeyBtns : Core::Group
   $member Multiply
   $member Divide
   $member Dot
+  $member Power
+  $member Percentage
   $member Equals
+  $member PowConfig
+  $member PercentConfig
 }
 
 $rect <290,20,490,60>
@@ -2796,8 +2887,8 @@ $rect <500,120,700,160>
 $output false
 resource Resources::Font EqFont
 {
-  attr fontname FontName = Cascadia Mono SemiBold;
-  attr fontheight Height = 50;
+  attr fontname FontName = Digital-7;
+  attr fontheight Height = 80;
   attr fontheightmode HeightMode = Popular;
   attr fontquality Quality = High;
   attr fontranges Ranges = 0x20-0xFF;
@@ -2806,4 +2897,28 @@ resource Resources::Font EqFont
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
+}
+
+$rect <290,170,490,210>
+$output false
+resource Resources::Bitmap PercentBtn
+{
+  attr bitmapfile FileName = .\resources\percent.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <70,70>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <290,220,490,260>
+$output false
+resource Resources::Bitmap PowBtn
+{
+  attr bitmapfile FileName = .\resources\pow.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <70,70>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
 }

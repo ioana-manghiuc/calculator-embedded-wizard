@@ -77,7 +77,7 @@ $rect <310,70,510,110>
 profile Win32 : Windows.Software.RGBA8888
 {
   attr Verbose = false;
-  attr ScreenSize = <300,460>;
+  attr ScreenSize = <340,520>;
   attr Optimization = High;
   attr ApplicationClass = Application::Application;
   attr CleanOutputDirectories = false;

@@ -1,9 +1,8 @@
 $version 1.0
 
-attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.KeySlotMethod;
+attr currentCodeInspector = Application::NumKeyBtns.triggerTimer;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -26,7 +25,7 @@ attr search_IgnoreMosaic = false;
 attr search_LimitToComposer = true;
 attr search_WholeWords = false;
 attr search_WildCards = false;
-attr selectedProfiles = Web;
+attr selectedProfiles = Win32;
 
 view Project
 {
@@ -38,13 +37,6 @@ view Project
   attr zoom = 1.0;
 }
 
-view unit Application
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-286,-112>;
-  attr zoom = 1.25;
-}
-
 view class Application::Application
 {
   attr enableWireMode = false;
@@ -54,12 +46,11 @@ view class Application::Application
 
 view class Application::NumKeyBtns
 {
-  attr enableWireMode = false;
-  attr scrollTo = <-329,-213>;
+  attr scrollTo = <-682,-249>;
   attr zoom = 0.75;
 }
 
-view class WidgetSet::PushButton
+view unit Application
 {
   attr enableWireMode = false;
   attr scrollTo = <-7,-7>;
@@ -69,15 +60,23 @@ view class WidgetSet::PushButton
 codeview Application::Application.KeySlotMethod
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,12>;
-  attr codeSelEnd = <163,22>;
-  attr codeSelStart = <163,22>;
+  attr codeFirstPos = <0,3>;
+  attr codeSelEnd = <0,16>;
+  attr codeSelStart = <0,16>;
 }
 
-codeview Application::NumKeyBtns.onActivateKey
+codeview Application::Application.ExecuteOperation
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,12>;
-  attr codeSelEnd = <2,3>;
-  attr codeSelStart = <2,3>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <33,17>;
+  attr codeSelStart = <33,17>;
+}
+
+codeview Application::NumKeyBtns.triggerTimer
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <22,1>;
+  attr codeSelStart = <22,1>;
 }
