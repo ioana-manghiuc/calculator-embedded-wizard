@@ -32,7 +32,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-399,-151>;
   attr zoom = 1.0;
@@ -55,8 +54,8 @@ view class Application::Application
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-462,-249>;
-  attr zoom = 0.75;
+  attr scrollTo = <-432,-103>;
+  attr zoom = 1.0;
 }
 
 codeview Application::Application.KeySlotMethod

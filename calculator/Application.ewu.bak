@@ -352,8 +352,8 @@ $rect <480,20,680,60>
 $output false
 resource Resources::Font NumFont
 {
-  attr fontname FontName = Digital-7;
-  attr fontheight Height = 55;
+  attr fontname FontName = Book Antiqua;
+  attr fontheight Height = 50;
   attr fontheightmode HeightMode = Popular;
   attr fontquality Quality = High;
   attr fontranges Ranges = 0x20-0xFF;
@@ -569,7 +569,7 @@ class NumKeyBtns : Core::Group
     preset Bounds = <220,79,290,149>;
     preset OnActivate = onActivateKey;
     preset Label = "*";
-    preset Appearance = DigitOpBoldConfig;
+    preset Appearance = DigitOpConfig;
   }
 
   $rect <20,20,160,60>
@@ -1858,8 +1858,8 @@ $rect <480,70,680,110>
 $output false
 resource Resources::Font NumBoldFont
 {
-  attr fontname FontName = Digital-7;
-  attr fontheight Height = 55;
+  attr fontname FontName = Book Antiqua;
+  attr fontheight Height = 50;
   attr fontheightmode HeightMode = Popular;
   attr fontquality Quality = High;
   attr fontranges Ranges = 0x20-0xFF;
