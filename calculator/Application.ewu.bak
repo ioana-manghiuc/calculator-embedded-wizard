@@ -20,7 +20,7 @@ class Application : Core::Root
   }
 
   $rect <20,20,160,60>
-  object Application::NumKeyBtns Outline
+  object Application::NumKeyBtns Keypad
   {
     preset StackingPriority = 2;
     preset Bounds = <20,129,320,499>;
@@ -60,7 +60,7 @@ class Application : Core::Root
   slot KeySlotMethod
   {
     sender; /* the method is called from the sender object */
-    var string str;
+    var string str = "";
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -68,14 +68,12 @@ class Application : Core::Root
     }
     else
     {
-      str = Outline.keyString;
+      str = Keypad.keyString;
     }
 
     if(Text.String == "result here" || str == "C")
     {
-      Text.String = "";
-      KeyHandler.CharCode = '\0';
-      Result = 0.0;
+      ResetVariables();
     }
 
     if((str >= "0") && (str <= "9") || str == ".")
@@ -88,6 +86,8 @@ class Application : Core::Root
       {
         FirstOperand = Text.String.parse_float(-1.0);
         Operator = str;
+        OperatorSet = true;
+        str = "";
         Text.String = "";
       } 
       else 
@@ -101,7 +101,8 @@ class Application : Core::Root
         } 
         else 
         {
-          Operator = str; 
+          Operator = str;
+          OperatorSet = true;
         }
       }
     }
@@ -287,7 +288,7 @@ class Application : Core::Root
               res = first + second;
             case '-':
               res = first - second;
-            case '*':
+            case 'x':
               res = first * second;
             case '/':
               if (second != 0.0)
@@ -315,6 +316,18 @@ class Application : Core::Root
     return res;
   }
 
+  $rect <430,240,630,280>
+  method void ResetVariables()
+  {
+    Text.String = "";
+    FirstOperand = 0.0;
+    SecondOperand = 0.0;
+    Result = 0.0;
+    Operator = "";
+    OperatorSet = false;
+
+  }
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -326,7 +339,7 @@ class Application : Core::Root
   $member Bgk
   $member OutputBgk
   $member Border
-  $member Outline
+  $member Keypad
   $member KeyHandler
   $member KeySlotMethod
   $member FirstOperand
@@ -346,6 +359,7 @@ class Application : Core::Root
   $member OnGetOperatorSet
   $member Text
   $member ExecuteOperation
+  $member ResetVariables
 }
 
 $rect <480,20,680,60>
@@ -533,7 +547,7 @@ class NumKeyBtns : Core::Group
     preset Bounds = <10,10,80,80>;
     preset OnActivate = onActivateKey;
     preset Label = "C";
-    preset Appearance = DigitOpBoldConfig;
+    preset Appearance = MultiplyConfig;
   }
 
   $rect <20,20,160,60>
@@ -560,7 +574,7 @@ class NumKeyBtns : Core::Group
     preset Bounds = <220,149,290,219>;
     preset OnActivate = onActivateKey;
     preset Label = "-";
-    preset Appearance = DigitOpBoldConfig;
+    preset Appearance = MultiplyConfig;
   }
 
   $rect <20,20,160,60>
@@ -568,8 +582,8 @@ class NumKeyBtns : Core::Group
   {
     preset Bounds = <220,79,290,149>;
     preset OnActivate = onActivateKey;
-    preset Label = "*";
-    preset Appearance = DigitOpConfig;
+    preset Label = "x";
+    preset Appearance = MultiplyConfig;
   }
 
   $rect <20,20,160,60>
@@ -578,7 +592,7 @@ class NumKeyBtns : Core::Group
     preset Bounds = <220,10,290,80>;
     preset OnActivate = onActivateKey;
     preset Label = "/";
-    preset Appearance = DigitOpBoldConfig;
+    preset Appearance = DivideConfig;
   }
 
   $rect <20,20,160,60>
@@ -591,7 +605,7 @@ class NumKeyBtns : Core::Group
     preset Color = #030324FF;
   }
 
-  $rect <910,260,1150,300>
+  $rect <910,280,1150,320>
   object WidgetSet::PushButtonConfig EqualsConfig
   {
     preset OnUpdate = null;
@@ -751,7 +765,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = PercentConfig;
   }
 
-  $rect <900,200,1140,240>
+  $rect <900,150,1140,190>
   object WidgetSet::PushButtonConfig PowConfig
   {
     preset IconMarginBottom = 2;
@@ -769,7 +783,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::PowBtn;
   }
 
-  $rect <910,110,1150,150>
+  $rect <900,200,1140,240>
   object WidgetSet::PushButtonConfig PercentConfig
   {
     preset FaceFrameActive = 1;
@@ -798,7 +812,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = PercentConfig;
   }
 
-  $rect <900,150,1140,190>
+  $rect <900,100,1140,140>
   object WidgetSet::PushButtonConfig DigitOpBoldConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -810,6 +824,42 @@ class NumKeyBtns : Core::Group
     preset LabelColorDisabled = #8E6B74FF;
     preset LabelColorDefault = #000000FF;
     preset LabelFont = Application::NumBoldFont;
+    preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::CustomBtn;
+    preset FaceBitmapFocused = Application::CustomBtn;
+    preset FaceBitmapDisabled = Application::CustomBtn;
+    preset FaceBitmapDefault = Application::CustomBtn;
+  }
+
+  $rect <900,230,1140,270>
+  object WidgetSet::PushButtonConfig DivideConfig
+  {
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::DivideBtn;
+    preset FaceBitmapFocused = Application::DivideBtn;
+    preset FaceBitmapDisabled = Application::DivideBtn;
+    preset FaceBitmapDefault = Application::DivideBtn;
+  }
+
+  $rect <900,50,1140,90>
+  object WidgetSet::PushButtonConfig MultiplyConfig
+  {
+    preset KeyCode = Core::KeyCode.NoKey;
+    preset AccentColorFocused = #03040000;
+    preset AccentColorDefault = #00000000;
+    preset AccentLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset LabelColorActive = #8E6B74FF;
+    preset LabelColorFocused = #8E6B74FF;
+    preset LabelColorDisabled = #8E6B74FF;
+    preset LabelColorDefault = #000000FF;
+    preset LabelFont = Application::MultiplyFont;
     preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
     preset FaceFrameActive = 1;
     preset FaceFrameFocused = 1;
@@ -865,6 +915,8 @@ class NumKeyBtns : Core::Group
   $member PowConfig
   $member PercentConfig
   $member DigitOpBoldConfig
+  $member DivideConfig
+  $member MultiplyConfig
 }
 
 $rect <220,20,420,60>
@@ -1794,7 +1846,7 @@ $rect <480,170,680,210>
 $output false
 resource Resources::Font EqFont
 {
-  attr fontname FontName = Digital-7;
+  attr fontname FontName = Book Antiqua;
   attr fontheight Height = 100;
   attr fontheightmode HeightMode = Popular;
   attr fontquality Quality = High;
@@ -1839,7 +1891,7 @@ note group Note
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <200,-20,440,230>;
+  attr Bounds = <200,-20,440,270>;
 }
 
 // Fonts
@@ -1865,6 +1917,34 @@ resource Resources::Font NumBoldFont
   attr fontranges Ranges = 0x20-0xFF;
   attr fontaspectratio AspectRatio = 1.0;
   attr fontbold Bold = true;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <217,219,417,259>
+$output false
+resource Resources::Bitmap DivideBtn
+{
+  attr bitmapfile FileName = .\resources\divide.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <70,70>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <511,249,711,289>
+$output false
+resource Resources::Font MultiplyFont
+{
+  attr fontname FontName = Consolas;
+  attr fontheight Height = 50;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;

@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::NumKeyBtns;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.KeySlotMethod;
+attr currentCodeInspector = Application::Application.IsOperationValid;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -40,68 +40,52 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-504,-240>;
+  attr scrollTo = <-357,-144>;
   attr zoom = 1.0;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-302,-129>;
+  attr scrollTo = <-291,-45>;
   attr zoom = 0.75;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-432,-103>;
-  attr zoom = 1.0;
-}
-
-codeview Application::Application.KeySlotMethod
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <0,16>;
-  attr codeSelStart = <0,16>;
+  attr scrollTo = <-109,-186>;
+  attr zoom = 0.75;
 }
 
 codeview Application::Application.ExecuteOperation
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <34,18>;
-  attr codeSelStart = <34,18>;
+  attr codeSelEnd = <0,32>;
+  attr codeSelStart = <0,32>;
 }
 
-codeview Application::NumKeyBtns.triggerTimer
+codeview Application::Application.KeySlotMethod
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,33>;
+  attr codeSelEnd = <34,47>;
+  attr codeSelStart = <34,47>;
+}
+
+codeview Application::Application.ResetVariables
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <22,1>;
-  attr codeSelStart = <22,1>;
+  attr codeSelEnd = <14,2>;
+  attr codeSelStart = <14,2>;
 }
 
-codeview Application::NumKeyBtns.onActivateKey
+codeview Application::Application.IsOperationValid
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <73,1>;
-  attr codeSelStart = <73,1>;
-}
-
-codeview Application::NumKeyBtns.OnSetkeyString
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::NumKeyBtns.OnGetkeyString
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
+  attr codeSelEnd = <70,0>;
+  attr codeSelStart = <70,0>;
 }
