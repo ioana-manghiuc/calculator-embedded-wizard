@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.IsOperationValid;
+attr currentCodeInspector = Application::Application.KeySlotMethod;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -47,21 +47,21 @@ view unit Application
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-291,-45>;
-  attr zoom = 0.75;
+  attr scrollTo = <-526,-96>;
+  attr zoom = 0.5;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-109,-186>;
+  attr scrollTo = <-64,-186>;
   attr zoom = 0.75;
 }
 
 codeview Application::Application.ExecuteOperation
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
+  attr codeFirstPos = <0,13>;
   attr codeSelEnd = <0,32>;
   attr codeSelStart = <0,32>;
 }
@@ -69,9 +69,9 @@ codeview Application::Application.ExecuteOperation
 codeview Application::Application.KeySlotMethod
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,33>;
-  attr codeSelEnd = <34,47>;
-  attr codeSelStart = <34,47>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <51,26>;
+  attr codeSelStart = <51,26>;
 }
 
 codeview Application::Application.ResetVariables

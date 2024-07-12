@@ -53,7 +53,7 @@ class Application : Core::Root
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = KeySlotMethod;
-    preset OnHold = KeySlotMethod;
+    preset OnHold = null;
   }
 
   $rect <410,100,610,140>
@@ -61,6 +61,7 @@ class Application : Core::Root
   {
     sender; /* the method is called from the sender object */
     var string str = "";
+    var string dummy;
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -82,10 +83,12 @@ class Application : Core::Root
     } 
     else
     {
-      if (OperatorSet == false)
+      if (OperatorSet == false && IsOperationValid(str[0]))
       {
         FirstOperand = Text.String.parse_float(-1.0);
+        dummy = FirstOperand; trace "First Operand : " + dummy;
         Operator = str;
+        dummy = Operator; trace "Operator : " + dummy;
         OperatorSet = true;
         str = "";
         Text.String = "";
@@ -95,14 +98,19 @@ class Application : Core::Root
         if(str == "=") 
         {     
           SecondOperand = Text.String.parse_float(-1.0);
+          dummy = SecondOperand; trace "Second Operand : " + dummy;
           Result = ExecuteOperation(FirstOperand, SecondOperand, Operator);
+          dummy = Result; trace "Result : " + dummy;
           Text.String = Result;
           OperatorSet = false; 
         } 
         else 
         {
-          Operator = str;
-          OperatorSet = true;
+          if(IsOperationValid(str[0]))
+          {
+            Operator = str;
+            OperatorSet = true;
+          }
         }
       }
     }
@@ -320,12 +328,19 @@ class Application : Core::Root
   method void ResetVariables()
   {
     Text.String = "";
-    FirstOperand = 0.0;
-    SecondOperand = 0.0;
     Result = 0.0;
     Operator = "";
     OperatorSet = false;
 
+  }
+
+  $rect <454,319,654,359>
+  method bool IsOperationValid( arg char op )
+  {
+    if ( op == '+' || op == '-' ||op == 'x' ||op == '/' ||op == '%' ||op == '^' )
+      return true;
+
+    return false;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -360,6 +375,7 @@ class Application : Core::Root
   $member Text
   $member ExecuteOperation
   $member ResetVariables
+  $member IsOperationValid
 }
 
 $rect <480,20,680,60>
