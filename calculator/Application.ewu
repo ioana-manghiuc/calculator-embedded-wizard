@@ -61,7 +61,7 @@ class Application : Core::Root
   {
     sender; /* the method is called from the sender object */
     var string str = "";
-    var string dummy;
+    //var string dummy;
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -83,12 +83,12 @@ class Application : Core::Root
     } 
     else
     {
-      if (OperatorSet == false && IsOperationValid(str[0]))
+      if (OperatorSet == false && IsOperator(str[0]))
       {
         FirstOperand = Text.String.parse_float( -1.0 );
-        dummy = FirstOperand; trace "First Operand : " + dummy;
+        //dummy = FirstOperand; trace "First Operand : " + dummy;
         Operator = str;
-        dummy = Operator; trace "Operator : " + dummy;
+        //dummy = Operator; trace "Operator : " + dummy;
         OperatorSet = true;
         str = "";
         Text.String = "";
@@ -98,15 +98,15 @@ class Application : Core::Root
         if(str == "=") 
         {     
           SecondOperand = Text.String.parse_float(-1.0);
-          dummy = SecondOperand; trace "Second Operand : " + dummy;
+          //dummy = SecondOperand; trace "Second Operand : " + dummy;
           Result = ExecuteOperation(FirstOperand, SecondOperand, Operator);
-          dummy = Result; trace "Result : " + dummy;
+          //dummy = Result; trace "Result : " + dummy;
           Text.String = Result;
           OperatorSet = false; 
         } 
         else 
         {
-          if(IsOperationValid(str[0]))
+          if(IsOperator(str[0]))
           {
             Operator = str;
             OperatorSet = true;
@@ -335,18 +335,318 @@ class Application : Core::Root
   }
 
   $rect <410,290,610,330>
-  method bool IsOperationValid( arg char op )
+  method bool IsOperator( arg char op )
   {
-    if ( op == '+' || op == '-' ||op == 'x' ||op == '/' ||op == '%' ||op == '^' )
-      return true;
+    return ( op == '+' || op == '-' || op == 'x' || op == '/' ||  op == '%' || op == '^');
+    //  return true;
 
-    return false;
+    //return false;
   }
 
   // Operation Handler
   note group Note
   {
     attr Bounds = <360,200,650,400>;
+  }
+
+  $rect <420,440,620,480>
+  method int32 GetPriorityOfOperator( arg char op )
+  {
+    int32 priority = 0;
+
+    switch (op[0])
+          {
+            case '+':
+              priority = 1;
+            case '-':
+              priority = 1;
+            case 'x':
+              priority = 2;
+            case '/':
+              priority = 2;
+            case '%':
+             priority = 3;
+            case '^': 
+              priority = 3;
+            default:
+              priority = 1;
+          }
+
+    return priority;
+  }
+
+  $rect <420,500,690,540>
+  method Application::Pair GetSubexpressionInParanthesis( arg int32 startPos, arg string expression )
+  {
+    var string subexpression;
+    var int32 endPos;
+    var Application::Pair res = new Application::Pair;
+
+    var int32 i = startPos + 1;
+
+    if(expression != "")
+    {
+      for( ; i < expression.length; i++)
+      {
+        if(expression[i] != ')')
+          subexpression += expression[i];
+        else
+        {  
+          endPos = i;
+          break;    
+        }
+      }
+    } 
+
+    res.EndPosition = endPos;
+    res.Subexpression = subexpression;
+    res.IdentifiedNumber = 0.0;
+
+    return res; 
+  }
+
+  $rect <435,590,660,628>
+  method Application::Pair GetNumberFromPosition( arg int32 startPos, arg string expression )
+  {
+    var int32 endPos;
+    var Application::Pair res = new Application::Pair;
+    var string nrStr;
+    var int32 i = startPos;
+
+    if(expression != "")
+    {
+      for( ; i < expression.length; i++)
+      {
+        if(!IsOperator(expression[i]) && IsDigit(expression[i]))
+          nrStr += expression[i];
+        else
+        {  
+          endPos = i;
+          break;    
+        }
+      }
+    } 
+
+    res.EndPosition = endPos;
+    res.Subexpression = "none";
+    res.IdentifiedNumber = nrStr.parse_float(-1.0);
+    return res; 
+  }
+
+  $rect <91,568,291,608>
+  method bool IsExpressionValid( arg string expression )
+  {
+    // correct operator use
+    // 1. check for valid operators
+    // 2. check that operators are used correct
+    // correct paranthesis
+
+    if (expression == "")
+    {
+         ErrDialog.Text.String = "Expression is null.";
+         return false;
+    }
+    else
+    {
+        if(!CorrectParantheses(expression))
+        {
+           signal onShowDialog;
+           ErrDialog.Text.String = "Parantheses used incorrectly.";
+           return false;
+        }
+        else if(!OperatorsCorrectlyUsed(expression))
+        {
+           signal onShowDialog;
+           ErrDialog.Text.String = "Operators used incorrectly.";
+           return false;
+        }
+        else if (!CharactersAllowed(expression))
+        {
+           signal onShowDialog;
+           ErrDialog.Text.String = "Expression contains characters that are not allowed.";
+           return false;
+        }
+    }
+
+
+    return true;
+  }
+
+  $rect <695,561,895,601>
+  method bool IsDigit( arg char op )
+  {
+    return ((op >= '0') && (op <= '9') || op == '.');
+    //  return true;
+
+    //return false;
+  }
+
+  $rect <118,660,318,700>
+  method bool SubexprHasOnlyDigits( arg string expression )
+  {
+    var int32 i = 0;
+    var int32 counter = 0;
+    var bool validator = false;
+
+    if(expression != "")
+    {
+      for( ; i < expression.length; i++)
+      {
+        if(IsDigit(expression[i]))
+          validator = true;
+        else if(expression[i] == '-')
+          counter++;
+        else
+          validator = false;
+      }
+    }
+
+    if( validator == true && (counter == 1 || counter == 0))
+      return true;
+
+    return false;
+  }
+
+  $rect <429,736,629,776>
+  method float GetNegativeNumber( arg string expression )
+  {
+    var string nrStr = "";
+    var int32 i = 0;
+
+    if(expression != "")
+    {
+      for( ; i < expression.length ; i++)
+      {
+        nrStr += expression[i];
+      }
+    }
+
+    return nrStr.parse_float(-1.0);
+  }
+
+  $rect <900,654,1100,694>
+  method bool CorrectParantheses( arg string expression )
+  {
+    var int32 size = Application::MAX_SIZE;
+    array char stack[Application::MAX_SIZE];
+    var int32 top = -1;
+    var int32 i = 0;
+
+    if(expression != "")
+    {
+      for( ; i < expression.length; i++)
+      {
+        var char c = expression[i];
+
+        if(c == '(')
+        {
+          if(top < size - 1)
+          {
+            stack[++top] = c;
+          }
+          else
+          {
+            return false;   
+          }
+        }
+        else if(c == ')')
+        {
+          if(top == -1)
+          {
+            return false;
+          }
+          else
+          {
+            top--;
+          }
+        }  
+      }
+    }
+
+    return (top == -1);
+  }
+
+  $rect <1158,588,1358,628>
+  method bool OperatorsCorrectlyUsed( arg string expression )
+  {
+    var int32 i = 0;
+
+    if(expression != "")
+    {  
+      for ( ; i < expression.length; i++)
+      {
+       if (i == 0)
+        {
+          if (!((expression[i] >= '0' && expression[i] <= '9') || expression[i] == '-' || expression[i] == '('))
+          {
+            return false; 
+          }
+        }
+        else
+        {
+          if (IsOperator(expression[i]) && IsOperator(expression[i - 1]))
+          {
+            return false; 
+          }
+          
+          if (i == expression.length - 1 && IsOperator(expression[i]))
+          {
+            return false;  
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+  $rect <-238,580,-38,620>
+  method bool IsParanthesis( arg char op )
+  {
+    if( op == '(' || op == ')')
+      return true;
+
+    return false;
+  }
+
+  $rect <1322,254,1522,294>
+  var Application::ErrorDialog ErrDialog = null;
+
+  $rect <1320,300,1520,340>
+  slot onShowDialog
+  {
+    ErrDialog = new Application::ErrorDialog;
+
+    ErrDialog.Bounds.x = 45;
+    ErrDialog.Bounds.y = 185;
+    ErrDialog.StackingPriority = 3;
+
+    ErrDialog.OnCloseDialog = onCloseDialog;
+
+    Add(ErrDialog, 0);
+    BeginModal(ErrDialog);
+  }
+
+  $rect <1320,340,1520,380>
+  slot onCloseDialog
+  {
+    EndModal(ErrDialog);
+    Remove(ErrDialog);
+    ErrDialog = null;
+  }
+
+  $rect <-118,672,82,712>
+  method bool CharactersAllowed( arg string expression )
+  {
+    var int32 i = 0;
+
+    for( ; i < expression.length; i++)
+    {
+      if (IsOperator(expression[i]) == false && IsParanthesis(expression[i]) == false && IsDigit(expression[i]) == false)
+        return false;
+    }
+
+    return true;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -381,8 +681,22 @@ class Application : Core::Root
   $member Text
   $member ExecuteOperation
   $member ResetVariables
-  $member IsOperationValid
+  $member IsOperator
   $member Note
+  $member GetPriorityOfOperator
+  $member GetSubexpressionInParanthesis
+  $member GetNumberFromPosition
+  $member IsExpressionValid
+  $member IsDigit
+  $member SubexprHasOnlyDigits
+  $member GetNegativeNumber
+  $member CorrectParantheses
+  $member OperatorsCorrectlyUsed
+  $member IsParanthesis
+  $member ErrDialog
+  $member onShowDialog
+  $member onCloseDialog
+  $member CharactersAllowed
 }
 
 $rect <480,20,680,60>
@@ -1931,7 +2245,7 @@ note group Note1
 // Fonts
 note group Note2
 {
-  attr Bounds = <460,-20,700,230>;
+  attr Bounds = <460,-20,700,270>;
 }
 
 // Application
@@ -1968,7 +2282,7 @@ resource Resources::Bitmap DivideBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <511,249,711,289>
+$rect <480,220,680,260>
 $output false
 resource Resources::Font MultiplyFont
 {
@@ -1979,6 +2293,390 @@ resource Resources::Font MultiplyFont
   attr fontranges Ranges = 0x20-0xFF;
   attr fontaspectratio AspectRatio = 1.0;
   attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <-50,240,150,280>
+$output false
+class Pair
+{
+  $rect <239,-10,439,30>
+  property float IdentifiedNumber;
+
+  $rect <239,30,439,70>
+  onset IdentifiedNumber
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure IdentifiedNumber == value )
+      return;
+
+    // Remember the property's new value.
+    pure IdentifiedNumber = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <239,70,439,110>
+  onget IdentifiedNumber
+  {
+    return pure IdentifiedNumber;
+  }
+
+  $rect <240,120,440,160>
+  property int32 EndPosition = -1;
+
+  $rect <240,160,440,200>
+  onset EndPosition
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure EndPosition == value )
+      return;
+
+    // Remember the property's new value.
+    pure EndPosition = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <240,200,440,240>
+  onget EndPosition
+  {
+    return pure EndPosition;
+  }
+
+  $rect <480,-10,680,30>
+  property string Subexpression = "none";
+
+  $rect <480,30,680,70>
+  onset Subexpression
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Subexpression == value )
+      return;
+
+    // Remember the property's new value.
+    pure Subexpression = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <480,70,680,110>
+  onget Subexpression
+  {
+    return pure Subexpression;
+  }
+
+  $rect <10,10,160,50>
+  inherited method Init()
+  {
+    aArg;
+    IdentifiedNumber = float_infp();
+    EndPosition = -1;
+    Subexpression = "none";
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Init
+  $member IdentifiedNumber
+  $member OnSetIdentifiedNumber
+  $member OnGetIdentifiedNumber
+  $member EndPosition
+  $member OnSetEndPosition
+  $member OnGetEndPosition
+  $member Subexpression
+  $member OnSetSubexpression
+  $member OnGetSubexpression
+}
+
+$rect <-61,306,139,346>
+$output false
+const int32 MAX_SIZE = 100;
+
+$rect <190,300,390,340>
+$output false
+class ErrorDialog : Core::Group
+{
+  $rect <360,0,560,40>
+  inherited property Bounds = <0,0,250,100>;
+
+  $rect <350,-50,550,-10>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+  }
+
+  $rect <350,-100,550,-60>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Bgk
+  {
+    preset Bounds = <0,0,250,100>;
+    preset Radius = 3;
+    preset Color = #E2E6E9FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border BgkBorder
+  {
+    preset Bounds = <0,-1,250,99>;
+    preset Radius = 3;
+    preset Width = 2;
+    preset Color = #460400FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle TopBar
+  {
+    preset Bounds = <0,0,250,30>;
+    preset RadiusTR = 3;
+    preset RadiusTL = 3;
+    preset Radius = 3;
+    preset Color = #990002FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border TopBarBgk
+  {
+    preset Bounds = <0,0,250,30>;
+    preset Width = 2;
+    preset Color = #460400FF;
+  }
+
+  $rect <89,-89,329,-49>
+  object WidgetSet::PushButtonConfig ExitBtnConfig
+  {
+    preset LabelColorActive = #FFFFFFFF;
+    preset LabelColorDisabled = #FFFFFFFF;
+    preset LabelColorDefault = #000000FF;
+    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset LabelFont = Application::BtnFont;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <5,38,235,78>;
+    preset WrapText = true;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertTop];
+    preset String = "no errors";
+    preset Font = Application::ErrorFont;
+    preset Color = #2D0200FF;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton
+  {
+    preset Bounds = <213,-1,243,24>;
+    preset OnActivate = onClose;
+    preset Label = "X";
+    preset Appearance = ExitBtnConfig;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton1
+  {
+    preset Layout = Core::Layout[AlignToRight, AlignToTop];
+    preset Bounds = <165,61,235,91>;
+    preset OnActivate = onClose;
+    preset Label = "OK";
+    preset Appearance = OkBtnConfig;
+  }
+
+  $rect <-170,-90,70,-50>
+  object WidgetSet::PushButtonConfig OkBtnConfig
+  {
+    preset ThumbBorderColorActive = #20943100;
+    preset ThumbBorderColorDefault = #3A842A00;
+    preset ThumbBorderWidthActive = 1;
+    preset ThumbBorderWidthDefault = 1;
+    preset ThumbColorActive = #CC7E5100;
+    preset ThumbColorDefault = #B7321F00;
+    preset ThumbLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset LabelColorActive = #FFFFFFFF;
+    preset LabelColorDisabled = #FFFFFFFF;
+    preset LabelColorDefault = #000000FF;
+    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset LabelFont = Application::BtnFont;
+  }
+
+  $rect <266,60,466,100>
+  slot onClose
+  {
+    idlesignal OnCloseDialog;
+  }
+
+  $rect <300,120,500,160>
+  property slot OnCloseDialog = null;
+
+  $rect <20,20,160,60>
+  object Views::Text Title
+  {
+    preset Bounds = <5,0,145,30>;
+    preset WrapText = true;
+    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter, AlignVertTop];
+    preset String = "CALCULATOR ERROR";
+    preset Font = Application::ErrorFont;
+    preset Color = #F2E6DDFF;
+  }
+}
+
+$rect <500,280,700,320>
+$output false
+resource Resources::Font ErrorFont
+{
+  attr fontname FontName = Asap Condensed Medium;
+  attr fontheight Height = 15;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <368,321,568,361>
+$output false
+resource Resources::Font BtnFont
+{
+  attr fontname FontName = Microsoft Yi Baiti;
+  attr fontheight Height = 27;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = true;
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
