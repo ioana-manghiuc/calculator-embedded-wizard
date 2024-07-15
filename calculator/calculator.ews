@@ -3,7 +3,7 @@ $version 1.0
 attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.ExecuteOperation;
+attr currentCodeInspector = Application::Application.CalculateExpression;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,7 +32,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-399,-151>;
   attr zoom = 1.0;
@@ -41,98 +40,63 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-357,-144>;
+  attr scrollTo = <-357,-336>;
   attr zoom = 1.0;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-288,-103>;
-  attr zoom = 0.5;
+  attr scrollTo = <-297,18>;
+  attr zoom = 0.75;
 }
 
 view class Application::NumKeyBtns
 {
-  attr enableWireMode = false;
   attr scrollTo = <-64,-186>;
   attr zoom = 0.75;
 }
 
 view class Application::Pair
 {
-  attr enableWireMode = false;
   attr scrollTo = <-269,-199>;
   attr zoom = 1.0;
 }
 
 view class Application::ErrorDialog
 {
-  attr enableWireMode = false;
   attr scrollTo = <-500,-342>;
   attr zoom = 1.25;
-}
-
-codeview Application::Application.IsExpressionValid
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <83,27>;
-  attr codeSelStart = <83,27>;
-}
-
-codeview Application::Application.OperatorsCorrectlyUsed
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <7,21>;
-  attr codeSelStart = <7,21>;
 }
 
 codeview Application::Application.ExecuteOperation
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,1>;
-  attr codeSelStart = <0,1>;
+  attr codeFirstPos = <0,26>;
+  attr codeSelEnd = <4,51>;
+  attr codeSelStart = <4,51>;
 }
 
-codeview Application::Application.CharactersAllowed
+codeview Application::Application.GetSubexpressionInParantheses
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <1,3>;
-  attr codeSelStart = <1,3>;
+  attr codeSelEnd = <7,16>;
+  attr codeSelStart = <7,16>;
 }
 
-codeview Application::Application.IsOperator
+codeview Application::Application.GetNumberFromPosition
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <84,0>;
-  attr codeSelStart = <84,0>;
+  attr codeSelEnd = <7,15>;
+  attr codeSelStart = <7,15>;
 }
 
-codeview Application::Application.IsDigit
+codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <49,0>;
-  attr codeSelStart = <49,0>;
-}
-
-codeview Application::Application.IsParanthesis
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <13,3>;
-  attr codeSelStart = <13,3>;
-}
-
-codeview Application::Application.CorrectParantheses
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,16>;
-  attr codeSelEnd = <2,7>;
-  attr codeSelStart = <2,7>;
+  attr codeFirstPos = <0,54>;
+  attr codeSelEnd = <3,58>;
+  attr codeSelStart = <3,58>;
 }

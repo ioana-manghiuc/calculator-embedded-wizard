@@ -290,34 +290,6 @@ class Application : Core::Root
   {
     var float res = 0.0;
 
-    //var Application::Pair pair = new Application::Pair;
-    //pair = GetSubexpressionInParanthesis(0, "(1+2)*3");
-    //var string dummy;
-    //dummy = pair.Subexpression;
-    //trace dummy;
-    //dummy = pair.EndPosition;
-    //trace dummy;
-
-    //var Application::Pair pair = new Application::Pair;
-    //pair = GetNumberFromPosition(3, "(1+2467.65)*3");
-    //var string dummy;
-    //dummy = pair.IdentifiedNumber;
-    //trace dummy;
-    //dummy = pair.EndPosition;
-    //trace dummy;
-    //
-    //trace SubexprHasOnlyDigits("-13");
-    //trace GetNegativeNumber("-13");
-
-    //trace CorrectParantheses("(1+2");
-
-    //ErrDialog.Visible = true;
-
-    if(IsExpressionValid("ab"))
-    {
-      trace "valid";
-    }
-
     switch (op[0])
           {
             case '+':
@@ -365,11 +337,10 @@ class Application : Core::Root
   $rect <410,290,610,330>
   method bool IsOperator( arg char op )
   {
-    if ( op == '+' || op == '-' || op == 'x' || op == '/' || 
-            op == '%' || op == '^' || op == '(' || op == ')')
-      return true;
+    return ( op == '+' || op == '-' || op == 'x' || op == '/' ||  op == '%' || op == '^');
+    //  return true;
 
-    return false;
+    //return false;
   }
 
   // Operation Handler
@@ -489,6 +460,12 @@ class Application : Core::Root
            ErrDialog.Text.String = "Operators used incorrectly.";
            return false;
         }
+        else if (!CharactersAllowed(expression))
+        {
+           signal onShowDialog;
+           ErrDialog.Text.String = "Expression contains characters that are not allowed.";
+           return false;
+        }
     }
 
 
@@ -498,10 +475,10 @@ class Application : Core::Root
   $rect <695,561,895,601>
   method bool IsDigit( arg char op )
   {
-    if ((op >= '0') && (op <= '9') || op == '.')
-      return true;
+    return ((op >= '0') && (op <= '9') || op == '.');
+    //  return true;
 
-    return false;
+    //return false;
   }
 
   $rect <118,660,318,700>
@@ -598,17 +575,25 @@ class Application : Core::Root
     {  
       for ( ; i < expression.length; i++)
       {
-        if(((expression[0] >= '0') && (expression[0] <= '9')) || expression[0] == '-')
-          continue;
-        if( i != expression.length - 1 && IsOperator(expression[i]))
+       if (i == 0)
         {
-          if(IsOperator(expression[i + 1]))
-          { 
-            return false;
+          if (!((expression[i] >= '0' && expression[i] <= '9') || expression[i] == '-' || expression[i] == '('))
+          {
+            return false; 
           }
         }
-        else if (i == expression.length - 1 && IsOperator(expression[i]))
-          return false;
+        else
+        {
+          if (IsOperator(expression[i]) && IsOperator(expression[i - 1]))
+          {
+            return false; 
+          }
+          
+          if (i == expression.length - 1 && IsOperator(expression[i]))
+          {
+            return false;  
+          }
+        }
       }
     }
 
@@ -657,7 +642,7 @@ class Application : Core::Root
 
     for( ; i < expression.length; i++)
     {
-      if (!IsOperator(expression[i]) || !IsParanthesis(expression[i]) ||!IsDigit(expression[i]))
+      if (IsOperator(expression[i]) == false && IsParanthesis(expression[i]) == false && IsDigit(expression[i]) == false)
         return false;
     }
 
@@ -2600,7 +2585,7 @@ class ErrorDialog : Core::Group
   $rect <20,20,160,60>
   object Views::Text Text
   {
-    preset Bounds = <5,38,235,73>;
+    preset Bounds = <5,38,235,78>;
     preset WrapText = true;
     preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertTop];
     preset String = "no errors";
