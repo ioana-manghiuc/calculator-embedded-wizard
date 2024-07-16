@@ -1,6 +1,6 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
 attr currentCodeInspector = Application::Application.CalculateExpression;
@@ -32,34 +32,36 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
+  attr enableWireMode = false;
   attr grid = 10;
-  attr scrollTo = <-399,-151>;
-  attr zoom = 1.0;
+  attr scrollTo = <-305,-63>;
+  attr zoom = 0.5;
 }
 
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-505,-115>;
+  attr scrollTo = <-505,191>;
   attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-121,2>;
-  attr zoom = 0.75;
+  attr scrollTo = <-98,-11>;
+  attr zoom = 0.5;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-64,-138>;
-  attr zoom = 0.75;
+  attr scrollTo = <-536,-207>;
+  attr zoom = 0.5;
 }
 
 view class Application::Pair
 {
+  attr enableWireMode = false;
   attr scrollTo = <-269,-199>;
   attr zoom = 1.0;
 }
@@ -67,16 +69,23 @@ view class Application::Pair
 view class Application::ErrorDialog
 {
   attr enableWireMode = false;
-  attr scrollTo = <-674,-361>;
+  attr scrollTo = <-464,-326>;
   attr zoom = 0.75;
+}
+
+view class WidgetSet::PushButton
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-7,-7>;
+  attr zoom = 1.0;
 }
 
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,61>;
-  attr codeSelEnd = <10,66>;
-  attr codeSelStart = <10,66>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <66,6>;
+  attr codeSelStart = <66,6>;
 }
 
 codeview Application::NumKeyBtns.onActivateKey
@@ -90,7 +99,15 @@ codeview Application::NumKeyBtns.onActivateKey
 codeview Application::Application.ExecuteOperation
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,43>;
-  attr codeSelEnd = <25,49>;
-  attr codeSelStart = <25,49>;
+  attr codeFirstPos = <0,61>;
+  attr codeSelEnd = <11,78>;
+  attr codeSelStart = <11,78>;
+}
+
+codeview Application::Application.ExecTwoOp
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,16>;
+  attr codeSelEnd = <30,24>;
+  attr codeSelStart = <30,24>;
 }

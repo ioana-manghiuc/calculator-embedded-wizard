@@ -6,7 +6,7 @@ $output false
 class Application : Core::Root
 {
   $rect <960,320,1160,360>
-  inherited property Bounds = <0,0,340,520>;
+  inherited property Bounds = <0,0,350,590>;
 
   $rect <20,20,160,60>
   object Views::Text TextTxt
@@ -23,7 +23,7 @@ class Application : Core::Root
   object Application::NumKeyBtns Keypad
   {
     preset StackingPriority = 2;
-    preset Bounds = <20,129,320,499>;
+    preset Bounds = <20,129,320,569>;
   }
 
   $rect <20,20,160,60>
@@ -61,8 +61,12 @@ class Application : Core::Root
   {
     var string str = "";
     var string temp = "";
-    var int32 cursorPosition = Text.String.length - 1; // Assume this gives the current cursor position
+    var int32 cursorPosition = Text.String.length - 1; 
 
+    if(KeyHandler.Down && KeyHandler.CharCode == '\b')
+    {
+      str = "\b";
+    }
     if(KeyHandler.CharCode != '\0')
     {  
       str = KeyHandler.CharCode;
@@ -77,15 +81,12 @@ class Application : Core::Root
       ResetVariables();
     }
 
-    if(KeyHandler.Code == Core::KeyCode.Backspace)
-    {
-      if (Text.String.length > 0 && cursorPosition > 0)
-      {
+    if (str == "\b") { 
+      if (Text.String.length > 0) {
         Text.String = Text.String.left(Text.String.length - 1);
-        cursorPosition--; 
+        cursorPosition--;
       }
     }
-
     if(KeyHandler.Code == Core::KeyCode.Left)
     {
       if (cursorPosition > 0)
@@ -151,8 +152,6 @@ class Application : Core::Root
         cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
     }
-
-
   }
 
   // Key Event Handler
@@ -164,7 +163,7 @@ class Application : Core::Root
   $rect <20,20,160,60>
   object Views::Rectangle Bgk
   {
-    preset Bounds = <0,0,340,520>;
+    preset Bounds = <0,0,350,590>;
     preset Color = #E2E6E9FF;
   }
 
@@ -268,7 +267,7 @@ class Application : Core::Root
   }
 
   $rect <910,80,1180,120>
-  method Application::Pair GetSubexpressionInParantheses( arg int32 startPos, arg string expression )
+  method Application::Pair GetSubexpressionInParentheses( arg int32 startPos, arg string expression )
   {
     var string subexpression;
     var int32 endPos;
@@ -344,7 +343,7 @@ class Application : Core::Root
     }
     else
     {
-        if(!CorrectParantheses(expression))
+        if(!CorrectParentheses(expression))
         {
            signal onShowDialog;
            ErrDialog.ErrorText.String = "Parantheses used incorrectly.";
@@ -420,7 +419,7 @@ class Application : Core::Root
   }
 
   $rect <680,220,880,260>
-  method bool CorrectParantheses( arg string expression )
+  method bool CorrectParentheses( arg string expression )
   {
     var int32 size = Application::MAX_SIZE;
     array char stack[Application::MAX_SIZE];
@@ -496,7 +495,7 @@ class Application : Core::Root
   }
 
   $rect <670,70,870,110>
-  method bool IsParanthesis( arg char op )
+  method bool IsParenthesis( arg char op )
   {
     if( op == '(' || op == ')')
       return true;
@@ -539,7 +538,7 @@ class Application : Core::Root
 
     for( ; i < expression.length; i++)
     {
-      if (IsOperator(expression[i]) == false && IsParanthesis(expression[i]) == false && IsDigit(expression[i]) == false)
+      if (IsOperator(expression[i]) == false && IsParenthesis(expression[i]) == false && IsDigit(expression[i]) == false)
         return false;
     }
 
@@ -564,7 +563,7 @@ class Application : Core::Root
     {
       if (expression[i] == '(') 
       {
-        pair = GetSubexpressionInParantheses(i, expression);
+        pair = GetSubexpressionInParentheses(i, expression);
         intermediate = ExecuteOperation(pair.Subexpression);
         intermediateSet = true;
 
@@ -663,15 +662,15 @@ class Application : Core::Root
   $member IsOperator
   $member Note
   $member GetPriorityOfOperator
-  $member GetSubexpressionInParantheses
+  $member GetSubexpressionInParentheses
   $member GetNumberFromPosition
   $member IsExpressionValid
   $member IsDigit
   $member SubexprHasOnlyDigits
   $member GetNegativeNumber
-  $member CorrectParantheses
+  $member CorrectParentheses
   $member OperatorsCorrectlyUsed
-  $member IsParanthesis
+  $member IsParenthesis
   $member ErrDialog
   $member onShowDialog
   $member onCloseDialog
@@ -718,7 +717,7 @@ $output false
 class NumKeyBtns : Core::Group
 {
   $rect <340,360,540,400>
-  inherited property Bounds = <0,0,300,370>;
+  inherited property Bounds = <0,0,300,440>;
 
   $rect <360,100,560,140>
   inherited method UpdateLayout()
@@ -782,7 +781,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Two
   {
-    preset Bounds = <80,79,150,149>;
+    preset Bounds = <80,149,150,219>;
     preset OnActivate = onActivateKey;
     preset Label = "2";
     preset Appearance = DigitOpConfig;
@@ -791,7 +790,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Three
   {
-    preset Bounds = <150,79,220,149>;
+    preset Bounds = <150,150,220,220>;
     preset OnActivate = onActivateKey;
     preset Label = "3";
     preset Appearance = DigitOpConfig;
@@ -800,7 +799,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Four
   {
-    preset Bounds = <10,149,80,219>;
+    preset Bounds = <10,220,80,290>;
     preset OnActivate = onActivateKey;
     preset Label = "4";
     preset Appearance = DigitOpConfig;
@@ -809,7 +808,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Five
   {
-    preset Bounds = <80,149,150,219>;
+    preset Bounds = <80,217,150,287>;
     preset OnActivate = onActivateKey;
     preset Label = "5";
     preset Appearance = DigitOpConfig;
@@ -818,7 +817,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Six
   {
-    preset Bounds = <150,149,220,219>;
+    preset Bounds = <150,217,220,287>;
     preset OnActivate = onActivateKey;
     preset Label = "6";
     preset Appearance = DigitOpConfig;
@@ -827,7 +826,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Seven
   {
-    preset Bounds = <10,219,80,289>;
+    preset Bounds = <10,287,80,357>;
     preset OnActivate = onActivateKey;
     preset Label = "7";
     preset Appearance = DigitOpConfig;
@@ -836,7 +835,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Eight
   {
-    preset Bounds = <80,219,150,289>;
+    preset Bounds = <80,287,150,357>;
     preset OnActivate = onActivateKey;
     preset Label = "8";
     preset Appearance = DigitOpConfig;
@@ -845,7 +844,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Nine
   {
-    preset Bounds = <150,219,220,289>;
+    preset Bounds = <150,287,220,357>;
     preset OnActivate = onActivateKey;
     preset Label = "9";
     preset Appearance = DigitOpConfig;
@@ -854,7 +853,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Zero
   {
-    preset Bounds = <80,289,150,359>;
+    preset Bounds = <80,357,150,427>;
     preset OnActivate = onActivateKey;
     preset Label = "0";
     preset Appearance = DigitOpConfig;
@@ -872,7 +871,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Equals
   {
-    preset Bounds = <220,289,292,357>;
+    preset Bounds = <220,357,292,425>;
     preset OnActivate = onActivateKey;
     preset Label = "=";
     preset Appearance = EqualsConfig;
@@ -881,7 +880,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Plus
   {
-    preset Bounds = <220,219,290,289>;
+    preset Bounds = <220,287,290,357>;
     preset OnActivate = onActivateKey;
     preset Label = "+";
     preset Appearance = DigitOpBoldConfig;
@@ -890,7 +889,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Minus
   {
-    preset Bounds = <220,149,290,219>;
+    preset Bounds = <222,217,292,287>;
     preset OnActivate = onActivateKey;
     preset Label = "-";
     preset Appearance = MultiplyConfig;
@@ -899,7 +898,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Multiply
   {
-    preset Bounds = <220,79,290,149>;
+    preset Bounds = <220,150,290,220>;
     preset OnActivate = onActivateKey;
     preset Label = "x";
     preset Appearance = MultiplyConfig;
@@ -908,7 +907,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Divide
   {
-    preset Bounds = <220,10,290,80>;
+    preset Bounds = <220,80,290,150>;
     preset OnActivate = onActivateKey;
     preset Label = "/";
     preset Appearance = DivideConfig;
@@ -918,7 +917,7 @@ class NumKeyBtns : Core::Group
   object Views::Border Border
   {
     preset StackingPriority = -1;
-    preset Bounds = <1,1,300,370>;
+    preset Bounds = <0,1,300,440>;
     preset Radius = 5;
     preset Width = 2;
     preset Color = #030324FF;
@@ -1005,7 +1004,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Dot
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop];
-    preset Bounds = <150,289,220,359>;
+    preset Bounds = <150,357,220,427>;
     preset OnActivate = onActivateKey;
     preset Label = ".";
     preset Appearance = DigitOpConfig;
@@ -1042,7 +1041,7 @@ class NumKeyBtns : Core::Group
   // Push Button Configurations
   note group Note2
   {
-    attr Bounds = <870,0,1170,360>;
+    attr Bounds = <870,10,1170,460>;
   }
 
   $rect <20,20,160,60>
@@ -1056,7 +1055,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton One
   {
-    preset Bounds = <10,79,80,149>;
+    preset Bounds = <10,150,80,220>;
     preset OnActivate = onActivateKey;
     preset Label = "1";
     preset Appearance = DigitOpConfig;
@@ -1065,7 +1064,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Power
   {
-    preset Bounds = <80,10,150,80>;
+    preset Bounds = <80,80,150,150>;
     preset OnActivate = onActivateKey;
     preset IconFrameActive = 1;
     preset IconFrameFocused = 1;
@@ -1079,7 +1078,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Percentage
   {
-    preset Bounds = <150,9,220,79>;
+    preset Bounds = <150,80,220,150>;
     preset OnActivate = onActivateKey;
     preset Label = "%";
     preset Appearance = PercentConfig;
@@ -1168,7 +1167,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::DivideBtn;
   }
 
-  $rect <900,370,1140,410>
+  $rect <900,350,1140,390>
   object WidgetSet::PushButtonConfig MultiplyConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1194,7 +1193,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton OpenParanthesis
   {
-    preset Bounds = <10,289,45,359>;
+    preset Bounds = <10,80,45,150>;
     preset OnActivate = onActivateKey;
     preset Label = "(";
     preset Appearance = ParanthesisConfig;
@@ -1203,13 +1202,13 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton ClosedParanthesis
   {
-    preset Bounds = <45,289,80,359>;
+    preset Bounds = <45,80,80,150>;
     preset OnActivate = onActivateKey;
     preset Label = ")";
     preset Appearance = ParanthesisConfig;
   }
 
-  $rect <890,420,1130,460>
+  $rect <900,400,1140,440>
   object WidgetSet::PushButtonConfig ParanthesisConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1226,10 +1225,64 @@ class NumKeyBtns : Core::Group
     preset FaceFrameFocused = 1;
     preset FaceFrameDisabled = 0;
     preset FaceFrameDefault = 0;
-    preset FaceBitmapActive = Application::ParanthesisBtn;
-    preset FaceBitmapFocused = Application::ParanthesisBtn;
-    preset FaceBitmapDisabled = Application::ParanthesisBtn;
-    preset FaceBitmapDefault = Application::ParanthesisBtn;
+    preset FaceBitmapActive = Application::ParenthesisBtn;
+    preset FaceBitmapFocused = Application::ParenthesisBtn;
+    preset FaceBitmapDisabled = Application::ParenthesisBtn;
+    preset FaceBitmapDefault = Application::ParenthesisBtn;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PlusNeg
+  {
+    preset Bounds = <10,357,80,427>;
+    preset OnActivate = onActivateKey;
+    preset Label = "+/-";
+    preset Appearance = DigitOpConfig1;
+  }
+
+  $rect <590,400,830,440>
+  object WidgetSet::PushButtonConfig DigitOpConfig1
+  {
+    preset KeyCode = Core::KeyCode.NoKey;
+    preset AccentColorFocused = #03040000;
+    preset AccentColorDefault = #00000000;
+    preset AccentLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset LabelColorActive = #8E6B74FF;
+    preset LabelColorFocused = #8E6B74FF;
+    preset LabelColorDisabled = #8E6B74FF;
+    preset LabelColorDefault = #000000FF;
+    preset LabelFont = Application::NumFont1;
+    preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::CustomBtn;
+    preset FaceBitmapFocused = Application::CustomBtn;
+    preset FaceBitmapDisabled = Application::CustomBtn;
+    preset FaceBitmapDefault = Application::CustomBtn;
+  }
+
+  $rect <350,420,590,460>
+  object WidgetSet::PushButtonConfig BackConfig
+  {
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::BackBtn;
+    preset FaceBitmapFocused = Application::BackBtn;
+    preset FaceBitmapDisabled = Application::BackBtn;
+    preset FaceBitmapDefault = Application::BackBtn;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton BackBtn
+  {
+    preset Bounds = <220,10,290,80>;
+    preset OnActivate = onActivateKey;
+    preset Label = "/";
+    preset Appearance = BackConfig;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -1269,6 +1322,7 @@ class NumKeyBtns : Core::Group
   $member Minus
   $member Multiply
   $member Divide
+  $member PlusNeg
   $member Dot
   $member Power
   $member Percentage
@@ -1281,6 +1335,9 @@ class NumKeyBtns : Core::Group
   $member DivideConfig
   $member MultiplyConfig
   $member ParanthesisConfig
+  $member DigitOpConfig1
+  $member BackConfig
+  $member BackBtn
 }
 
 $rect <220,20,420,60>
@@ -2249,19 +2306,19 @@ resource Resources::Bitmap PowBtn
 // Components
 note group Note
 {
-  attr Bounds = <-80,80,170,230>;
+  attr Bounds = <-80,80,170,280>;
 }
 
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <200,-20,440,270>;
+  attr Bounds = <200,-20,440,370>;
 }
 
 // Fonts
 note group Note2
 {
-  attr Bounds = <460,-20,700,270>;
+  attr Bounds = <460,-20,700,370>;
 }
 
 // Application
@@ -2314,7 +2371,7 @@ resource Resources::Font MultiplyFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-50,240,150,280>
+$rect <-50,290,150,330>
 $output false
 class Pair
 {
@@ -2415,143 +2472,16 @@ class Pair
   $member OnGetSubexpression
 }
 
-$rect <-61,306,139,346>
+$rect <-50,340,150,380>
 $output false
 const int32 MAX_SIZE = 1000;
 
-$rect <190,300,390,340>
+$rect <-50,220,150,260>
 $output false
 class ErrorDialog : Core::Group
 {
-  $rect <360,0,560,40>
+  $rect <20,130,220,170>
   inherited property Bounds = <0,0,250,100>;
-
-  $rect <350,-50,550,-10>
-  inherited method UpdateLayout()
-  {
-    // Always invoke the inherited method.
-    super( aSize );
-
-    /*
-
-      HINT:
-
-      This method exists for sophisticated layout calculation. Please note, that in 
-      most cases it is completely sufficient to use the views property 'Layout' to
-      determine how the view should behave when the component is resized.
-
-    */
-
-    /*
-
-      TO DO:
-
-      Put here the code to calculate new position and size of enclosed views. The
-      current (new) size of the component itself is passed in the parameter aSize.
-      For example:
-
-        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
-
-    */
-  }
-
-  $rect <350,-100,550,-60>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited method.
-    super( aState );
-
-    /*
-
-      HINT 1:
-
-      This method is invoked automatically when the state set of the component has
-      been changed. The new state set can be found in the parameter aState.
-      Following are the important states:
-
-        Enabled   --> The component can react to user inputs.
-
-        Selected  --> The component is selected in context of its owner.
-
-        Focused   --> The component is selected in context of its owner and 
-                      the owner can react to keyboard events. In this manner the
-                      component is also able to react to keyboard events.
-
-        Modal     --> The component is modal. All events are redirected to this
-                      component.
-
-      To determine whether a state is currently active or not you have to test
-      the aState parameter. For example to test the 'Selected' state:
-
-        if ( aState.contains( Core::ViewState[ Selected ]))
-        {
-          ... yes, this component is currently selected.
-        }
-
-    */
-
-    /*
-
-      HINT 2:
-
-      Alternatively you can request this method invocation by executing explicitly
-      following code:
-
-
-        InvalidateViewState();
-
-    */
-      
-    /*
-
-      TO DO 1:
-
-      Put here the code to ensure that the visual aspect of the component does
-      reflect its current state. For example, depending on its 'Enabled' state
-      a component may appear with full colors or pale if it is disabled:
-
-        if ( aState.contains( Core::ViewState[ Enabled ]))
-        {
-          SomeBackgroundView.Opacity = 255;
-          SomeTextView.Color         = #000000FF;
-        }
-        else
-        {
-          SomeBackgroundView.Opacity = 128;
-          SomeTextView.Color         = #00000080;
-        }
-
-
-      TO DO 2:
-
-      You can evaluate here also the state of any other member in your component.
-      For example in a push-button component, the button should appear highlighted
-      as long as the user holds the finger within a touch area of the button:
-
-        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
-          HighlightedBackground.Visible = true;
-        else
-          HighlightedBackground.Visible = false;
-
-      The touch handler itself only requests the update method to be called. Use
-      for this purpose 'InvalidateViewState()' method.
-
-
-      TO DO 3:
-
-      You can calculate here also the position/size of views accordingly to the
-      state of any other member in your component. For example in a slider you
-      can calculate the position of the slider knob from some properties like
-      'SliderValue' and 'SliderRange':
-
-        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
-
-      Changing the 'SliderValue' or 'SliderRange' property should only request
-      the update method to be called. Use for this purpose 'InvalidateViewState()'
-      method.
-
-    */
-  }
 
   $rect <20,20,160,60>
   object Views::Rectangle Bgk
@@ -2588,7 +2518,7 @@ class ErrorDialog : Core::Group
     preset Color = #460400FF;
   }
 
-  $rect <560,-100,800,-60>
+  $rect <630,60,870,100>
   object WidgetSet::PushButtonConfig ExitBtnConfig
   {
     preset KeyCode = Core::KeyCode.Enter;
@@ -2630,7 +2560,7 @@ class ErrorDialog : Core::Group
     preset Appearance = OkBtnConfig;
   }
 
-  $rect <570,-50,810,-10>
+  $rect <630,110,870,150>
   object WidgetSet::PushButtonConfig OkBtnConfig
   {
     preset KeyCode = Core::KeyCode.Enter;
@@ -2657,13 +2587,13 @@ class ErrorDialog : Core::Group
     preset FaceBitmapDefault = Application::OKBtn;
   }
 
-  $rect <360,50,560,90>
+  $rect <330,110,530,150>
   slot onClose
   {
     idlesignal OnCloseDialog;
   }
 
-  $rect <360,100,560,140>
+  $rect <330,60,530,100>
   property slot OnCloseDialog = null;
 
   $rect <20,20,160,60>
@@ -2676,9 +2606,21 @@ class ErrorDialog : Core::Group
     preset Font = Application::ErrorFont;
     preset Color = #F2E6DDFF;
   }
+
+  // Button Configs
+  note group Note
+  {
+    attr Bounds = <600,0,900,170>;
+  }
+
+  // Close Dialog
+  note group Note1
+  {
+    attr Bounds = <280,0,580,170>;
+  }
 }
 
-$rect <500,280,700,320>
+$rect <480,270,680,310>
 $output false
 resource Resources::Font ErrorFont
 {
@@ -2694,7 +2636,7 @@ resource Resources::Font ErrorFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <368,321,568,361>
+$rect <480,320,680,360>
 $output false
 resource Resources::Font BtnFont
 {
@@ -2710,7 +2652,7 @@ resource Resources::Font BtnFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <162,371,362,411>
+$rect <220,320,420,360>
 $output false
 resource Resources::Bitmap OKBtn
 {
@@ -2722,13 +2664,53 @@ resource Resources::Bitmap OKBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <393,415,593,455>
+$rect <220,270,420,310>
 $output false
-resource Resources::Bitmap ParanthesisBtn
+resource Resources::Bitmap ParenthesisBtn
 {
   attr bitmapfile FileName = .\resources\paranthesis.png;
   attr bitmapformat Format = Native;
   attr framesize FrameSize = <35,70>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <480,380,680,420>
+$output false
+resource Resources::Font NumFont1
+{
+  attr fontname FontName = Book Antiqua;
+  attr fontheight Height = 30;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
+}
+
+$rect <-317,213,-117,253>
+$output false
+resource Resources::Bitmap Bitmap
+{
+  attr bitmapfile FileName;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <143,377,343,417>
+$output false
+resource Resources::Bitmap BackBtn
+{
+  attr bitmapfile FileName = .\resources\back.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <70,70>;
   attr framedelay FrameDelay;
   attr bitmapdithering Dithering = Auto;
   attr bitmapmode Mode = Default;
