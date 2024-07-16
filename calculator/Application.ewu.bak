@@ -5,7 +5,7 @@ $rect <-50,20,150,60>
 $output false
 class Application : Core::Root
 {
-  $rect <1000,360,1200,400>
+  $rect <960,320,1160,360>
   inherited property Bounds = <0,0,340,520>;
 
   $rect <20,20,160,60>
@@ -52,16 +52,16 @@ class Application : Core::Root
   $rect <410,50,610,90>
   object Core::KeyPressHandler KeyHandler
   {
-    preset OnPress = KeySlotMethod;
+    preset OnPress = CalculateExpression;
     preset OnHold = null;
   }
 
   $rect <410,100,610,140>
-  slot KeySlotMethod
+  slot CalculateExpression
   {
-    sender; /* the method is called from the sender object */
     var string str = "";
-    //var string dummy;
+    var string temp = "";
+    var int32 cursorPosition = Text.String.length - 1; // Assume this gives the current cursor position
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -72,193 +72,58 @@ class Application : Core::Root
       str = Keypad.keyString;
     }
 
+    // Reset if necessary
     if(Text.String == "result here" || str == "C")
     {
       ResetVariables();
     }
 
-    if((str >= "0") && (str <= "9") || str == "." || (Text.String == "" && str == "-"))
+    // Handle backspace key
+    if(KeyHandler.Code == Core::KeyCode.Backspace)
     {
-      Text.String = Text.String + str;
-    } 
-    else
-    {
-      if (OperatorSet == false && IsOperator(str[0]))
+      if (Text.String.length > 0 && cursorPosition > 0)
       {
-        FirstOperand = Text.String.parse_float( -1.0 );
-        //dummy = FirstOperand; trace "First Operand : " + dummy;
-        Operator = str;
-        //dummy = Operator; trace "Operator : " + dummy;
-        OperatorSet = true;
-        str = "";
-        Text.String = "";
-      } 
-      else 
-      {  
-        if(str == "=") 
-        {     
-          SecondOperand = Text.String.parse_float(-1.0);
-          //dummy = SecondOperand; trace "Second Operand : " + dummy;
-          Result = ExecuteOperation(FirstOperand, SecondOperand, Operator);
-          //dummy = Result; trace "Result : " + dummy;
-          Text.String = Result;
-          OperatorSet = false; 
-        } 
-        else 
-        {
-          if(IsOperator(str[0]))
-          {
-            Operator = str;
-            OperatorSet = true;
-          }
-        }
+        Text.String = Text.String.left(Text.String.length - 1);
+        cursorPosition--; // Move cursor left after deletion
+      }
+    }
+
+    // Handle left arrow key
+    else if(KeyHandler.Code == Core::KeyCode.Left)
+    {
+      if (cursorPosition > 0)
+      {
+        cursorPosition--; // Move cursor left
+      }
+    }
+
+    // Handle right arrow key
+    else if(KeyHandler.Code == Core::KeyCode.Right)
+    {
+      if (cursorPosition < Text.String.length)
+      {
+        cursorPosition++; // Move cursor right
+      }
+    }
+
+    // Handle other input (numbers, operators, etc.)
+    else if(str != "=" && str != "C")
+    {
+      temp = Text.String + str;
+      Text.String = temp;
+      cursorPosition++; // Move cursor right after insertion
+    }
+
+    else if (str == "=")
+    {
+      if(IsExpressionValid(Text.String))
+      {
+        Text.String = ExecuteOperation(Text.String);
+        cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
     }
 
 
-
-  }
-
-  $rect <750,70,950,110>
-  property float FirstOperand;
-
-  $rect <750,110,950,150>
-  onset FirstOperand
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure FirstOperand == value )
-      return;
-
-    var string str = value;
-    if((str >= "0") && (str <= "9"))
-    {
-      pure FirstOperand = value;
-      TextTxt.String = value;
-    }
-
-    //trace "first operand setter";
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <750,150,950,190>
-  onget FirstOperand
-  {
-    return pure FirstOperand;
-  }
-
-  $rect <750,210,950,250>
-  property float SecondOperand;
-
-  $rect <750,250,950,290>
-  onset SecondOperand
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure SecondOperand == value )
-      return;
-
-    var string str = value;
-    if((str >= "0") && (str <= "9") && OperatorSet == true)
-    {
-      pure SecondOperand = value;
-      TextTxt.String = value;
-    }
-
-    //trace FirstOperand;
-    //trace SecondOperand;
-    //trace Operator;
-    //trace "second operand setter";
-
-
-  }
-
-  $rect <750,290,950,330>
-  onget SecondOperand
-  {
-    return pure SecondOperand;
-  }
-
-  $rect <750,360,950,400>
-  property float Result;
-
-  $rect <750,400,950,440>
-  onset Result
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Result == value )
-      return;
-
-    // Remember the property's new value.
-    pure Result = value;
-    TextTxt.String = value;
-
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <750,440,950,480>
-  onget Result
-  {
-    return pure Result;
-  }
-
-  $rect <1010,70,1210,110>
-  property string Operator;
-
-  $rect <1010,110,1210,150>
-  onset Operator
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Operator == value )
-      return;
-
-    // Remember the property's new value.
-    pure Operator = value;
-    OperatorSet = true;
-    TextTxt.String = value;
-
-
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <1010,150,1210,190>
-  onget Operator
-  {
-    return pure Operator;
-  }
-
-  $rect <1000,210,1200,250>
-  property bool OperatorSet = false;
-
-  $rect <1000,250,1200,290>
-  onset OperatorSet
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure OperatorSet == value )
-      return;
-
-    // Remember the property's new value.
-    pure OperatorSet = value;
-
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <1000,290,1200,330>
-  onget OperatorSet
-  {
-    return pure OperatorSet;
-  }
-
-  // Properties
-  note group PropertiesNote
-  {
-    attr Bounds = <730,10,1230,510>;
   }
 
   // Key Event Handler
@@ -286,7 +151,7 @@ class Application : Core::Root
   }
 
   $rect <410,240,610,280>
-  method float ExecuteOperation( arg float first, arg float second, arg string op )
+  method float ExecTwoOp( arg float first, arg float second, arg string op )
   {
     var float res = 0.0;
 
@@ -328,13 +193,9 @@ class Application : Core::Root
   method void ResetVariables()
   {
     Text.String = "";
-    Result = 0.0;
-    Operator = "";
-    OperatorSet = false;
-
   }
 
-  $rect <410,290,610,330>
+  $rect <670,20,870,60>
   method bool IsOperator( arg char op )
   {
     return ( op == '+' || op == '-' || op == 'x' || op == '/' ||  op == '%' || op == '^');
@@ -349,7 +210,7 @@ class Application : Core::Root
     attr Bounds = <360,200,650,400>;
   }
 
-  $rect <420,440,620,480>
+  $rect <930,30,1130,70>
   method int32 GetPriorityOfOperator( arg char op )
   {
     int32 priority = 0;
@@ -375,8 +236,8 @@ class Application : Core::Root
     return priority;
   }
 
-  $rect <420,500,690,540>
-  method Application::Pair GetSubexpressionInParanthesis( arg int32 startPos, arg string expression )
+  $rect <910,80,1180,120>
+  method Application::Pair GetSubexpressionInParantheses( arg int32 startPos, arg string expression )
   {
     var string subexpression;
     var int32 endPos;
@@ -389,10 +250,12 @@ class Application : Core::Root
       for( ; i < expression.length; i++)
       {
         if(expression[i] != ')')
+        {
           subexpression += expression[i];
+          endPos = i;
+        }
         else
         {  
-          endPos = i;
           break;    
         }
       }
@@ -405,7 +268,7 @@ class Application : Core::Root
     return res; 
   }
 
-  $rect <435,590,660,628>
+  $rect <930,140,1155,180>
   method Application::Pair GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
@@ -418,10 +281,12 @@ class Application : Core::Root
       for( ; i < expression.length; i++)
       {
         if(!IsOperator(expression[i]) && IsDigit(expression[i]))
+        {  
           nrStr += expression[i];
+          endPos = i;
+        }
         else
         {  
-          endPos = i;
           break;    
         }
       }
@@ -433,17 +298,17 @@ class Application : Core::Root
     return res; 
   }
 
-  $rect <91,568,291,608>
+  $rect <680,370,880,410>
   method bool IsExpressionValid( arg string expression )
   {
-    // correct operator use
-    // 1. check for valid operators
-    // 2. check that operators are used correct
+    // check for valid operators
+    // check that operators are used correctly
     // correct paranthesis
 
     if (expression == "")
     {
-         ErrDialog.Text.String = "Expression is null.";
+         signal onShowDialog;
+         ErrDialog.ErrorText.String = "Expression is null.";
          return false;
     }
     else
@@ -451,28 +316,27 @@ class Application : Core::Root
         if(!CorrectParantheses(expression))
         {
            signal onShowDialog;
-           ErrDialog.Text.String = "Parantheses used incorrectly.";
+           ErrDialog.ErrorText.String = "Parantheses used incorrectly.";
            return false;
         }
         else if(!OperatorsCorrectlyUsed(expression))
         {
            signal onShowDialog;
-           ErrDialog.Text.String = "Operators used incorrectly.";
+           ErrDialog.ErrorText.String = "Operators used incorrectly.";
            return false;
         }
         else if (!CharactersAllowed(expression))
         {
            signal onShowDialog;
-           ErrDialog.Text.String = "Expression contains characters that are not allowed.";
+           ErrDialog.ErrorText.String = "Expression contains characters that are not allowed.";
            return false;
         }
     }
 
-
     return true;
   }
 
-  $rect <695,561,895,601>
+  $rect <680,320,880,360>
   method bool IsDigit( arg char op )
   {
     return ((op >= '0') && (op <= '9') || op == '.');
@@ -481,7 +345,7 @@ class Application : Core::Root
     //return false;
   }
 
-  $rect <118,660,318,700>
+  $rect <670,170,870,210>
   method bool SubexprHasOnlyDigits( arg string expression )
   {
     var int32 i = 0;
@@ -507,7 +371,7 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <429,736,629,776>
+  $rect <950,190,1150,230>
   method float GetNegativeNumber( arg string expression )
   {
     var string nrStr = "";
@@ -524,7 +388,7 @@ class Application : Core::Root
     return nrStr.parse_float(-1.0);
   }
 
-  $rect <900,654,1100,694>
+  $rect <680,220,880,260>
   method bool CorrectParantheses( arg string expression )
   {
     var int32 size = Application::MAX_SIZE;
@@ -566,7 +430,7 @@ class Application : Core::Root
     return (top == -1);
   }
 
-  $rect <1158,588,1358,628>
+  $rect <680,270,890,310>
   method bool OperatorsCorrectlyUsed( arg string expression )
   {
     var int32 i = 0;
@@ -600,7 +464,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <-238,580,-38,620>
+  $rect <670,70,870,110>
   method bool IsParanthesis( arg char op )
   {
     if( op == '(' || op == ')')
@@ -635,7 +499,7 @@ class Application : Core::Root
     ErrDialog = null;
   }
 
-  $rect <-118,672,82,712>
+  $rect <670,120,870,160>
   method bool CharactersAllowed( arg string expression )
   {
     var int32 i = 0;
@@ -649,42 +513,122 @@ class Application : Core::Root
     return true;
   }
 
+  $rect <410,290,610,330>
+  method float ExecuteOperation( arg string expression )
+  {
+    var float firstOp = 0.0;
+    var float secondOp = 0.0;
+    var int32 i = 0;
+    var Application::Pair pair = new Application::Pair;
+    var float intermediate = 0.0;
+    var bool firstSet = false;
+    var bool secondSet = false;
+    var bool intermediateSet = false;
+    var char op ='\0';
+    var string dummy = "";
+
+    for (; i < expression.length; i++) 
+    {
+      dummy = "i = "; 
+      var string id = i;
+      dummy = dummy + id;
+     // trace dummy;
+
+      if (expression[i] == '(') 
+      {
+        pair = GetSubexpressionInParantheses(i, expression);
+        
+        trace pair.Subexpression;
+        intermediate = ExecuteOperation(pair.Subexpression);
+        trace intermediate;
+        intermediateSet = true;
+
+        i = pair.EndPosition;
+        continue;
+      }
+
+      if(expression[i] == ')')
+        continue;
+
+      if (IsDigit(expression[i])) 
+      {
+        pair = GetNumberFromPosition(i, expression);  
+        trace pair.IdentifiedNumber;  
+        i = pair.EndPosition;  
+     
+        if (!firstSet && !secondSet && !intermediateSet) 
+        {
+        //trace "no";
+        //trace intermediateSet;
+          firstOp = pair.IdentifiedNumber;
+          firstSet = true;
+        } 
+        if (!firstSet && !secondSet && intermediateSet)    
+        {
+       // trace i;   // i = 5
+          firstOp = intermediate;
+          intermediate = 0.0;
+          firstSet = true;
+          intermediateSet = false;
+        } 
+        if (firstSet && !secondSet && !intermediateSet)
+        {
+         // trace i;      // i = 7
+          secondOp = pair.IdentifiedNumber;
+          secondSet = true;
+        }
+
+        if (firstSet && secondSet && op != '\0') 
+        {
+        trace op;
+        trace firstOp;
+        trace secondOp;
+          trace i;
+          firstOp = ExecTwoOp(firstOp, secondOp, op);
+          secondOp = 0.0;
+          secondSet = false;
+          op = '\0';
+        }
+           
+        continue;
+      }
+
+      if (IsOperator(expression[i])) 
+      {
+        op = expression[i];
+      }
+    }
+
+    if (firstSet && !secondSet && intermediateSet) // remaining intermediate operation
+    {
+      firstOp = intermediate;
+      intermediate = 0.0;
+      intermediateSet = false;
+    }
+
+    return firstOp;
+  }
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
   // project files is simplified.
   $member Bounds
   $member TextTxt
-  $member PropertiesNote
   $member KeyHandlerNote
   $member Bgk
   $member OutputBgk
   $member Border
   $member Keypad
   $member KeyHandler
-  $member KeySlotMethod
-  $member FirstOperand
-  $member OnSetFirstOperand
-  $member OnGetFirstOperand
-  $member SecondOperand
-  $member OnSetSecondOperand
-  $member OnGetSecondOperand
-  $member Result
-  $member OnSetResult
-  $member OnGetResult
-  $member Operator
-  $member OnSetOperator
-  $member OnGetOperator
-  $member OperatorSet
-  $member OnSetOperatorSet
-  $member OnGetOperatorSet
+  $member CalculateExpression
   $member Text
-  $member ExecuteOperation
+  $member ExecTwoOp
   $member ResetVariables
   $member IsOperator
   $member Note
   $member GetPriorityOfOperator
-  $member GetSubexpressionInParanthesis
+  $member GetSubexpressionInParantheses
   $member GetNumberFromPosition
   $member IsExpressionValid
   $member IsDigit
@@ -697,6 +641,7 @@ class Application : Core::Root
   $member onShowDialog
   $member onCloseDialog
   $member CharactersAllowed
+  $member ExecuteOperation
 }
 
 $rect <480,20,680,60>
@@ -971,12 +916,26 @@ class NumKeyBtns : Core::Group
     if (currentSender != null) 
     {
       keyString = currentSender.Label;
+      var char charCode = '\0';
+      var Core::KeyCode keyCode = Core::KeyCode.NoKey;
+
       if (keyString != "") 
       {    
-        var char charCode = '\0';
-        var Core::KeyCode keyCode = Core::KeyCode.NoKey;
-
-        charCode = keyString[0];
+        if(keyString == "()")
+        {
+          if(ParanthesisOpen == false)
+          {
+             charCode = '(';
+             ParanthesisOpen = true;
+          }
+          else if (ParanthesisOpen == true)
+          {
+             charCode = ')';
+             ParanthesisOpen = false;
+          }
+        }
+        else 
+          charCode = keyString[0];
         if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) 
         {
           GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, true);
@@ -1218,6 +1177,9 @@ class NumKeyBtns : Core::Group
     preset Appearance = DigitOpConfig;
   }
 
+  $rect <590,370,790,410>
+  var bool ParanthesisOpen = false;
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -1265,6 +1227,7 @@ class NumKeyBtns : Core::Group
   $member DigitOpBoldConfig
   $member DivideConfig
   $member MultiplyConfig
+  $member ParanthesisOpen
 }
 
 $rect <220,20,420,60>
@@ -2401,7 +2364,7 @@ class Pair
 
 $rect <-61,306,139,346>
 $output false
-const int32 MAX_SIZE = 100;
+const int32 MAX_SIZE = 1000;
 
 $rect <190,300,390,340>
 $output false
@@ -2583,7 +2546,7 @@ class ErrorDialog : Core::Group
   }
 
   $rect <20,20,160,60>
-  object Views::Text Text
+  object Views::Text ErrorText
   {
     preset Bounds = <5,38,235,78>;
     preset WrapText = true;

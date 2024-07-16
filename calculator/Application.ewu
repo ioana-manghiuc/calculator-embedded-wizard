@@ -516,59 +516,83 @@ class Application : Core::Root
   $rect <410,290,610,330>
   method float ExecuteOperation( arg string expression )
   {
-    var float first = 0.0;
-    var float second = 0.0;
+    var float firstOp = 0.0;
+    var float secondOp = 0.0;
+    var float res = 0.0;
     var int32 i = 0;
     var Application::Pair pair = new Application::Pair;
-    var float res = 0.0;
     var float intermediate = 0.0;
     var bool firstSet = false;
     var bool secondSet = false;
     var bool intermediateSet = false;
     var char op ='\0';
+    var string dummy = "";
 
     for (; i < expression.length; i++) 
     {
+      dummy = "i = "; 
+      var string id = i;
+      dummy = dummy + id;
+     // trace dummy;
+
       if (expression[i] == '(') 
       {
         pair = GetSubexpressionInParantheses(i, expression);
+        
+        trace pair.Subexpression;
+        intermediate = ExecuteOperation(pair.Subexpression);
+        trace intermediate;
+        intermediateSet = true;
+
         i = pair.EndPosition;
         continue;
-        //intermediate = ExecuteOperation(pair.Subexpression);
-        //intermediateSet = true;
       }
+
+      if(expression[i] == ')')
+        continue;
 
       if (IsDigit(expression[i])) 
       {
-         pair = GetNumberFromPosition(i, expression);    
-             
+        pair = GetNumberFromPosition(i, expression);  
+        trace pair.IdentifiedNumber;  
+        i = pair.EndPosition;  
+     
         if (!firstSet && !secondSet && !intermediateSet) 
         {
-          first = pair.IdentifiedNumber;
+          trace "first op set";
+          firstOp = pair.IdentifiedNumber;
           firstSet = true;
+          continue;
         } 
-        else if (!firstSet && !secondSet && intermediateSet)    
+        if (!firstSet && !secondSet && intermediateSet)    
         {
-          first = intermediate;
+          trace "first op set from intermediate";
+          firstOp = intermediate;
           intermediate = 0.0;
           firstSet = true;
           intermediateSet = false;
         } 
-        else if (firstSet && !secondSet && !intermediateSet)
+        if (firstSet && !secondSet && !intermediateSet)
         {
-          second = pair.IdentifiedNumber;
+          trace "second op set";
+          trace pair.IdentifiedNumber;
+          secondOp = pair.IdentifiedNumber;
           secondSet = true;
         }
 
         if (firstSet && secondSet && op != '\0') 
         {
-          first = ExecTwoOp(first, second, op);
-          second = 0.0;
+          trace op;
+          trace firstOp;
+          trace secondOp;
+          res = ExecTwoOp(firstOp, secondOp, op);
+          firstOp = 0.0;
+          firstSet = false;
+          secondOp = 0.0;
           secondSet = false;
           op = '\0';
         }
-
-        i = pair.EndPosition;
+           
         continue;
       }
 
@@ -578,15 +602,14 @@ class Application : Core::Root
       }
     }
 
-    // Handle any remaining intermediate operation
-    //if (firstSet && !secondSet && intermediateSet)
+    //if (firstSet && !secondSet && intermediateSet) // remaining intermediate operation
     //{
-    //  first = intermediate;
+    //  firstOp = intermediate;
     //  intermediate = 0.0;
     //  intermediateSet = false;
     //}
 
-    return first;
+    return res;
   }
 
   // Directives to adapt the order of the above members according to how these members 
