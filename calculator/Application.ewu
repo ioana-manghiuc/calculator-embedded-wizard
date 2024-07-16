@@ -102,24 +102,45 @@ class Application : Core::Root
       }
     }
 
-    if(str != "=" && str != "C")
+    if (str != "=" && str != "C")
     {
-      temp = Text.String + str;
-      Text.String = temp;
-      cursorPosition++; 
-    }
-
-    if(Text.String != "" && str == "(")
-    { 
-    trace "??????????????????";
-      var char aux = Text.String[Text.String.length - 1];
-
-      if(IsDigit(aux) || aux == ')')
-        temp += "x";
-      temp += str;
-      Text.String = temp;
-
-      cursorPosition++;
+        var char lastChar = Text.String[Text.String.length - 1];
+        if (str == "(")
+        {
+            if (Text.String.length > 0)
+            {
+                if (IsDigit(lastChar) || lastChar == ')')
+                {
+                    temp = Text.String + "x" + str;
+                }
+                else
+                {
+                    temp = Text.String + str;
+                }
+            }
+            else
+            {
+                temp = Text.String + str;
+            }
+        }
+        else if(IsDigit(str[0]))
+        {
+           if(lastChar == ')')
+           {
+               temp = Text.String + "x" + str;
+           }
+           else
+           {
+               temp = Text.String + str;
+           }
+        }
+        else
+        {
+            temp = Text.String + str;
+        }
+        
+        Text.String = temp;
+        cursorPosition++;
     }
 
     if (str == "=")
@@ -538,7 +559,6 @@ class Application : Core::Root
     var bool secondSet = false;
     var bool intermediateSet = false;
     var char op = '\0';
-    var char nextOp = '\0';
 
     for (; i < expression.length; i++) 
     {
@@ -581,20 +601,20 @@ class Application : Core::Root
             secondSet = true;
           }
 
+          if (firstSet && !secondSet && intermediateSet)
+          {
+            secondOp = intermediate;
+            intermediate = 0.0;      
+            secondSet = true;
+            intermediateSet = false;
+          }
+
           if (firstSet && secondSet && op != '\0')
           {
-            if (i + 1 < expression.length && IsOperator(expression[i + 1])) 
-            {
-              nextOp = expression[i + 1];
-              if (GetPriorityOfOperator(op) < GetPriorityOfOperator(nextOp)) 
-              {
-                continue;
-              }
-            }
-
             res = ExecTwoOp(firstOp, secondOp, op);
-            firstOp = res;
+            firstOp = 0.0;
             secondOp = 0.0;
+            firstSet = false;
             secondSet = false;
             op = '\0';
           }
@@ -605,11 +625,6 @@ class Application : Core::Root
         {
           op = expression[i];
         }
-      }
-
-      if (firstSet && secondSet && op != '\0')
-      {
-        res = ExecTwoOp(firstOp, secondOp, op);
       }
 
     return res;
@@ -626,7 +641,6 @@ class Application : Core::Root
   {
     preset OnPress = onCloseDialog;
     preset Filter = Core::KeyCode.Enter;
-    preset Enabled = false;
     preset OnHold = onCloseDialog;
   }
 

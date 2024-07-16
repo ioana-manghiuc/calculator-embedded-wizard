@@ -72,46 +72,54 @@ class Application : Core::Root
       str = Keypad.keyString;
     }
 
-    // Reset if necessary
     if(Text.String == "result here" || str == "C")
     {
       ResetVariables();
     }
 
-    // Handle backspace key
     if(KeyHandler.Code == Core::KeyCode.Backspace)
     {
       if (Text.String.length > 0 && cursorPosition > 0)
       {
         Text.String = Text.String.left(Text.String.length - 1);
-        cursorPosition--; // Move cursor left after deletion
+        cursorPosition--; 
       }
     }
 
-    // Handle left arrow key
-    else if(KeyHandler.Code == Core::KeyCode.Left)
+    if(KeyHandler.Code == Core::KeyCode.Left)
     {
       if (cursorPosition > 0)
       {
-        cursorPosition--; // Move cursor left
+        cursorPosition--; 
       }
     }
 
-    // Handle right arrow key
-    else if(KeyHandler.Code == Core::KeyCode.Right)
+    if(KeyHandler.Code == Core::KeyCode.Right)
     {
       if (cursorPosition < Text.String.length)
       {
-        cursorPosition++; // Move cursor right
+        cursorPosition++; 
       }
     }
 
-    // Handle other input (numbers, operators, etc.)
-    else if(str != "=" && str != "C")
+    if(str != "=" && str != "C")
     {
       temp = Text.String + str;
       Text.String = temp;
-      cursorPosition++; // Move cursor right after insertion
+      cursorPosition++; 
+    }
+
+    if(Text.String != "" && str == "(")
+    { 
+    trace "??????????????????";
+      var char aux = Text.String[Text.String.length - 1];
+
+      if(IsDigit(aux) || aux == ')')
+        temp += "x";
+      temp += str;
+      Text.String = temp;
+
+      cursorPosition++;
     }
 
     if (str == "=")
@@ -613,10 +621,13 @@ class Application : Core::Root
     return (op == ' ' || op == '\t');
   }
 
-  $rect <470,460,720,500>
-  object Effects::ShowHideTransition ShowHideTransition
+  $rect <720,450,920,490>
+  object Core::KeyPressHandler HandleEnter
   {
-    preset Alignment = Effects::DialogAlignment[AlignHorzCenter, AlignVertCenter];
+    preset OnPress = onCloseDialog;
+    preset Filter = Core::KeyCode.Enter;
+    preset Enabled = false;
+    preset OnHold = onCloseDialog;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -653,7 +664,7 @@ class Application : Core::Root
   $member CharactersAllowed
   $member ExecuteOperation
   $member IsWhiteSpace
-  $member ShowHideTransition
+  $member HandleEnter
 }
 
 $rect <480,20,680,60>
@@ -932,22 +943,8 @@ class NumKeyBtns : Core::Group
       var Core::KeyCode keyCode = Core::KeyCode.NoKey;
 
       if (keyString != "") 
-      {    
-        if(keyString == "()")
-        {
-          if(ParanthesisOpen == false)
-          {
-             charCode = '(';
-             ParanthesisOpen = true;
-          }
-          else if (ParanthesisOpen == true)
-          {
-             charCode = ')';
-             ParanthesisOpen = false;
-          }
-        }
-        else 
-          charCode = keyString[0];
+      {   
+        charCode = keyString[0];
         if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) 
         {
           GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, true);
@@ -1157,7 +1154,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::DivideBtn;
   }
 
-  $rect <900,50,1140,90>
+  $rect <900,370,1140,410>
   object WidgetSet::PushButtonConfig MultiplyConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1181,16 +1178,45 @@ class NumKeyBtns : Core::Group
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton Paranthesis
+  object WidgetSet::PushButton OpenParanthesis
   {
-    preset Bounds = <10,289,80,359>;
+    preset Bounds = <10,289,45,359>;
     preset OnActivate = onActivateKey;
-    preset Label = "()";
-    preset Appearance = DigitOpConfig;
+    preset Label = "(";
+    preset Appearance = ParanthesisConfig;
   }
 
-  $rect <590,370,790,410>
-  var bool ParanthesisOpen = false;
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ClosedParanthesis
+  {
+    preset Bounds = <45,289,80,359>;
+    preset OnActivate = onActivateKey;
+    preset Label = ")";
+    preset Appearance = ParanthesisConfig;
+  }
+
+  $rect <890,420,1130,460>
+  object WidgetSet::PushButtonConfig ParanthesisConfig
+  {
+    preset KeyCode = Core::KeyCode.NoKey;
+    preset AccentColorFocused = #03040000;
+    preset AccentColorDefault = #00000000;
+    preset AccentLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset LabelColorActive = #FFFCFEFF;
+    preset LabelColorFocused = #FFFCFEFF;
+    preset LabelColorDisabled = #FFFCFEFF;
+    preset LabelColorDefault = #000000FF;
+    preset LabelFont = Application::NumFont;
+    preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::ParanthesisBtn;
+    preset FaceBitmapFocused = Application::ParanthesisBtn;
+    preset FaceBitmapDisabled = Application::ParanthesisBtn;
+    preset FaceBitmapDefault = Application::ParanthesisBtn;
+  }
 
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
@@ -1232,14 +1258,15 @@ class NumKeyBtns : Core::Group
   $member Dot
   $member Power
   $member Percentage
-  $member Paranthesis
+  $member OpenParanthesis
+  $member ClosedParanthesis
   $member Equals
   $member PowConfig
   $member PercentConfig
   $member DigitOpBoldConfig
   $member DivideConfig
   $member MultiplyConfig
-  $member ParanthesisOpen
+  $member ParanthesisConfig
 }
 
 $rect <220,20,420,60>
@@ -2523,7 +2550,7 @@ class ErrorDialog : Core::Group
   $rect <20,20,160,60>
   object Views::Border BgkBorder
   {
-    preset Bounds = <0,-1,250,99>;
+    preset Bounds = <0,-1,250,100>;
     preset Radius = 3;
     preset Width = 2;
     preset Color = #470400FF;
@@ -2550,6 +2577,7 @@ class ErrorDialog : Core::Group
   $rect <560,-100,800,-60>
   object WidgetSet::PushButtonConfig ExitBtnConfig
   {
+    preset KeyCode = Core::KeyCode.Enter;
     preset LabelColorActive = #FFFFFFFF;
     preset LabelColorDisabled = #FFFFFFFF;
     preset LabelColorDefault = #000000FF;
@@ -2591,6 +2619,7 @@ class ErrorDialog : Core::Group
   $rect <570,-50,810,-10>
   object WidgetSet::PushButtonConfig OkBtnConfig
   {
+    preset KeyCode = Core::KeyCode.Enter;
     preset ThumbBorderColorActive = #20943100;
     preset ThumbBorderColorDefault = #3A842A00;
     preset ThumbBorderWidthActive = 0;
@@ -2633,29 +2662,6 @@ class ErrorDialog : Core::Group
     preset Font = Application::ErrorFont;
     preset Color = #F2E6DDFF;
   }
-
-  $rect <400,170,600,210>
-  object Core::Timer Timer
-  {
-    preset Period = 0;
-    preset Begin = 10000;
-    preset Enabled = true;
-  }
-
-  $rect <570,90,770,130>
-  object Effects::BoolEffect BoolEffect
-  {
-    preset Outlet = ^Visible;
-    preset InterCycleDelay = 0;
-    preset Enabled = true;
-  }
-
-  $rect <21,153,221,193>
-  slot onOpen
-  {
-    sender; 
-    this.Visible = !this.Visible;
-  }
 }
 
 $rect <500,280,700,320>
@@ -2697,6 +2703,18 @@ resource Resources::Bitmap OKBtn
   attr bitmapfile FileName = .\resources\ok.png;
   attr bitmapformat Format = Native;
   attr framesize FrameSize = <70,30>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <393,415,593,455>
+$output false
+resource Resources::Bitmap ParanthesisBtn
+{
+  attr bitmapfile FileName = .\resources\paranthesis.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <35,70>;
   attr framedelay FrameDelay;
   attr bitmapdithering Dithering = Auto;
   attr bitmapmode Mode = Default;

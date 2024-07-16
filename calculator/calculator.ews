@@ -47,7 +47,7 @@ view unit Application
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-121,98>;
+  attr scrollTo = <-121,2>;
   attr zoom = 0.75;
 }
 
@@ -74,9 +74,9 @@ view class Application::ErrorDialog
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,42>;
-  attr codeSelEnd = <16,43>;
-  attr codeSelStart = <16,43>;
+  attr codeFirstPos = <0,61>;
+  attr codeSelEnd = <10,66>;
+  attr codeSelStart = <10,66>;
 }
 
 codeview Application::NumKeyBtns.onActivateKey
@@ -85,4 +85,12 @@ codeview Application::NumKeyBtns.onActivateKey
   attr codeFirstPos = <0,0>;
   attr codeSelEnd = <4,11>;
   attr codeSelStart = <4,11>;
+}
+
+codeview Application::Application.ExecuteOperation
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,43>;
+  attr codeSelEnd = <25,49>;
+  attr codeSelStart = <25,49>;
 }
