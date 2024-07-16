@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::NumKeyBtns;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.ExecuteOperation;
+attr currentCodeInspector = Application::Application.CalculateExpression;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -39,13 +39,15 @@ view Project
 
 view unit Application
 {
-  attr scrollTo = <-357,-336>;
-  attr zoom = 1.0;
+  attr enableWireMode = false;
+  attr scrollTo = <-505,-115>;
+  attr zoom = 0.75;
 }
 
 view class Application::Application
 {
-  attr scrollTo = <-297,162>;
+  attr enableWireMode = false;
+  attr scrollTo = <-121,98>;
   attr zoom = 0.75;
 }
 
@@ -64,30 +66,23 @@ view class Application::Pair
 
 view class Application::ErrorDialog
 {
-  attr scrollTo = <-500,-342>;
-  attr zoom = 1.25;
+  attr enableWireMode = false;
+  attr scrollTo = <-674,-361>;
+  attr zoom = 0.75;
 }
 
-codeview Application::Application.ExecuteOperation
+codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,33>;
-  attr codeSelEnd = <15,46>;
-  attr codeSelStart = <15,46>;
+  attr codeFirstPos = <0,42>;
+  attr codeSelEnd = <16,43>;
+  attr codeSelStart = <16,43>;
 }
 
-codeview Application::Application.GetSubexpressionInParantheses
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <7,16>;
-  attr codeSelStart = <7,16>;
-}
-
-codeview Application::Application.GetNumberFromPosition
+codeview Application::NumKeyBtns.onActivateKey
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <7,15>;
-  attr codeSelStart = <7,15>;
+  attr codeSelEnd = <4,11>;
+  attr codeSelStart = <4,11>;
 }

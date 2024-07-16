@@ -114,7 +114,7 @@ class Application : Core::Root
       cursorPosition++; // Move cursor right after insertion
     }
 
-    else if (str == "=")
+    if (str == "=")
     {
       if(IsExpressionValid(Text.String))
       {
@@ -145,6 +145,7 @@ class Application : Core::Root
     preset StackingPriority = 3;
     preset Layout = Core::Layout[AlignToLeft, AlignToTop];
     preset Bounds = <20,35,320,100>;
+    preset WrapText = false;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -193,6 +194,7 @@ class Application : Core::Root
   method void ResetVariables()
   {
     Text.String = "";
+    //Keypad.ParanthesisOpen = false;
   }
 
   $rect <670,20,870,60>
@@ -213,9 +215,9 @@ class Application : Core::Root
   $rect <930,30,1130,70>
   method int32 GetPriorityOfOperator( arg char op )
   {
-    int32 priority = 0;
+    var int32 priority = 0;
 
-    switch (op[0])
+    switch (op)
           {
             case '+':
               priority = 1;
@@ -473,10 +475,10 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <1322,254,1522,294>
+  $rect <952,400,1152,440>
   var Application::ErrorDialog ErrDialog = null;
 
-  $rect <1320,300,1520,340>
+  $rect <950,446,1150,486>
   slot onShowDialog
   {
     ErrDialog = new Application::ErrorDialog;
@@ -489,9 +491,11 @@ class Application : Core::Root
 
     Add(ErrDialog, 0);
     BeginModal(ErrDialog);
+
+
   }
 
-  $rect <1320,340,1520,380>
+  $rect <950,486,1150,526>
   slot onCloseDialog
   {
     EndModal(ErrDialog);
@@ -518,95 +522,101 @@ class Application : Core::Root
   {
     var float firstOp = 0.0;
     var float secondOp = 0.0;
+    var float res = 0.0;
     var int32 i = 0;
     var Application::Pair pair = new Application::Pair;
     var float intermediate = 0.0;
     var bool firstSet = false;
     var bool secondSet = false;
     var bool intermediateSet = false;
-    var char op ='\0';
-    var string dummy = "";
+    var char op = '\0';
+    var char nextOp = '\0';
 
     for (; i < expression.length; i++) 
     {
-      dummy = "i = "; 
-      var string id = i;
-      dummy = dummy + id;
-     // trace dummy;
-
       if (expression[i] == '(') 
       {
         pair = GetSubexpressionInParantheses(i, expression);
-        
-        trace pair.Subexpression;
         intermediate = ExecuteOperation(pair.Subexpression);
-        trace intermediate;
         intermediateSet = true;
 
         i = pair.EndPosition;
         continue;
       }
 
-      if(expression[i] == ')')
-        continue;
+      if (expression[i] == ')')
+         continue;
 
-      if (IsDigit(expression[i])) 
+      if (IsDigit(expression[i]))
       {
-        pair = GetNumberFromPosition(i, expression);  
-        trace pair.IdentifiedNumber;  
-        i = pair.EndPosition;  
-     
-        if (!firstSet && !secondSet && !intermediateSet) 
-        {
-        //trace "no";
-        //trace intermediateSet;
-          firstOp = pair.IdentifiedNumber;
-          firstSet = true;
-        } 
-        if (!firstSet && !secondSet && intermediateSet)    
-        {
-       // trace i;   // i = 5
-          firstOp = intermediate;
-          intermediate = 0.0;
-          firstSet = true;
-          intermediateSet = false;
-        } 
-        if (firstSet && !secondSet && !intermediateSet)
-        {
-         // trace i;      // i = 7
-          secondOp = pair.IdentifiedNumber;
-          secondSet = true;
+         pair = GetNumberFromPosition(i, expression);
+         i = pair.EndPosition;
+
+         if (!firstSet && !secondSet && !intermediateSet)
+         {
+           firstOp = pair.IdentifiedNumber;
+           firstSet = true;
+           continue;
+         }
+
+         if (!firstSet && !secondSet && intermediateSet) 
+         {
+           firstOp = intermediate;
+           intermediate = 0.0;
+           firstSet = true;
+           intermediateSet = false;
+         }
+
+          if (firstSet && !secondSet && !intermediateSet)
+          {
+            secondOp = pair.IdentifiedNumber;
+            secondSet = true;
+          }
+
+          if (firstSet && secondSet && op != '\0')
+          {
+            if (i + 1 < expression.length && IsOperator(expression[i + 1])) 
+            {
+              nextOp = expression[i + 1];
+              if (GetPriorityOfOperator(op) < GetPriorityOfOperator(nextOp)) 
+              {
+                continue;
+              }
+            }
+
+            res = ExecTwoOp(firstOp, secondOp, op);
+            firstOp = res;
+            secondOp = 0.0;
+            secondSet = false;
+            op = '\0';
+          }
+          continue;
         }
 
-        if (firstSet && secondSet && op != '\0') 
+        if (IsOperator(expression[i])) 
         {
-        trace op;
-        trace firstOp;
-        trace secondOp;
-          trace i;
-          firstOp = ExecTwoOp(firstOp, secondOp, op);
-          secondOp = 0.0;
-          secondSet = false;
-          op = '\0';
+          op = expression[i];
         }
-           
-        continue;
       }
 
-      if (IsOperator(expression[i])) 
+      if (firstSet && secondSet && op != '\0')
       {
-        op = expression[i];
+        res = ExecTwoOp(firstOp, secondOp, op);
       }
-    }
 
-    if (firstSet && !secondSet && intermediateSet) // remaining intermediate operation
-    {
-      firstOp = intermediate;
-      intermediate = 0.0;
-      intermediateSet = false;
-    }
+    return res;
+  }
 
-    return firstOp;
+  $rect <680,-30,880,10>
+  method bool IsWhiteSpace( arg char op )
+  {
+    return (op == ' ' || op == '\t');
+  }
+
+  $rect <470,460,720,500>
+  object Effects::ShowHideTransition ShowHideTransition
+  {
+    preset Alignment = Effects::DialogAlignment[AlignHorzCenter, AlignVertCenter];
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -642,6 +652,8 @@ class Application : Core::Root
   $member onCloseDialog
   $member CharactersAllowed
   $member ExecuteOperation
+  $member IsWhiteSpace
+  $member ShowHideTransition
 }
 
 $rect <480,20,680,60>
@@ -2514,7 +2526,7 @@ class ErrorDialog : Core::Group
     preset Bounds = <0,-1,250,99>;
     preset Radius = 3;
     preset Width = 2;
-    preset Color = #460400FF;
+    preset Color = #470400FF;
   }
 
   $rect <20,20,160,60>
@@ -2535,12 +2547,13 @@ class ErrorDialog : Core::Group
     preset Color = #460400FF;
   }
 
-  $rect <89,-89,329,-49>
+  $rect <560,-100,800,-60>
   object WidgetSet::PushButtonConfig ExitBtnConfig
   {
     preset LabelColorActive = #FFFFFFFF;
     preset LabelColorDisabled = #FFFFFFFF;
     preset LabelColorDefault = #000000FF;
+    preset LabelMarginBottom = 3;
     preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
     preset LabelFont = Application::BtnFont;
   }
@@ -2559,7 +2572,7 @@ class ErrorDialog : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton PushButton
   {
-    preset Bounds = <213,-1,243,24>;
+    preset Bounds = <213,3,243,28>;
     preset OnActivate = onClose;
     preset Label = "X";
     preset Appearance = ExitBtnConfig;
@@ -2569,36 +2582,45 @@ class ErrorDialog : Core::Group
   object WidgetSet::PushButton PushButton1
   {
     preset Layout = Core::Layout[AlignToRight, AlignToTop];
-    preset Bounds = <165,61,235,91>;
+    preset Bounds = <159,61,243,91>;
     preset OnActivate = onClose;
     preset Label = "OK";
     preset Appearance = OkBtnConfig;
   }
 
-  $rect <-170,-90,70,-50>
+  $rect <570,-50,810,-10>
   object WidgetSet::PushButtonConfig OkBtnConfig
   {
     preset ThumbBorderColorActive = #20943100;
     preset ThumbBorderColorDefault = #3A842A00;
-    preset ThumbBorderWidthActive = 1;
-    preset ThumbBorderWidthDefault = 1;
+    preset ThumbBorderWidthActive = 0;
+    preset ThumbBorderWidthDefault = 0;
     preset ThumbColorActive = #CC7E5100;
     preset ThumbColorDefault = #B7321F00;
     preset ThumbLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
     preset LabelColorActive = #FFFFFFFF;
     preset LabelColorDisabled = #FFFFFFFF;
     preset LabelColorDefault = #000000FF;
-    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset LabelMarginBottom = 3;
+    preset LabelAlignment = Views::TextAlignment[AlignHorzAuto, AlignHorzCenter, AlignVertCenter];
     preset LabelFont = Application::BtnFont;
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::OKBtn;
+    preset FaceBitmapFocused = Application::OKBtn;
+    preset FaceBitmapDisabled = Application::OKBtn;
+    preset FaceBitmapDefault = Application::OKBtn;
   }
 
-  $rect <266,60,466,100>
+  $rect <360,50,560,90>
   slot onClose
   {
     idlesignal OnCloseDialog;
   }
 
-  $rect <300,120,500,160>
+  $rect <360,100,560,140>
   property slot OnCloseDialog = null;
 
   $rect <20,20,160,60>
@@ -2610,6 +2632,29 @@ class ErrorDialog : Core::Group
     preset String = "CALCULATOR ERROR";
     preset Font = Application::ErrorFont;
     preset Color = #F2E6DDFF;
+  }
+
+  $rect <400,170,600,210>
+  object Core::Timer Timer
+  {
+    preset Period = 0;
+    preset Begin = 10000;
+    preset Enabled = true;
+  }
+
+  $rect <570,90,770,130>
+  object Effects::BoolEffect BoolEffect
+  {
+    preset Outlet = ^Visible;
+    preset InterCycleDelay = 0;
+    preset Enabled = true;
+  }
+
+  $rect <21,153,221,193>
+  slot onOpen
+  {
+    sender; 
+    this.Visible = !this.Visible;
   }
 }
 
@@ -2643,4 +2688,16 @@ resource Resources::Font BtnFont
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
+}
+
+$rect <162,371,362,411>
+$output false
+resource Resources::Bitmap OKBtn
+{
+  attr bitmapfile FileName = .\resources\ok.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <70,30>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
 }

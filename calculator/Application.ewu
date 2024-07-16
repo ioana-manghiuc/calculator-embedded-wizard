@@ -72,49 +72,57 @@ class Application : Core::Root
       str = Keypad.keyString;
     }
 
-    // Reset if necessary
     if(Text.String == "result here" || str == "C")
     {
       ResetVariables();
     }
 
-    // Handle backspace key
     if(KeyHandler.Code == Core::KeyCode.Backspace)
     {
       if (Text.String.length > 0 && cursorPosition > 0)
       {
         Text.String = Text.String.left(Text.String.length - 1);
-        cursorPosition--; // Move cursor left after deletion
+        cursorPosition--; 
       }
     }
 
-    // Handle left arrow key
-    else if(KeyHandler.Code == Core::KeyCode.Left)
+    if(KeyHandler.Code == Core::KeyCode.Left)
     {
       if (cursorPosition > 0)
       {
-        cursorPosition--; // Move cursor left
+        cursorPosition--; 
       }
     }
 
-    // Handle right arrow key
-    else if(KeyHandler.Code == Core::KeyCode.Right)
+    if(KeyHandler.Code == Core::KeyCode.Right)
     {
       if (cursorPosition < Text.String.length)
       {
-        cursorPosition++; // Move cursor right
+        cursorPosition++; 
       }
     }
 
-    // Handle other input (numbers, operators, etc.)
-    else if(str != "=" && str != "C")
+    if(str != "=" && str != "C")
     {
       temp = Text.String + str;
       Text.String = temp;
-      cursorPosition++; // Move cursor right after insertion
+      cursorPosition++; 
     }
 
-    else if (str == "=")
+    if(Text.String != "" && str == "(")
+    { 
+    trace "??????????????????";
+      var char aux = Text.String[Text.String.length - 1];
+
+      if(IsDigit(aux) || aux == ')')
+        temp += "x";
+      temp += str;
+      Text.String = temp;
+
+      cursorPosition++;
+    }
+
+    if (str == "=")
     {
       if(IsExpressionValid(Text.String))
       {
@@ -145,6 +153,7 @@ class Application : Core::Root
     preset StackingPriority = 3;
     preset Layout = Core::Layout[AlignToLeft, AlignToTop];
     preset Bounds = <20,35,320,100>;
+    preset WrapText = false;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -193,6 +202,7 @@ class Application : Core::Root
   method void ResetVariables()
   {
     Text.String = "";
+    //Keypad.ParanthesisOpen = false;
   }
 
   $rect <670,20,870,60>
@@ -213,9 +223,9 @@ class Application : Core::Root
   $rect <930,30,1130,70>
   method int32 GetPriorityOfOperator( arg char op )
   {
-    int32 priority = 0;
+    var int32 priority = 0;
 
-    switch (op[0])
+    switch (op)
           {
             case '+':
               priority = 1;
@@ -473,10 +483,10 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <1322,254,1522,294>
+  $rect <952,400,1152,440>
   var Application::ErrorDialog ErrDialog = null;
 
-  $rect <1320,300,1520,340>
+  $rect <950,446,1150,486>
   slot onShowDialog
   {
     ErrDialog = new Application::ErrorDialog;
@@ -489,9 +499,11 @@ class Application : Core::Root
 
     Add(ErrDialog, 0);
     BeginModal(ErrDialog);
+
+
   }
 
-  $rect <1320,340,1520,380>
+  $rect <950,486,1150,526>
   slot onCloseDialog
   {
     EndModal(ErrDialog);
@@ -525,91 +537,97 @@ class Application : Core::Root
     var bool firstSet = false;
     var bool secondSet = false;
     var bool intermediateSet = false;
-    var char op ='\0';
-    var string dummy = "";
+    var char op = '\0';
+    var char nextOp = '\0';
 
     for (; i < expression.length; i++) 
     {
-      dummy = "i = "; 
-      var string id = i;
-      dummy = dummy + id;
-     // trace dummy;
-
       if (expression[i] == '(') 
       {
         pair = GetSubexpressionInParantheses(i, expression);
-        
-        trace pair.Subexpression;
         intermediate = ExecuteOperation(pair.Subexpression);
-        trace intermediate;
         intermediateSet = true;
 
         i = pair.EndPosition;
         continue;
       }
 
-      if(expression[i] == ')')
-        continue;
+      if (expression[i] == ')')
+         continue;
 
-      if (IsDigit(expression[i])) 
+      if (IsDigit(expression[i]))
       {
-        pair = GetNumberFromPosition(i, expression);  
-        trace pair.IdentifiedNumber;  
-        i = pair.EndPosition;  
-     
-        if (!firstSet && !secondSet && !intermediateSet) 
-        {
-          trace "first op set";
-          firstOp = pair.IdentifiedNumber;
-          firstSet = true;
+         pair = GetNumberFromPosition(i, expression);
+         i = pair.EndPosition;
+
+         if (!firstSet && !secondSet && !intermediateSet)
+         {
+           firstOp = pair.IdentifiedNumber;
+           firstSet = true;
+           continue;
+         }
+
+         if (!firstSet && !secondSet && intermediateSet) 
+         {
+           firstOp = intermediate;
+           intermediate = 0.0;
+           firstSet = true;
+           intermediateSet = false;
+         }
+
+          if (firstSet && !secondSet && !intermediateSet)
+          {
+            secondOp = pair.IdentifiedNumber;
+            secondSet = true;
+          }
+
+          if (firstSet && secondSet && op != '\0')
+          {
+            if (i + 1 < expression.length && IsOperator(expression[i + 1])) 
+            {
+              nextOp = expression[i + 1];
+              if (GetPriorityOfOperator(op) < GetPriorityOfOperator(nextOp)) 
+              {
+                continue;
+              }
+            }
+
+            res = ExecTwoOp(firstOp, secondOp, op);
+            firstOp = res;
+            secondOp = 0.0;
+            secondSet = false;
+            op = '\0';
+          }
           continue;
-        } 
-        if (!firstSet && !secondSet && intermediateSet)    
-        {
-          trace "first op set from intermediate";
-          firstOp = intermediate;
-          intermediate = 0.0;
-          firstSet = true;
-          intermediateSet = false;
-        } 
-        if (firstSet && !secondSet && !intermediateSet)
-        {
-          trace "second op set";
-          trace pair.IdentifiedNumber;
-          secondOp = pair.IdentifiedNumber;
-          secondSet = true;
         }
 
-        if (firstSet && secondSet && op != '\0') 
+        if (IsOperator(expression[i])) 
         {
-          trace op;
-          trace firstOp;
-          trace secondOp;
-          res = ExecTwoOp(firstOp, secondOp, op);
-          firstOp = 0.0;
-          firstSet = false;
-          secondOp = 0.0;
-          secondSet = false;
-          op = '\0';
+          op = expression[i];
         }
-           
-        continue;
       }
 
-      if (IsOperator(expression[i])) 
+      if (firstSet && secondSet && op != '\0')
       {
-        op = expression[i];
+        res = ExecTwoOp(firstOp, secondOp, op);
       }
-    }
-
-    //if (firstSet && !secondSet && intermediateSet) // remaining intermediate operation
-    //{
-    //  firstOp = intermediate;
-    //  intermediate = 0.0;
-    //  intermediateSet = false;
-    //}
 
     return res;
+  }
+
+  $rect <680,-30,880,10>
+  method bool IsWhiteSpace( arg char op )
+  {
+    return (op == ' ' || op == '\t');
+  }
+
+  $rect <720,450,920,490>
+  object Core::KeyPressHandler HandleEnter
+  {
+    preset OnPress = onCloseDialog;
+    preset Filter = Core::KeyCode.Enter;
+    preset Enabled = false;
+    preset OnHold = onCloseDialog;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -645,6 +663,8 @@ class Application : Core::Root
   $member onCloseDialog
   $member CharactersAllowed
   $member ExecuteOperation
+  $member IsWhiteSpace
+  $member HandleEnter
 }
 
 $rect <480,20,680,60>
@@ -923,22 +943,8 @@ class NumKeyBtns : Core::Group
       var Core::KeyCode keyCode = Core::KeyCode.NoKey;
 
       if (keyString != "") 
-      {    
-        if(keyString == "()")
-        {
-          if(ParanthesisOpen == false)
-          {
-             charCode = '(';
-             ParanthesisOpen = true;
-          }
-          else if (ParanthesisOpen == true)
-          {
-             charCode = ')';
-             ParanthesisOpen = false;
-          }
-        }
-        else 
-          charCode = keyString[0];
+      {   
+        charCode = keyString[0];
         if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) 
         {
           GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, true);
@@ -1148,7 +1154,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::DivideBtn;
   }
 
-  $rect <900,50,1140,90>
+  $rect <900,370,1140,410>
   object WidgetSet::PushButtonConfig MultiplyConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1172,16 +1178,45 @@ class NumKeyBtns : Core::Group
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton Paranthesis
+  object WidgetSet::PushButton OpenParanthesis
   {
-    preset Bounds = <10,289,80,359>;
+    preset Bounds = <10,289,45,359>;
     preset OnActivate = onActivateKey;
-    preset Label = "()";
-    preset Appearance = DigitOpConfig;
+    preset Label = "(";
+    preset Appearance = ParanthesisConfig;
   }
 
-  $rect <590,370,790,410>
-  var bool ParanthesisOpen = false;
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ClosedParanthesis
+  {
+    preset Bounds = <45,289,80,359>;
+    preset OnActivate = onActivateKey;
+    preset Label = ")";
+    preset Appearance = ParanthesisConfig;
+  }
+
+  $rect <890,420,1130,460>
+  object WidgetSet::PushButtonConfig ParanthesisConfig
+  {
+    preset KeyCode = Core::KeyCode.NoKey;
+    preset AccentColorFocused = #03040000;
+    preset AccentColorDefault = #00000000;
+    preset AccentLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset LabelColorActive = #FFFCFEFF;
+    preset LabelColorFocused = #FFFCFEFF;
+    preset LabelColorDisabled = #FFFCFEFF;
+    preset LabelColorDefault = #000000FF;
+    preset LabelFont = Application::NumFont;
+    preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::ParanthesisBtn;
+    preset FaceBitmapFocused = Application::ParanthesisBtn;
+    preset FaceBitmapDisabled = Application::ParanthesisBtn;
+    preset FaceBitmapDefault = Application::ParanthesisBtn;
+  }
 
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
@@ -1223,14 +1258,15 @@ class NumKeyBtns : Core::Group
   $member Dot
   $member Power
   $member Percentage
-  $member Paranthesis
+  $member OpenParanthesis
+  $member ClosedParanthesis
   $member Equals
   $member PowConfig
   $member PercentConfig
   $member DigitOpBoldConfig
   $member DivideConfig
   $member MultiplyConfig
-  $member ParanthesisOpen
+  $member ParanthesisConfig
 }
 
 $rect <220,20,420,60>
@@ -2514,10 +2550,10 @@ class ErrorDialog : Core::Group
   $rect <20,20,160,60>
   object Views::Border BgkBorder
   {
-    preset Bounds = <0,-1,250,99>;
+    preset Bounds = <0,-1,250,100>;
     preset Radius = 3;
     preset Width = 2;
-    preset Color = #460400FF;
+    preset Color = #470400FF;
   }
 
   $rect <20,20,160,60>
@@ -2538,12 +2574,14 @@ class ErrorDialog : Core::Group
     preset Color = #460400FF;
   }
 
-  $rect <89,-89,329,-49>
+  $rect <560,-100,800,-60>
   object WidgetSet::PushButtonConfig ExitBtnConfig
   {
+    preset KeyCode = Core::KeyCode.Enter;
     preset LabelColorActive = #FFFFFFFF;
     preset LabelColorDisabled = #FFFFFFFF;
     preset LabelColorDefault = #000000FF;
+    preset LabelMarginBottom = 3;
     preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
     preset LabelFont = Application::BtnFont;
   }
@@ -2562,7 +2600,7 @@ class ErrorDialog : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton PushButton
   {
-    preset Bounds = <213,-1,243,24>;
+    preset Bounds = <213,3,243,28>;
     preset OnActivate = onClose;
     preset Label = "X";
     preset Appearance = ExitBtnConfig;
@@ -2572,36 +2610,46 @@ class ErrorDialog : Core::Group
   object WidgetSet::PushButton PushButton1
   {
     preset Layout = Core::Layout[AlignToRight, AlignToTop];
-    preset Bounds = <165,61,235,91>;
+    preset Bounds = <159,61,243,91>;
     preset OnActivate = onClose;
     preset Label = "OK";
     preset Appearance = OkBtnConfig;
   }
 
-  $rect <-170,-90,70,-50>
+  $rect <570,-50,810,-10>
   object WidgetSet::PushButtonConfig OkBtnConfig
   {
+    preset KeyCode = Core::KeyCode.Enter;
     preset ThumbBorderColorActive = #20943100;
     preset ThumbBorderColorDefault = #3A842A00;
-    preset ThumbBorderWidthActive = 1;
-    preset ThumbBorderWidthDefault = 1;
+    preset ThumbBorderWidthActive = 0;
+    preset ThumbBorderWidthDefault = 0;
     preset ThumbColorActive = #CC7E5100;
     preset ThumbColorDefault = #B7321F00;
     preset ThumbLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
     preset LabelColorActive = #FFFFFFFF;
     preset LabelColorDisabled = #FFFFFFFF;
     preset LabelColorDefault = #000000FF;
-    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignVertCenter];
+    preset LabelMarginBottom = 3;
+    preset LabelAlignment = Views::TextAlignment[AlignHorzAuto, AlignHorzCenter, AlignVertCenter];
     preset LabelFont = Application::BtnFont;
+    preset FaceFrameActive = 1;
+    preset FaceFrameFocused = 1;
+    preset FaceFrameDisabled = 0;
+    preset FaceFrameDefault = 0;
+    preset FaceBitmapActive = Application::OKBtn;
+    preset FaceBitmapFocused = Application::OKBtn;
+    preset FaceBitmapDisabled = Application::OKBtn;
+    preset FaceBitmapDefault = Application::OKBtn;
   }
 
-  $rect <266,60,466,100>
+  $rect <360,50,560,90>
   slot onClose
   {
     idlesignal OnCloseDialog;
   }
 
-  $rect <300,120,500,160>
+  $rect <360,100,560,140>
   property slot OnCloseDialog = null;
 
   $rect <20,20,160,60>
@@ -2646,4 +2694,28 @@ resource Resources::Font BtnFont
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
+}
+
+$rect <162,371,362,411>
+$output false
+resource Resources::Bitmap OKBtn
+{
+  attr bitmapfile FileName = .\resources\ok.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <70,30>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <393,415,593,455>
+$output false
+resource Resources::Bitmap ParanthesisBtn
+{
+  attr bitmapfile FileName = .\resources\paranthesis.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <35,70>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
 }
