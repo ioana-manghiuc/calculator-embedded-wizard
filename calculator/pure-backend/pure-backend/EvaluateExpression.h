@@ -194,7 +194,7 @@ std::vector<std::string> ShuntingYardAlgorithm(const std::string& expression)
                         char top = operators.top()[0];
                         if (IsOperator(top))
                         {
-                            if (GetPriorityOfOperator(top) < GetPriorityOfOperator(t) && t != '^')
+                            if (GetPriorityOfOperator(top) < GetPriorityOfOperator(t))
                             {
                                 operators.push(token);
                             }
@@ -237,4 +237,30 @@ std::vector<std::string> ShuntingYardAlgorithm(const std::string& expression)
     }
 
     return expr;
+}
+
+
+float EvaluateRPN(const std::string& expression)
+{
+    std::vector<std::string> RPN = ShuntingYardAlgorithm(expression);
+    std::stack<float> stk;
+    int first, second;
+
+    for (const std::string& token : RPN)
+    {
+        if (IsOperator(token[0]))
+        {
+			second = stk.top();
+			stk.pop();
+			first = stk.top();
+			stk.pop();
+			stk.push(ExecTwoOp(first, second, token[0]));
+		}
+        else
+        {
+			stk.push(std::stof(token));
+		}
+    }
+
+    return stk.top();
 }

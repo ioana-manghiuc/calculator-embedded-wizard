@@ -9,5 +9,8 @@ int main() {
         std::cout << token << " ";
     }
 
+    float res = EvaluateRPN(expression);
+    std::cout << "\nResult: " << res << std::endl;
+
     return 0;
 }
