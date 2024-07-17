@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application;
+attr active = Application::Backend;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.CalculateExpression;
+attr currentCodeInspector = Application::Backend.OnKeyEvent;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -34,80 +34,76 @@ view Project
   attr enableGrid = true;
   attr enableWireMode = false;
   attr grid = 10;
-  attr scrollTo = <-305,-63>;
-  attr zoom = 0.5;
+  attr scrollTo = <-2,105>;
+  attr zoom = 0.75;
 }
 
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-505,191>;
+  attr scrollTo = <-505,287>;
   attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-98,-11>;
-  attr zoom = 0.5;
+  attr scrollTo = <257,42>;
+  attr zoom = 0.75;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-536,-207>;
+  attr scrollTo = <-621,-200>;
   attr zoom = 0.5;
 }
 
 view class Application::Pair
 {
-  attr enableWireMode = false;
   attr scrollTo = <-269,-199>;
   attr zoom = 1.0;
 }
 
 view class Application::ErrorDialog
 {
-  attr enableWireMode = false;
   attr scrollTo = <-464,-326>;
   attr zoom = 0.75;
 }
 
 view class WidgetSet::PushButton
 {
-  attr enableWireMode = false;
   attr scrollTo = <-7,-7>;
   attr zoom = 1.0;
 }
 
-codeview Application::Application.CalculateExpression
+view class Application::Backend
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-255,-55>;
+  attr zoom = 0.75;
+}
+
+codeview Application::Inline
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <66,6>;
-  attr codeSelStart = <66,6>;
+  attr codeSelEnd = <31,0>;
+  attr codeSelStart = <31,0>;
 }
 
-codeview Application::NumKeyBtns.onActivateKey
+codeview Application::Backend.OnCreate
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <4,11>;
-  attr codeSelStart = <4,11>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <14,26>;
 }
 
-codeview Application::Application.ExecuteOperation
+codeview Application::Backend.OnKeyEvent
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,61>;
-  attr codeSelEnd = <11,78>;
-  attr codeSelStart = <11,78>;
-}
-
-codeview Application::Application.ExecTwoOp
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,16>;
-  attr codeSelEnd = <30,24>;
-  attr codeSelStart = <30,24>;
+  attr codeFirstPos = <0,21>;
+  attr codeSelEnd = <0,35>;
+  attr codeSelStart = <0,35>;
 }
