@@ -5,7 +5,6 @@
 // use isdigit() --> character is digit
 // use isspace() --> character is white-space
 
-
 bool IsDot(char c)
 {
 	return c == '.';
@@ -32,7 +31,6 @@ bool IsNumber(const std::string& expression)
 	}
 	return true;
 }
-
 
 std::pair<std::string, bool> CharactersAllowed(const std::string& expression)
 {

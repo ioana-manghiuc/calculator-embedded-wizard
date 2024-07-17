@@ -1,35 +1,7 @@
+#include "ValidateExpression.h"
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <string>
-#include <stack>
-
-bool IsDot(char c)
-{
-    return c == '.';
-}
-
-bool IsOperator(char c)
-{
-    return c == '+' || c == '-' || c == 'x' || c == '/' || c == '%' || c == '^';
-}
-
-bool IsParenthesis(char c)
-{
-    return c == '(' || c == ')';
-}
-
-bool IsNumber(const std::string& expression)
-{
-    for (const char& c : expression)
-    {
-        if (!isdigit(c) && !IsDot(c))
-        {
-            return false;
-        }
-    }
-    return true;
-}
 
 int GetPriorityOfOperator(const char& op)
 {
@@ -60,6 +32,45 @@ int GetPriorityOfOperator(const char& op)
     }
 
     return priority;
+}
+
+std::pair<int, std::string> GetSubexpressionInParentheses(int startPos, const std::string expression)
+{
+    int endPos;
+    std::string subexpression = "";
+
+    if (!expression.empty())
+    {
+        for (int i = 0; i < expression.length(); i++)
+        {
+            if (expression[i] != ')')
+            {
+                subexpression += subexpression[i];
+                endPos = i;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    return { endPos, subexpression };
+}
+
+std::pair<int, std::string> GetNumberFromPosition(int startPos, const std::string& expression) {
+    int endPos = startPos;
+    std::string number;
+    for (int i = startPos; i < expression.length(); ++i) {
+        if (std::isdigit(expression[i]) || expression[i] == '.') {
+            number += expression[i];
+            endPos = i;
+        }
+        else {
+            break;
+        }
+    }
+    return { endPos, number };
 }
 
 float ExecTwoOp(float first, float second, const char& op)

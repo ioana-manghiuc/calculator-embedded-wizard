@@ -1,9 +1,8 @@
 $version 1.0
 
-attr active = Application::Backend;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Backend.OnKeyEvent;
+attr currentCodeInspector = Application::Inline;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -34,29 +33,29 @@ view Project
   attr enableGrid = true;
   attr enableWireMode = false;
   attr grid = 10;
-  attr scrollTo = <-2,105>;
+  attr scrollTo = <-2,-39>;
   attr zoom = 0.75;
 }
 
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-505,287>;
+  attr scrollTo = <-505,95>;
   attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <257,42>;
+  attr scrollTo = <-594,186>;
   attr zoom = 0.75;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-621,-200>;
-  attr zoom = 0.5;
+  attr scrollTo = <-405,-45>;
+  attr zoom = 0.75;
 }
 
 view class Application::Pair
@@ -67,43 +66,23 @@ view class Application::Pair
 
 view class Application::ErrorDialog
 {
+  attr enableWireMode = false;
   attr scrollTo = <-464,-326>;
   attr zoom = 0.75;
 }
 
-view class WidgetSet::PushButton
+codeview Application::Application.CalculateExpression
 {
-  attr scrollTo = <-7,-7>;
-  attr zoom = 1.0;
-}
-
-view class Application::Backend
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-255,-55>;
-  attr zoom = 0.75;
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,84>;
+  attr codeSelEnd = <4,92>;
+  attr codeSelStart = <4,92>;
 }
 
 codeview Application::Inline
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <31,0>;
-  attr codeSelStart = <31,0>;
-}
-
-codeview Application::Backend.OnCreate
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <14,26>;
-}
-
-codeview Application::Backend.OnKeyEvent
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,21>;
-  attr codeSelEnd = <0,35>;
-  attr codeSelStart = <0,35>;
+  attr codeFirstPos = <0,148>;
+  attr codeSelEnd = <14,226>;
+  attr codeSelStart = <14,226>;
 }

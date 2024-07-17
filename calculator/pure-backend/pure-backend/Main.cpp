@@ -1,7 +1,9 @@
 #include "EvaluateExpression.h"
 
-int main() {
-    std::string expression = "3 + 5 x (10 - 4)";
+int main() 
+{
+    std::string expression = "3 + 5 x (10 - 4) / 2";
+
     auto tokens = ShuntingYardAlgorithm(expression);
 
     for (const auto& token : tokens)
