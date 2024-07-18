@@ -2368,7 +2368,7 @@ note group Note
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <200,-20,440,620>;
+  attr Bounds = <200,-20,440,570>;
 }
 
 // Fonts
@@ -3036,44 +3036,6 @@ class Battery : Core::Group
   $rect <170,10,370,50>
   inherited property Bounds = <0,0,120,54>;
 
-  $rect <170,110,370,150>
-  inherited method UpdateLayout()
-  {
-    // Always invoke the inherited method.
-    super( aSize );
-
-    /*
-
-      HINT:
-
-      This method exists for sophisticated layout calculation. Please note, that in 
-      most cases it is completely sufficient to use the views property 'Layout' to
-      determine how the view should behave when the component is resized.
-
-    */
-
-    /*
-
-      TO DO:
-
-      Put here the code to calculate new position and size of enclosed views. The
-      current (new) size of the component itself is passed in the parameter aSize.
-      For example:
-
-        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
-
-    */
-  }
-
-  $rect <170,70,370,110>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited method.
-    super( aState );
-
-
-  }
-
   $rect <20,20,160,60>
   object Views::Image Bgk
   {
@@ -3091,6 +3053,12 @@ class Battery : Core::Group
   $rect <-80,160,120,200>
   slot onUseBattery
   {
+    BatteryPercentage -= 0.5;
+
+    if(BatteryPercentage < 0)
+      BatteryPercentage = 0;
+
+    UpdateBatteryLines(BatteryPercentage);
   }
 
   $rect <20,20,160,60>
@@ -3226,9 +3194,6 @@ class Battery : Core::Group
     preset Bitmap = Application::BatteryLine;
   }
 
-  $rect <-70,92,130,132>
-  var int32 Interval = 100;
-
   $rect <170,160,370,200>
   object Effects::BoolEffect BoolEffect
   {
@@ -3237,7 +3202,58 @@ class Battery : Core::Group
     preset Outlet = ^line20.Visible;
     preset CycleDuration = 500;
     preset InterCycleDelay = 500;
+    preset Enabled = false;
+  }
+
+  $rect <-321,57,-121,97>
+  object Core::Timer Timer
+  {
+    preset OnTrigger = onUseBattery;
+    preset Period = 3000;
     preset Enabled = true;
+  }
+
+  $rect <-367,207,-167,247>
+  var int32 BatteryPercentage = 100;
+
+  $rect <-54,236,146,276>
+  method void UpdateBatteryLines( arg int32 percentage )
+  {
+    array Views::Image imgs [20];
+    imgs[0] = line1;
+    imgs[1] = line2;
+    imgs[2] = line3;
+    imgs[3] = line4;
+    imgs[4] = line5;
+    imgs[5] = line6;
+    imgs[6] = line7;
+    imgs[7] = line8;
+    imgs[8] = line9;
+    imgs[9] = line10;
+    imgs[10] = line11;
+    imgs[11] = line12;
+    imgs[12] = line13;
+    imgs[13] = line14;
+    imgs[14] = line15;
+    imgs[15] = line16;
+    imgs[16] = line17;
+    imgs[17] = line18;
+    imgs[18] = line19;
+    imgs[19] = line20;
+
+      var int32 linesToShow = percentage / 5;
+
+      var int32 i = 0;
+      
+      for( ; i < 20; i++)
+      {
+        if(i < linesToShow)
+        {
+          imgs[i].Visible = true;
+        }
+        else
+          imgs[i].Visible = false;     
+      }
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -3245,8 +3261,6 @@ class Battery : Core::Group
   // and the expected order of the members don't depend. Merging of changes in the 
   // project files is simplified.
   $member Bounds
-  $member UpdateLayout
-  $member UpdateViewState
   $member Bgk
   $member line1
   $member line2
@@ -3269,20 +3283,10 @@ class Battery : Core::Group
   $member line19
   $member line20
   $member onUseBattery
-  $member Interval
   $member BoolEffect
-}
-
-$rect <220,570,420,610>
-$output false
-resource Resources::Bitmap BatteryBlock
-{
-  attr bitmapfile FileName = .\resources\full-battery.png;
-  attr bitmapformat Format = Native;
-  attr framesize FrameSize = <5,46>;
-  attr framedelay FrameDelay;
-  attr bitmapdithering Dithering = Auto;
-  attr bitmapmode Mode = Default;
+  $member Timer
+  $member BatteryPercentage
+  $member UpdateBatteryLines
 }
 
 $rect <-50,550,150,590>
@@ -3457,12 +3461,12 @@ class DeviceClass : Templates::DeviceClass
     attr Bounds = <10,0,250,140>;
   }
 
-  $rect <280,0,500,40>
+  $rect <260,40,480,80>
   object Core::SystemEvent LoseBatteryEvent;
 
   // This method is intended to be called by the device to notify the GUI application \
   // about a particular system event.
-  $rect <280,40,500,80>
+  $rect <260,80,480,120>
   $output true
   method void TriggerLoseBatteryEvent()
   {
@@ -3473,6 +3477,10 @@ class DeviceClass : Templates::DeviceClass
 
 $rect <-50,500,150,540>
 autoobject Application::DeviceClass Device;
+
+$rect <-301,512,-101,552>
+$output false
+class TheClass;
 
 // Directives to adapt the order of the above members according to how these members 
 // where arranged when the project content was stored. In this manner the storage 
@@ -3509,7 +3517,7 @@ $member BatteryOutline
 $member BatteryBgk
 $member BatteryLine
 $member Battery
-$member BatteryBlock
 $member Inline1
 $member DeviceClass
 $member Device
+$member TheClass

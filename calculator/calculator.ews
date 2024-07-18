@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Battery;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Battery.UpdateBatteryLines;
+attr currentCodeInspector = Application::Application.HandleNegation;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -55,8 +55,8 @@ view class Application::Battery
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-459,-199>;
-  attr zoom = 0.5;
+  attr scrollTo = <-539,-191>;
+  attr zoom = 0.75;
 }
 
 codeview Application::Battery.onUseBattery
@@ -71,8 +71,8 @@ codeview Application::Application.Init
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <2,0>;
-  attr codeSelStart = <2,0>;
+  attr codeSelEnd = <33,0>;
+  attr codeSelStart = <33,0>;
 }
 
 codeview Application::Battery.UpdateBatteryLines
@@ -89,4 +89,20 @@ codeview Core::Group.Add
   attr codeFirstPos = <0,0>;
   attr codeSelEnd = <2,1>;
   attr codeSelStart = <2,1>;
+}
+
+codeview Application::Application.SubexprHasOnlyDigits
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::Application.HandleNegation
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <80,8>;
+  attr codeSelStart = <80,8>;
 }

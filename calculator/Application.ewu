@@ -5,14 +5,14 @@ $rect <-50,20,150,60>
 $output false
 class Application : Core::Root
 {
-  $rect <960,320,1160,360>
+  $rect <990,260,1190,300>
   inherited property Bounds = <0,0,340,590>;
 
   $rect <20,20,160,60>
   object Views::Text TextTxt
   {
     preset StackingPriority = 3;
-    preset Bounds = <1250,21,1448,86>;
+    preset Bounds = <993,317,1191,382>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -49,14 +49,14 @@ class Application : Core::Root
     preset Color = #030324FF;
   }
 
-  $rect <410,50,610,90>
+  $rect <410,30,610,70>
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = CalculateExpression;
     preset OnHold = null;
   }
 
-  $rect <410,100,610,140>
+  $rect <410,80,610,120>
   slot CalculateExpression
   {
     var string str = "";
@@ -167,7 +167,7 @@ class Application : Core::Root
   // Key Event Handler
   note group KeyHandlerNote
   {
-    attr Bounds = <360,10,650,170>;
+    attr Bounds = <360,-10,650,140>;
   }
 
   $rect <20,20,160,60>
@@ -189,7 +189,7 @@ class Application : Core::Root
     preset Font = Application::DigitalResFont;
   }
 
-  $rect <410,240,610,280>
+  $rect <410,190,610,230>
   method float ExecTwoOp( arg float first, arg float second, arg string op )
   {
     var float res = 0.0;
@@ -228,14 +228,14 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <410,340,610,380>
+  $rect <410,290,610,330>
   method void ResetVariables()
   {
     Text.String = "";
     //Keypad.ParanthesisOpen = false;
   }
 
-  $rect <670,20,870,60>
+  $rect <710,40,910,80>
   method bool IsOperator( arg char op )
   {
     return ( op == '+' || op == '-' || op == 'x' || op == '/' ||  op == '%' || op == '^');
@@ -247,10 +247,10 @@ class Application : Core::Root
   // Operation Handler
   note group Note
   {
-    attr Bounds = <360,200,650,400>;
+    attr Bounds = <360,150,650,350>;
   }
 
-  $rect <930,30,1130,70>
+  $rect <1030,40,1230,80>
   method int32 GetPriorityOfOperator( arg char op )
   {
     var int32 priority = 0;
@@ -276,7 +276,7 @@ class Application : Core::Root
     return priority;
   }
 
-  $rect <910,80,1180,120>
+  $rect <990,90,1260,130>
   method Application::Pair GetSubexpressionInParentheses( arg int32 startPos, arg string expression )
   {
     var string subexpression;
@@ -308,7 +308,7 @@ class Application : Core::Root
     return res; 
   }
 
-  $rect <930,140,1155,180>
+  $rect <1015,190,1240,230>
   method Application::Pair GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
@@ -338,7 +338,7 @@ class Application : Core::Root
     return res; 
   }
 
-  $rect <680,370,880,410>
+  $rect <710,340,910,380>
   method bool IsExpressionValid( arg string expression )
   {
     // check for valid operators
@@ -384,7 +384,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <680,320,880,360>
+  $rect <710,290,910,330>
   method bool IsDigit( arg char op )
   {
     return ((op >= '0') && (op <= '9') || op == '.');
@@ -393,7 +393,7 @@ class Application : Core::Root
     //return false;
   }
 
-  $rect <670,170,870,210>
+  $rect <710,390,910,430>
   method bool SubexprHasOnlyDigits( arg string expression )
   {
     var int32 i = 0;
@@ -419,7 +419,7 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <950,190,1150,230>
+  $rect <1030,140,1230,180>
   method float GetNegativeNumber( arg string expression )
   {
     var string nrStr = "";
@@ -436,7 +436,7 @@ class Application : Core::Root
     return nrStr.parse_float(-1.0);
   }
 
-  $rect <680,220,880,260>
+  $rect <710,190,910,230>
   method bool CorrectParentheses( arg string expression )
   {
     var int32 size = Application::MAX_SIZE;
@@ -478,7 +478,7 @@ class Application : Core::Root
     return (top == -1);
   }
 
-  $rect <680,270,890,310>
+  $rect <710,240,920,280>
   method bool OperatorsCorrectlyUsed( arg string expression )
   {
     var int32 i = 0;
@@ -516,7 +516,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <670,70,870,110>
+  $rect <710,90,910,130>
   method bool IsParenthesis( arg char op )
   {
       if( op == '(' || op == ')')
@@ -525,7 +525,7 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <670,120,870,160>
+  $rect <710,140,910,180>
   method bool CharactersAllowed( arg string expression )
   {
     var int32 i = 0;
@@ -539,7 +539,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <410,290,610,330>
+  $rect <410,240,610,280>
   method float ExecuteOperation( arg string expression )
   {
     var float firstOp = 0.0;
@@ -623,7 +623,7 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <680,-30,880,10>
+  $rect <710,440,910,480>
   method bool IsWhiteSpace( arg char op )
   {
     return (op == ' ' || op == '\t');
@@ -638,7 +638,7 @@ class Application : Core::Root
     preset OnCloseDialog = onDialogHandled;
   }
 
-  $rect <430,450,630,490>
+  $rect <410,450,610,490>
   slot onOpenDialog
   {
     Int32Effect.Enabled=true;
@@ -647,21 +647,20 @@ class Application : Core::Root
     ErrorDialog.OnCloseDialog = onDialogHandled;
   }
 
-  $rect <430,500,630,540>
+  $rect <410,500,610,540>
   slot onDialogHandled
   {
     ErrorDialog.Bounds.x = -270;
     ErrorDialog.Visible = false;
   }
 
-  $rect <420,400,620,440>
+  $rect <410,400,610,440>
   inherited method Init()
   {
-    //BatteryDialog.BoolEffect.Enabled = true;
     signal BatteryDialog.onUseBattery;
   }
 
-  $rect <970,250,1170,290>
+  $rect <710,490,910,530>
   method string HandleNegation( arg string expression )
   {
     var string newexpr = "";
@@ -681,7 +680,7 @@ class Application : Core::Root
     preset Bounds = <110,144,230,199>;
   }
 
-  $rect <-250,390,-50,430>
+  $rect <410,550,610,590>
   object Effects::Int32Effect Int32Effect
   {
     preset NoOfCycles = 3;
@@ -690,6 +689,24 @@ class Application : Core::Root
     preset Enabled = true;
     preset Value1 = 155;
     preset Outlet = ^ErrorDialog.Opacity;
+  }
+
+  // Validations
+  note group Note1
+  {
+    attr Bounds = <670,-10,960,610>;
+  }
+
+  // Error & Battery Dialog
+  note group Note2
+  {
+    attr Bounds = <360,360,650,610>;
+  }
+
+  // Get Methods
+  note group Note3
+  {
+    attr Bounds = <980,-10,1270,250>;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -730,6 +747,9 @@ class Application : Core::Root
   $member HandleNegation
   $member BatteryDialog
   $member Int32Effect
+  $member Note1
+  $member Note2
+  $member Note3
 }
 
 $rect <480,20,680,60>
@@ -3034,46 +3054,8 @@ $rect <-335,339,-135,379>
 $output false
 class Battery : Core::Group
 {
-  $rect <170,10,370,50>
+  $rect <150,-20,350,20>
   inherited property Bounds = <0,0,120,54>;
-
-  $rect <170,110,370,150>
-  inherited method UpdateLayout()
-  {
-    // Always invoke the inherited method.
-    super( aSize );
-
-    /*
-
-      HINT:
-
-      This method exists for sophisticated layout calculation. Please note, that in 
-      most cases it is completely sufficient to use the views property 'Layout' to
-      determine how the view should behave when the component is resized.
-
-    */
-
-    /*
-
-      TO DO:
-
-      Put here the code to calculate new position and size of enclosed views. The
-      current (new) size of the component itself is passed in the parameter aSize.
-      For example:
-
-        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
-
-    */
-  }
-
-  $rect <170,70,370,110>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited method.
-    super( aState );
-
-
-  }
 
   $rect <20,20,160,60>
   object Views::Image Bgk
@@ -3089,7 +3071,7 @@ class Battery : Core::Group
     preset Bitmap = Application::BatteryLine;
   }
 
-  $rect <-80,160,120,200>
+  $rect <0,120,200,160>
   slot onUseBattery
   {
     BatteryPercentage -= 0.5;
@@ -3233,10 +3215,7 @@ class Battery : Core::Group
     preset Bitmap = Application::BatteryLine;
   }
 
-  $rect <-70,92,130,132>
-  var int32 Interval = 100;
-
-  $rect <170,160,370,200>
+  $rect <-370,250,-170,290>
   object Effects::BoolEffect BoolEffect
   {
     preset Value2 = true;
@@ -3247,18 +3226,18 @@ class Battery : Core::Group
     preset Enabled = false;
   }
 
-  $rect <-321,57,-121,97>
+  $rect <0,80,200,120>
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
-    preset Period = 2000;
+    preset Period = 3000;
     preset Enabled = true;
   }
 
-  $rect <-367,207,-167,247>
+  $rect <150,20,350,60>
   var int32 BatteryPercentage = 100;
 
-  $rect <-54,236,146,276>
+  $rect <0,160,200,200>
   method void UpdateBatteryLines( arg int32 percentage )
   {
     array Views::Image imgs [20];
@@ -3303,8 +3282,6 @@ class Battery : Core::Group
   // and the expected order of the members don't depend. Merging of changes in the 
   // project files is simplified.
   $member Bounds
-  $member UpdateLayout
-  $member UpdateViewState
   $member Bgk
   $member line1
   $member line2
@@ -3327,7 +3304,6 @@ class Battery : Core::Group
   $member line19
   $member line20
   $member onUseBattery
-  $member Interval
   $member BoolEffect
   $member Timer
   $member BatteryPercentage
