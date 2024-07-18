@@ -64,44 +64,60 @@ int GetPriorityOfOperator(const char& op)
 
 float ExecTwoOp(float first, float second, const char& op)
 {
+    float res = 0.0;
     switch (op)
     {
     case '+':
-        return first + second;
+        res =  first + second;
+        std::cout << first << " " << second << " " << res << std::endl;
+        break;
     case '-':
-        return first - second;
+        res = first - second;
+        break;
     case 'x':
-        return first * second;
+        res = first * second;
+        break;
     case '/':
     {
         if (second != 0)
-            return first / second;
+        {
+            res = first / second;
+            break;
+        }
         else
         {
             if (first < 0.0)
             {
-                return -std::numeric_limits<float>::infinity();
+                res = -std::numeric_limits<float>::infinity();
+                break;
             }
             else if (first > 0.0)
             {
-                return std::numeric_limits<float>::infinity();
+                res = std::numeric_limits<float>::infinity();
+                break;
             }
             else
             {
-                return std::numeric_limits<float>::quiet_NaN();
+                res = std::numeric_limits<float>::quiet_NaN();
+                break;
             }
         }
     }
     case '%':
     {
         float temp = first * second;
-        return temp / 100;
+        res = temp / 100;
+        break;
     }
     case '^':
-        return pow(first, second);
+        res = pow(first, second);
+        break;
     default:
-        return 0;
+        res = 0;
+        break;
     }
+
+    return res;
 }
 
 std::vector<std::string> TokenizeExpression(const std::string& expression)
@@ -233,7 +249,7 @@ float EvaluateRPN(const std::string& expression)
 {
     std::vector<std::string> RPN = ShuntingYardAlgorithm(expression);
     std::stack<float> stk;
-    int first, second;
+    float first, second;
 
     for (const std::string& token : RPN)
     {

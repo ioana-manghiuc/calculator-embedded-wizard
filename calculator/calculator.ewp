@@ -77,7 +77,7 @@ $rect <310,70,510,110>
 profile Win32 : Windows.Software.RGBA8888
 {
   attr Verbose = false;
-  attr ScreenSize = <350,590>;
+  attr ScreenSize = <340,590>;
   attr Optimization = High;
   attr ApplicationClass = Application::Application;
   attr CleanOutputDirectories = false;
@@ -108,7 +108,7 @@ $rect <560,70,760,110>
 profile Web : Web.WebGL.RGBA8888
 {
   attr Verbose = false;
-  attr ScreenSize = <350,590>;
+  attr ScreenSize = <340,590>;
   attr Optimization = High;
   attr FontConversion = Windows;
   attr CleanOutputDirectories = false;

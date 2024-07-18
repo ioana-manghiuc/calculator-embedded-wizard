@@ -56,7 +56,7 @@ note group Note1
 // Profile Configuration
 note group Note2
 {
-  attr Bounds = <290,20,780,140>;
+  attr Bounds = <300,20,790,140>;
 }
 
 // Languages
@@ -82,10 +82,11 @@ profile Win32 : Windows.Software.RGBA8888
   attr ApplicationClass = Application::Application;
   attr CleanOutputDirectories = false;
   attr FontConversion = Windows;
-  attr OutputFileNameExtension = c;
+  attr OutputFileNameExtension = cpp;
   attr ScreenOrientation = Normal;
   attr OutputDirectory = .\GeneratedCode;
-  attr ApplicationTitle = calculator;
+  attr ApplicationTitle = "calculator";
+  attr ApplicationName = calculator;
 
   $rect <10,10,154,50>
   macro Author = "Dipl. Ing. Paul Banach and Dipl. Ing. Manfred Schweyer, Copyright (C) TARA Systems GmbH";
