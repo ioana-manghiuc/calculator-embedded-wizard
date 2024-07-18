@@ -118,6 +118,11 @@ class Application : Core::Root
         {
             temp = Text.String.remove(Text.String.length - 1, 1);
         }
+        else if(Keypad.keyString == "+/-")
+        {
+          trace "here!";
+          temp = HandleNegation(Text.String);
+        }
         else if(IsDigit(str[0]))
         {
            if(lastChar == ')')
@@ -345,7 +350,7 @@ class Application : Core::Root
          //signal onShowDialog;
          //7ErrDialog.ErrorText.String = "Expression is null.";
          signal onOpenDialog;
-         ErrorDg.ErrorText.String = "Expression is null.";
+         ErrorDialog.ErrorText.String = "Expression is null.";
          return false;
     }
     else
@@ -355,7 +360,7 @@ class Application : Core::Root
            //signal onShowDialog;
            //ErrDialog.ErrorText.String = "Parantheses used incorrectly.";
            signal onOpenDialog;
-           ErrorDg.ErrorText.String = "Parantheses used incorrectly.";
+           ErrorDialog.ErrorText.String = "Parantheses used incorrectly.";
            return false;
         }
         else if(!OperatorsCorrectlyUsed(expression))
@@ -363,7 +368,7 @@ class Application : Core::Root
            //signal onShowDialog;
            //ErrDialog.ErrorText.String = "Operators used incorrectly.";
            signal onOpenDialog;
-           ErrorDg.ErrorText.String = "Operators used incorrectly.";
+           ErrorDialog.ErrorText.String = "Operators used incorrectly.";
            return false;
         }
         else if (!CharactersAllowed(expression))
@@ -371,7 +376,7 @@ class Application : Core::Root
            //signal onShowDialog;
            //ErrDialog.ErrorText.String = "Expression contains characters that are not allowed.";
            signal onOpenDialog;
-           ErrorDg.ErrorText.String = "Expression contains characters that are not allowed.";
+           ErrorDialog.ErrorText.String = "Expression contains characters that are not allowed.";
            return false;
         }
     }
@@ -495,6 +500,10 @@ class Application : Core::Root
           {
             return false; 
           }
+          if (expression[i] == '.' && expression[i - 1] == '.')
+          {
+            return false; 
+          }
           
           if (i == expression.length - 1 && IsOperator(expression[i]))
           {
@@ -514,32 +523,6 @@ class Application : Core::Root
       return true;
 
     return false;
-  }
-
-  $rect <952,400,1152,440>
-  var Application::ErrorDialog ErrDialog = null;
-
-  $rect <950,446,1150,486>
-  slot onShowDialog
-  {
-    ErrDialog = new Application::ErrorDialog;
-
-    ErrDialog.Bounds.x = 45;
-    ErrDialog.Bounds.y = 185;
-    ErrDialog.StackingPriority = 3;
-
-    ErrDialog.OnCloseDialog = onCloseDialog;
-
-    Add(ErrDialog, 0);
-    BeginModal(ErrDialog);
-  }
-
-  $rect <950,486,1150,526>
-  slot onCloseDialog
-  {
-    EndModal(ErrDialog);
-    Remove(ErrDialog);
-    ErrDialog = null;
   }
 
   $rect <670,120,870,160>
@@ -647,7 +630,7 @@ class Application : Core::Root
   }
 
   $rect <20,20,160,60>
-  object Application::ErrorDialog ErrorDg
+  object Application::ErrorDialog ErrorDialog
   {
     preset StackingPriority = 3;
     preset Bounds = <-270,207,-20,307>;
@@ -658,62 +641,61 @@ class Application : Core::Root
   $rect <430,450,630,490>
   slot onOpenDialog
   {
-    ErrorDg.Visible = true;
-    ErrorDg.Bounds.x = 45;
-    ErrorDg.OnCloseDialog = onDialogHandled;
-    Timer.Enabled = true;
+    Int32Effect.Enabled=true;
+    ErrorDialog.Visible = true;
+    ErrorDialog.Bounds.x = 45;
+    ErrorDialog.OnCloseDialog = onDialogHandled;
   }
 
   $rect <430,500,630,540>
   slot onDialogHandled
   {
-    ErrorDg.Bounds.x = -270;
-    ErrorDg.Visible = false;
-    Timer.Enabled = false;
+    ErrorDialog.Bounds.x = -270;
+    ErrorDialog.Visible = false;
   }
 
-  $rect <690,450,890,490>
-  object Core::Timer Timer
+  $rect <420,400,620,440>
+  inherited method Init()
   {
-    preset OnTrigger = flashMessage;
-    preset Period = 0;
-    preset Begin = 3000;
+    signal BatteryDialog.onUseBattery;
+  }
+
+  $rect <970,250,1170,290>
+  method string HandleNegation( arg string expression )
+  {
+    var string newexpr = "";
+
+    if(IsOperator(expression[expression.length - 1]))
+    {
+      newexpr = expression + "(-";  
+    }
+    return newexpr;
+
+
+  }
+
+  $rect <20,20,160,60>
+  object Application::Battery BatteryDialog
+  {
+    preset Bounds = <110,144,230,199>;
+  }
+
+  $rect <-250,390,-50,430>
+  object Effects::Int32Effect Int32Effect
+  {
+    preset NoOfCycles = 3;
+    preset CycleDuration = 400;
+    preset InterCycleDelay = 0;
     preset Enabled = true;
-  }
-
-  $rect <690,509,890,549>
-  slot flashMessage
-  {
-    while (flashCount < maxFlashes)
-    {
-
-      flashCount++;
-    }
-
-    if(flashCount >= maxFlashes)
-    {
-      Timer.Enabled = false;
-      ErrorDg.Visible = true;
-      ErrorDg.Bounds.x = 45;
-    }
-  }
-
-  $rect <880,610,1080,650>
-  var int32 flashCount = 0;
-
-  $rect <880,561,1080,601>
-  var int32 maxFlashes = 6;
-
-  $rect <-330,410,-80,450>
-  object Effects::ShowHideTransition ShowHideTransition
-  {
-    preset Alignment = Effects::DialogAlignment[AlignHorzCenter, AlignVertCenter];
+    preset Value1 = 155;
+    preset Outlet = ^ErrorDialog.Opacity;
   }
 
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
   // project files is simplified.
+  $member Init
   $member Bounds
   $member TextTxt
   $member KeyHandlerNote
@@ -738,20 +720,15 @@ class Application : Core::Root
   $member CorrectParentheses
   $member OperatorsCorrectlyUsed
   $member IsParenthesis
-  $member ErrDialog
-  $member onShowDialog
-  $member onCloseDialog
   $member CharactersAllowed
   $member ExecuteOperation
   $member IsWhiteSpace
-  $member ErrorDg
+  $member ErrorDialog
   $member onOpenDialog
   $member onDialogHandled
-  $member Timer
-  $member flashMessage
-  $member flashCount
-  $member maxFlashes
-  $member ShowHideTransition
+  $member HandleNegation
+  $member BatteryDialog
+  $member Int32Effect
 }
 
 $rect <480,20,680,60>
@@ -2391,7 +2368,7 @@ note group Note
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <200,-20,440,420>;
+  attr Bounds = <200,-20,440,620>;
 }
 
 // Fonts
@@ -3016,6 +2993,487 @@ inline Inline
   }
 }
 
+$rect <220,420,420,460>
+$output false
+resource Resources::Bitmap BatteryOutline
+{
+  attr bitmapfile FileName = .\resources\battery-outline.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <110,50>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <220,470,420,510>
+$output false
+resource Resources::Bitmap BatteryBgk
+{
+  attr bitmapfile FileName = .\resources\battery-filled.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <110,50>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <220,520,420,560>
+$output false
+resource Resources::Bitmap BatteryLine
+{
+  attr bitmapfile FileName = .\resources\battery-line.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <5,46>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <-335,339,-135,379>
+$output false
+class Battery : Core::Group
+{
+  $rect <170,10,370,50>
+  inherited property Bounds = <0,0,120,54>;
+
+  $rect <170,110,370,150>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+  }
+
+  $rect <170,70,370,110>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Bgk
+  {
+    preset Bounds = <5,2,115,52>;
+    preset Bitmap = Application::BatteryBgk;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line1
+  {
+    preset Bounds = <7,4,12,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <-80,160,120,200>
+  slot onUseBattery
+  {
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line2
+  {
+    preset Bounds = <12,4,17,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line3
+  {
+    preset Bounds = <17,4,22,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line4
+  {
+    preset Bounds = <22,4,27,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line5
+  {
+    preset Bounds = <27,4,32,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line6
+  {
+    preset Bounds = <32,4,37,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line7
+  {
+    preset Bounds = <37,4,42,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line8
+  {
+    preset Bounds = <42,4,47,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line9
+  {
+    preset Bounds = <47,4,52,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line10
+  {
+    preset Bounds = <52,4,57,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line11
+  {
+    preset Bounds = <57,4,62,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line12
+  {
+    preset Bounds = <62,4,67,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line13
+  {
+    preset Bounds = <67,4,72,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line14
+  {
+    preset Bounds = <72,4,77,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line15
+  {
+    preset Bounds = <77,4,82,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line16
+  {
+    preset Bounds = <82,4,87,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line17
+  {
+    preset Bounds = <87,4,92,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line18
+  {
+    preset Bounds = <92,4,97,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line19
+  {
+    preset Bounds = <97,4,102,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line20
+  {
+    preset Bounds = <102,4,107,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <-70,92,130,132>
+  var int32 Interval = 100;
+
+  $rect <170,160,370,200>
+  object Effects::BoolEffect BoolEffect
+  {
+    preset Value2 = true;
+    preset Value1 = false;
+    preset Outlet = ^line20.Visible;
+    preset CycleDuration = 500;
+    preset InterCycleDelay = 500;
+    preset Enabled = true;
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Bounds
+  $member UpdateLayout
+  $member UpdateViewState
+  $member Bgk
+  $member line1
+  $member line2
+  $member line3
+  $member line4
+  $member line5
+  $member line6
+  $member line7
+  $member line8
+  $member line9
+  $member line10
+  $member line11
+  $member line12
+  $member line13
+  $member line14
+  $member line15
+  $member line16
+  $member line17
+  $member line18
+  $member line19
+  $member line20
+  $member onUseBattery
+  $member Interval
+  $member BoolEffect
+}
+
+$rect <220,570,420,610>
+$output false
+resource Resources::Bitmap BatteryBlock
+{
+  attr bitmapfile FileName = .\resources\full-battery.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <5,46>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <-50,550,150,590>
+inline Inline1
+{
+  /*
+
+    TO DO:
+
+    Include external header files or add type and function declarations needed
+    in the implementation of Application::DeviceClass. For example:
+
+      #include "DeviceDriver.h"
+
+      #include "your_middleware_api.h"
+
+      void Your_Middleware_Some_Function( int aSomeArg );
+
+  */
+}
+
+$rect <-50,450,150,490>
+$output false
+class DeviceClass : Templates::DeviceClass
+{
+  $rect <30,80,230,120>
+  inherited method Done()
+  {
+    // The following section is intended to perform de-initialization-related operations
+    // in the underlying device or middleware. Consequently, the section is taken in
+    // account only when generating code (not during prototyping).
+    $if !$prototyper
+      var object thisObject = this;
+
+      /*
+         TO DO:
+
+         The following native statement is intended to enclose code to communicate with
+         your device API. The variable 'thisObject' contains a pointer to the actually
+         de-initialized Application::DeviceClass object. Use the 'thisObject' pointer to
+         e.g. de-register the object from the middleware if you have registered it
+         beforehand.
+         
+      */
+
+      native ( thisObject )
+      {
+        /*
+           TO DO:
+
+           Depending on your application case you call functions of the underlying
+           middleware (or access the device directly) in order to perform the necessary
+           de-initialization steps. For example, you invoke some 'C' function:
+
+             YourDevice_DeInitialize();
+
+           IMPORTANT:
+           ----------
+
+           The variable 'thisObject' represents the actually de-initialized instance of the
+           Application::DeviceClass. If you have stored this object at the initialization
+           time (in the 'Init' method) in some global C variable or registered it by the
+           middleware, it is important to perform now the opposite operation. Set the
+           global variable to NULL or de-register 'thisObject' object from the middleware.
+           
+        */
+      }
+    $endif
+  }
+
+  $rect <30,40,230,80>
+  inherited method Init()
+  {
+    // The following section is intended to perform initialization-related operations
+    // in the underlying device or middleware. Consequently, the section is taken in
+    // account only when generating code (not during prototyping).
+    $if !$prototyper
+      var object thisObject = this;
+
+      /*
+         TO DO:
+
+         The following native statement is intended to enclose code to communicate with
+         your device API. The variable 'thisObject' contains a pointer to the actually
+         initialized Application::DeviceClass object. Use the 'thisObject' pointer to
+         e.g. register the object by the middleware as receiver of events, etc.
+         
+      */
+
+      native ( thisObject )
+      {
+        /*
+           TO DO:
+
+           Depending on your application case you call functions of the underlying
+           middleware (or access the device directly) in order to perform the necessary
+           initialization steps. For example, you invoke some 'C' function:
+
+             YourDevice_Initialize();
+
+           The variable 'thisObject' represents the actually initialized instance of the
+           Application::DeviceClass. You can store this variable e.g. in the middleware
+           and use it whenever the middleware needs to notify the GUI application about
+           some state alternation or events. In this manner, the middleware will be able
+           to invoke methods of the interface device object.
+
+           For example, you can store 'thisObject' in some global C variable:
+
+             // Declaration of the global C variable
+             XObject theDeviceObject;
+
+             // Store the instance in the global variable
+             theDeviceObject = thisObject;
+
+           Later use the global variable e.g. to provide the GUI application with events:
+
+             ApplicationDeviceClass__TriggerSomeEvent( theDeviceObject );
+
+           IMPORTANT:
+           ----------
+
+           If you store 'thisObject' for later use, don't forget to implement the opposite
+           operation in the method 'Done'. Concrete, 'Done' should set the global variable
+           again to the value NULL.
+
+        */
+      }
+    $endif
+  }
+
+  // Device classes are assembled from 'Commands', 'Properties' and 'System Events'. \
+  // For this purpose use the following prepared templates from the Gallery folder \
+  // 'Device':
+  // 
+  // Command - method to trigger actions in the underlying device or query data from \
+  // the device.
+  // 
+  // Property - variable to represent or modify a setting or state value existing \
+  // within the underlying device.
+  // 
+  // System Event - represents an event or notifications the underlying device may \
+  // report.
+  // 
+  // For more details please visit: https://doc.embedded-wizard.de/device-class-and-device-driver
+  note legend Note4
+  {
+    attr Bounds = <10,540,1100,710>;
+  }
+
+  // The method 'Init' is executed just in the moment when new instance of 'Application::DeviceClass' \
+  // is created. It is suitable to:
+  // - initialize the hardware represented by the interface.
+  // - register the instance by the middleware to receive updates and events.
+  // - open files, network connections or other system resources needed by the interface.
+  // 
+  // The method 'Done' is executed just in the moment when an instance of 'Application::DeviceClass' \
+  // is disposed. It is suitable to:
+  // - de-initialize the underlying hardware.
+  // - de-register the instance from the underlying middleware.
+  // - close files, network connections and other no longer needed system resources.
+  // 
+  // If your application case doesn't need the initialization or de-initialization, \
+  // feel free to delete the methods 'Init' or/and 'Done'.
+  note legend Note3
+  {
+    attr Bounds = <10,300,790,520>;
+  }
+
+  // Constructor and Destructor
+  note group Note1
+  {
+    attr Bounds = <10,0,250,140>;
+  }
+
+  $rect <280,0,500,40>
+  object Core::SystemEvent LoseBatteryEvent;
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about a particular system event.
+  $rect <280,40,500,80>
+  $output true
+  method void TriggerLoseBatteryEvent()
+  {
+    LoseBatteryEvent.Trigger( null, false );
+
+  }
+}
+
+$rect <-50,500,150,540>
+autoobject Application::DeviceClass Device;
+
 // Directives to adapt the order of the above members according to how these members 
 // where arranged when the project content was stored. In this manner the storage 
 // and the expected order of the members don't depend. Merging of changes in the 
@@ -3047,3 +3505,11 @@ $member OKBtn
 $member ParenthesisBtn
 $member NumFont1
 $member BackBtn
+$member BatteryOutline
+$member BatteryBgk
+$member BatteryLine
+$member Battery
+$member BatteryBlock
+$member Inline1
+$member DeviceClass
+$member Device

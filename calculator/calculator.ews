@@ -3,7 +3,7 @@ $version 1.0
 attr active = Application::Battery;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.Init;
+attr currentCodeInspector = Application::Battery.UpdateBatteryLines;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -17,7 +17,7 @@ attr extractDoc_Variants = false;
 attr generateClut_ReservedColors = 0;
 attr heapMonitor_Show = false;
 attr language = Default;
-attr profile = Web;
+attr profile = Win32;
 attr profilerMonitor_Show = false;
 attr search_CaseSensitive = false;
 attr search_History = keyView;
@@ -32,6 +32,7 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
+  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-2,-39>;
   attr zoom = 0.75;
@@ -40,60 +41,46 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-843,235>;
+  attr scrollTo = <-843,-53>;
   attr zoom = 0.75;
-}
-
-view class Application::Application
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-531,345>;
-  attr zoom = 1.0;
 }
 
 view class Application::Battery
 {
   attr enableWireMode = false;
-  attr scrollTo = <-593,-195>;
+  attr scrollTo = <-880,-208>;
   attr zoom = 1.0;
 }
 
-view class Application::NumKeyBtns
+view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-734,-65>;
+  attr scrollTo = <-459,-199>;
   attr zoom = 0.5;
 }
 
-view class Application::ErrorDialog
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-464,-230>;
-  attr zoom = 0.75;
-}
-
-codeview Application::Application.CalculateExpression
+codeview Application::Battery.onUseBattery
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <39,62>;
-  attr codeSelStart = <39,62>;
+  attr codeSelEnd = <38,5>;
+  attr codeSelStart = <38,5>;
 }
 
-codeview Application::Application.HandleNegation
+codeview Application::Application.Init
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <80,8>;
-  attr codeSelStart = <80,8>;
+  attr codeSelEnd = <2,0>;
+  attr codeSelStart = <2,0>;
 }
 
-codeview Application::Application.ResetVariables
+codeview Application::Battery.UpdateBatteryLines
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <23,0>;
-  attr codeSelStart = <23,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
 }
 
 codeview Core::Group.Add
@@ -102,12 +89,4 @@ codeview Core::Group.Add
   attr codeFirstPos = <0,0>;
   attr codeSelEnd = <2,1>;
   attr codeSelStart = <2,1>;
-}
-
-codeview Application::Application.Init
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
 }
