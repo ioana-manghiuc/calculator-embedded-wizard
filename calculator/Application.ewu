@@ -118,6 +118,11 @@ class Application : Core::Root
         {
             temp = Text.String.remove(Text.String.length - 1, 1);
         }
+        else if(Keypad.keyString == "+/-")
+        {
+          trace "here!";
+          temp = HandleNegation(Text.String);
+        }
         else if(IsDigit(str[0]))
         {
            if(lastChar == ')')
@@ -137,7 +142,7 @@ class Application : Core::Root
         Text.String = temp;
         cursorPosition++;
     }
-
+    trace cursorPosition;
     if (str == "=")
     {
       if(IsExpressionValid(Text.String))
@@ -344,8 +349,8 @@ class Application : Core::Root
     {
          //signal onShowDialog;
          //7ErrDialog.ErrorText.String = "Expression is null.";
-         //signal onOpenDialog;
-         //ErrorDg.ErrorText.String = "Expression is null.";
+         signal onOpenDialog;
+         ErrorDg.ErrorText.String = "Expression is null.";
          return false;
     }
     else
@@ -492,6 +497,10 @@ class Application : Core::Root
         else
         {
           if (IsOperator(expression[i]) && IsOperator(expression[i - 1]))
+          {
+            return false; 
+          }
+          if (expression[i] == '.' && expression[i - 1] == '.')
           {
             return false; 
           }
@@ -652,12 +661,16 @@ class Application : Core::Root
     preset StackingPriority = 3;
     preset Bounds = <-270,207,-20,307>;
     preset Visible = false;
+    preset OnCloseDialog = onDialogHandled;
   }
 
   $rect <430,450,630,490>
   slot onOpenDialog
   {
-    sender; /* the method is called from the sender object */
+    ErrorDg.Visible = true;
+    ErrorDg.Bounds.x = 45;
+    ErrorDg.OnCloseDialog = onDialogHandled;
+    //Timer.Enabled = true;
   }
 
   $rect <430,500,630,540>
@@ -665,12 +678,71 @@ class Application : Core::Root
   {
     ErrorDg.Bounds.x = -270;
     ErrorDg.Visible = false;
+    Timer.Enabled = false;
+  }
+
+  $rect <690,450,890,490>
+  object Core::Timer Timer
+  {
+    preset OnTrigger = flashMessage;
+    preset Period = 0;
+    preset Begin = 3000;
+    preset Enabled = false;
+  }
+
+  $rect <690,509,890,549>
+  slot flashMessage
+  {
+    while (flashCount < maxFlashes)
+    {
+
+      flashCount++;
+    }
+
+    if(flashCount >= maxFlashes)
+    {
+      Timer.Enabled = false;
+      ErrorDg.Visible = true;
+      ErrorDg.Bounds.x = 45;
+    }
+  }
+
+  $rect <880,610,1080,650>
+  var int32 flashCount = 0;
+
+  $rect <880,561,1080,601>
+  var int32 maxFlashes = 6;
+
+  $rect <420,400,620,440>
+  inherited method Init()
+  {
+  }
+
+  $rect <970,250,1170,290>
+  method string HandleNegation( arg string expression )
+  {
+    var string newexpr = "";
+
+    if(IsOperator(expression[expression.length - 1]))
+    {
+      newexpr = expression + "(-";  
+    }
+    return newexpr;
+
+
+  }
+
+  $rect <20,20,160,60>
+  object Application::Battery BatteryDialog
+  {
+    preset Bounds = <110,144,230,199>;
   }
 
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
   // project files is simplified.
+  $member Init
   $member Bounds
   $member TextTxt
   $member KeyHandlerNote
@@ -704,6 +776,12 @@ class Application : Core::Root
   $member ErrorDg
   $member onOpenDialog
   $member onDialogHandled
+  $member Timer
+  $member flashMessage
+  $member flashCount
+  $member maxFlashes
+  $member HandleNegation
+  $member BatteryDialog
 }
 
 $rect <480,20,680,60>
@@ -2343,7 +2421,7 @@ note group Note
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <200,-20,440,420>;
+  attr Bounds = <200,-20,440,580>;
 }
 
 // Fonts
@@ -2968,6 +3046,371 @@ inline Inline
   }
 }
 
+$rect <220,420,420,460>
+$output false
+resource Resources::Bitmap BatteryOutline
+{
+  attr bitmapfile FileName = .\resources\battery-outline.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <110,50>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <220,470,420,510>
+$output false
+resource Resources::Bitmap BatteryBgk
+{
+  attr bitmapfile FileName = .\resources\battery-filled.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <110,50>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <220,520,420,560>
+$output false
+resource Resources::Bitmap BatteryLine
+{
+  attr bitmapfile FileName = .\resources\battery-line.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <5,46>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <-335,339,-135,379>
+$output false
+class Battery : Core::Group
+{
+  $rect <170,10,370,50>
+  inherited property Bounds = <0,0,120,54>;
+
+  $rect <170,110,370,150>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+  }
+
+  $rect <170,70,370,110>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image Bgk
+  {
+    preset Bounds = <5,2,115,52>;
+    preset Bitmap = Application::BatteryBgk;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line1
+  {
+    preset Bounds = <7,4,11,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line2
+  {
+    preset Bounds = <11,4,15,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line3
+  {
+    preset Bounds = <15,4,19,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line4
+  {
+    preset Bounds = <19,4,23,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line5
+  {
+    preset Bounds = <23,4,27,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line6
+  {
+    preset Bounds = <27,4,31,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line7
+  {
+    preset Bounds = <31,4,35,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line8
+  {
+    preset Bounds = <35,4,39,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line9
+  {
+    preset Bounds = <39,4,43,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line10
+  {
+    preset Bounds = <43,4,47,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line11
+  {
+    preset Bounds = <47,4,51,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line12
+  {
+    preset Bounds = <51,4,55,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line13
+  {
+    preset Bounds = <55,4,59,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line14
+  {
+    preset Bounds = <59,4,63,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line15
+  {
+    preset Bounds = <63,4,67,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line16
+  {
+    preset Bounds = <67,4,71,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line17
+  {
+    preset Bounds = <71,4,75,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line18
+  {
+    preset Bounds = <75,4,79,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line19
+  {
+    preset Bounds = <79,4,83,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line20
+  {
+    preset Bounds = <83,4,87,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line21
+  {
+    preset Bounds = <87,4,91,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line22
+  {
+    preset Bounds = <91,4,95,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line23
+  {
+    preset Bounds = <95,4,99,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line24
+  {
+    preset Bounds = <99,4,103,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image line25
+  {
+    preset Bounds = <103,4,107,50>;
+    preset Bitmap = Application::BatteryLine;
+  }
+
+  $rect <-90,113,110,153>
+  object Core::Timer BatteryTimer
+  {
+    preset OnTrigger = onUseBattery;
+  }
+
+  $rect <-100,160,100,200>
+  slot onUseBattery
+  {
+    sender; /* the method is called from the sender object */
+  }
+}
+
 // Directives to adapt the order of the above members according to how these members 
 // where arranged when the project content was stored. In this manner the storage 
 // and the expected order of the members don't depend. Merging of changes in the 
@@ -2999,3 +3442,7 @@ $member OKBtn
 $member ParenthesisBtn
 $member NumFont1
 $member BackBtn
+$member BatteryOutline
+$member BatteryBgk
+$member BatteryLine
+$member Battery

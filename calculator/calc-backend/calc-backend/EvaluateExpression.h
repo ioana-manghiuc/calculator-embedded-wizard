@@ -36,8 +36,8 @@ bool IsNegativeNumber(const std::string& expression)
     std::string subexpr = expression.substr(1, expression.length() - 1);
     if (expression[0] == '-' && IsNumber(subexpr))
     {
-		return true;
-	}
+        return true;
+    }
     return false;
 }
 
@@ -78,7 +78,7 @@ float ExecTwoOp(float first, float second, const char& op)
     switch (op)
     {
     case '+':
-        res =  first + second;
+        res = first + second;
         break;
     case '-':
         res = first - second;
@@ -134,17 +134,17 @@ std::vector<std::string> TokenizeExpression(const std::string& expression)
     std::vector<std::string> tokens;
     int i = 0;
 
-    while (i < expression.length()) 
+    while (i < expression.length())
     {
         if (isspace(expression[i]))
         {
             i++;
             continue;
         }
-        else if (isdigit(expression[i]) || (expression[i] == '.' && isdigit(expression[i + 1]))) 
+        else if (isdigit(expression[i]) || (expression[i] == '.' && isdigit(expression[i + 1])))
         {
             std::string number;
-            while (i < expression.length() && (isdigit(expression[i]) || expression[i] == '.')) 
+            while (i < expression.length() && (isdigit(expression[i]) || expression[i] == '.'))
             {
                 number += expression[i];
                 i++;
@@ -156,7 +156,7 @@ std::vector<std::string> TokenizeExpression(const std::string& expression)
             tokens.push_back(std::string(1, expression[i]));
             i++;
         }
-        else 
+        else
         {
             i++;
         }
@@ -267,16 +267,16 @@ float EvaluateRPN(const std::string& expression)
     {
         if (IsOperator(token[0]) && !IsNegativeNumber(token))
         {
-			second = stk.top();
-			stk.pop();
-			first = stk.top();
-			stk.pop();
-			stk.push(ExecTwoOp(first, second, token[0]));
-		}
+            second = stk.top();
+            stk.pop();
+            first = stk.top();
+            stk.pop();
+            stk.push(ExecTwoOp(first, second, token[0]));
+        }
         else
         {
-			stk.push(std::stof(token));
-		}
+            stk.push(std::stof(token));
+        }
     }
 
     return stk.top();

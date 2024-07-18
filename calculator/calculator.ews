@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::Battery;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.IsExpressionValid;
+attr currentCodeInspector = Application::Application.Init;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -17,7 +17,7 @@ attr extractDoc_Variants = false;
 attr generateClut_ReservedColors = 0;
 attr heapMonitor_Show = false;
 attr language = Default;
-attr profile = Win32;
+attr profile = Web;
 attr profilerMonitor_Show = false;
 attr search_CaseSensitive = false;
 attr search_History = keyView;
@@ -26,13 +26,12 @@ attr search_IgnoreMosaic = false;
 attr search_LimitToComposer = true;
 attr search_WholeWords = false;
 attr search_WildCards = false;
-attr selectedProfiles = Win32;
+attr selectedProfiles = Web;
 
 view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-2,-39>;
   attr zoom = 0.75;
@@ -41,97 +40,74 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-783,-89>;
-  attr zoom = 1.0;
+  attr scrollTo = <-843,235>;
+  attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-508,-55>;
-  attr zoom = 0.75;
+  attr scrollTo = <-531,345>;
+  attr zoom = 1.0;
+}
+
+view class Application::Battery
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-593,-195>;
+  attr zoom = 1.0;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-591,-146>;
-  attr zoom = 0.75;
-}
-
-view class Application::Pair
-{
-  attr scrollTo = <-269,-199>;
-  attr zoom = 1.0;
+  attr scrollTo = <-734,-65>;
+  attr zoom = 0.5;
 }
 
 view class Application::ErrorDialog
 {
   attr enableWireMode = false;
-  attr scrollTo = <-464,-326>;
+  attr scrollTo = <-464,-230>;
   attr zoom = 0.75;
-}
-
-codeview Application::Application.onDialogHandled
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <34,0>;
-  attr codeSelStart = <34,0>;
 }
 
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,70>;
-  attr codeSelEnd = <68,55>;
-  attr codeSelStart = <68,55>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <39,62>;
+  attr codeSelStart = <39,62>;
 }
 
-codeview Application::Inline
+codeview Application::Application.HandleNegation
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,207>;
-  attr codeSelEnd = <14,226>;
-  attr codeSelStart = <14,226>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <80,8>;
+  attr codeSelStart = <80,8>;
 }
 
-codeview Application::NumKeyBtns.triggerTimer
+codeview Application::Application.ResetVariables
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <23,0>;
+  attr codeSelStart = <23,0>;
+}
+
+codeview Core::Group.Add
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <2,1>;
+  attr codeSelStart = <2,1>;
+}
+
+codeview Application::Application.Init
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
   attr codeSelEnd = <0,0>;
   attr codeSelStart = <0,0>;
-}
-
-codeview Application::Application.onShowDialog
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <22,9>;
-  attr codeSelStart = <22,9>;
-}
-
-codeview Application::Application.onCloseDialog
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::ErrorDialog.onClose
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::Application.IsExpressionValid
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <8,7>;
-  attr codeSelStart = <8,7>;
 }

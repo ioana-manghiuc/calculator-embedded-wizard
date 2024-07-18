@@ -343,9 +343,9 @@ class Application : Core::Root
     if (expression == "")
     {
          //signal onShowDialog;
-         //ErrDialog.ErrorText.String = "Expression is null.";
-         //signal onOpenDialog;
-         //ErrorDg.ErrorText.String = "Expression is null.";
+         //7ErrDialog.ErrorText.String = "Expression is null.";
+         signal onOpenDialog;
+         ErrorDg.ErrorText.String = "Expression is null.";
          return false;
     }
     else
@@ -652,12 +652,16 @@ class Application : Core::Root
     preset StackingPriority = 3;
     preset Bounds = <-270,207,-20,307>;
     preset Visible = false;
+    preset OnCloseDialog = onDialogHandled;
   }
 
   $rect <430,450,630,490>
   slot onOpenDialog
   {
-    sender; /* the method is called from the sender object */
+    ErrorDg.Visible = true;
+    ErrorDg.Bounds.x = 45;
+    ErrorDg.OnCloseDialog = onDialogHandled;
+    Timer.Enabled = true;
   }
 
   $rect <430,500,630,540>
@@ -665,6 +669,45 @@ class Application : Core::Root
   {
     ErrorDg.Bounds.x = -270;
     ErrorDg.Visible = false;
+    Timer.Enabled = false;
+  }
+
+  $rect <690,450,890,490>
+  object Core::Timer Timer
+  {
+    preset OnTrigger = flashMessage;
+    preset Period = 0;
+    preset Begin = 3000;
+    preset Enabled = true;
+  }
+
+  $rect <690,509,890,549>
+  slot flashMessage
+  {
+    while (flashCount < maxFlashes)
+    {
+
+      flashCount++;
+    }
+
+    if(flashCount >= maxFlashes)
+    {
+      Timer.Enabled = false;
+      ErrorDg.Visible = true;
+      ErrorDg.Bounds.x = 45;
+    }
+  }
+
+  $rect <880,610,1080,650>
+  var int32 flashCount = 0;
+
+  $rect <880,561,1080,601>
+  var int32 maxFlashes = 6;
+
+  $rect <-330,410,-80,450>
+  object Effects::ShowHideTransition ShowHideTransition
+  {
+    preset Alignment = Effects::DialogAlignment[AlignHorzCenter, AlignVertCenter];
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -704,6 +747,11 @@ class Application : Core::Root
   $member ErrorDg
   $member onOpenDialog
   $member onDialogHandled
+  $member Timer
+  $member flashMessage
+  $member flashCount
+  $member maxFlashes
+  $member ShowHideTransition
 }
 
 $rect <480,20,680,60>
