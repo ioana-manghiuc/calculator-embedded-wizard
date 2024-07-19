@@ -3,7 +3,7 @@ $version 1.0
 attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.HandleNegation;
+attr currentCodeInspector = Application::Application.NativeMethod;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -41,68 +41,60 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-843,-53>;
+  attr scrollTo = <-843,91>;
   attr zoom = 0.75;
 }
 
 view class Application::Battery
 {
   attr enableWireMode = false;
-  attr scrollTo = <-880,-208>;
+  attr scrollTo = <-880,-160>;
   attr zoom = 1.0;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-539,-191>;
-  attr zoom = 0.75;
+  attr scrollTo = <-548,-121>;
+  attr zoom = 0.5;
 }
 
-codeview Application::Battery.onUseBattery
+codeview Application::Inline
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <38,5>;
-  attr codeSelStart = <38,5>;
+  attr codeSelEnd = <10,0>;
+  attr codeSelStart = <10,0>;
 }
 
-codeview Application::Application.Init
+codeview Application::Application.NativeMethod
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <33,0>;
-  attr codeSelStart = <33,0>;
+  attr codeSelEnd = <25,5>;
+  attr codeSelStart = <25,5>;
 }
 
-codeview Application::Battery.UpdateBatteryLines
+codeview Application::Application.ExecuteOperation
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
+  attr codeFirstPos = <0,29>;
   attr codeSelEnd = <0,0>;
   attr codeSelStart = <0,0>;
 }
 
-codeview Core::Group.Add
+codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <2,1>;
-  attr codeSelStart = <2,1>;
+  attr codeFirstPos = <0,87>;
+  attr codeSelEnd = <35,89>;
+  attr codeSelStart = <35,89>;
 }
 
-codeview Application::Application.SubexprHasOnlyDigits
+codeview Application::Application.CorrectParentheses
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
+  attr codeFirstPos = <0,6>;
   attr codeSelEnd = <0,0>;
   attr codeSelStart = <0,0>;
-}
-
-codeview Application::Application.HandleNegation
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <80,8>;
-  attr codeSelStart = <80,8>;
 }

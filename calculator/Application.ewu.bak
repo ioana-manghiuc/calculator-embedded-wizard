@@ -5,14 +5,14 @@ $rect <-50,20,150,60>
 $output false
 class Application : Core::Root
 {
-  $rect <960,320,1160,360>
+  $rect <990,260,1190,300>
   inherited property Bounds = <0,0,340,590>;
 
   $rect <20,20,160,60>
   object Views::Text TextTxt
   {
     preset StackingPriority = 3;
-    preset Bounds = <1250,21,1448,86>;
+    preset Bounds = <993,317,1191,382>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -49,14 +49,14 @@ class Application : Core::Root
     preset Color = #030324FF;
   }
 
-  $rect <410,50,610,90>
+  $rect <410,30,610,70>
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = CalculateExpression;
     preset OnHold = null;
   }
 
-  $rect <410,100,610,140>
+  $rect <410,80,610,120>
   slot CalculateExpression
   {
     var string str = "";
@@ -149,14 +149,7 @@ class Application : Core::Root
       {
         var float result = 0.0;
         var string input = Text.String;
-        trace input;
-        $if !$prototyper                    
-        native
-        {
-          result = EvaluateRPN(input);
-        }
-        $endif
-        trace result;
+        result = NativeMethod(input);
         Text.String = ExecuteOperation(Text.String);
         cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
@@ -167,7 +160,7 @@ class Application : Core::Root
   // Key Event Handler
   note group KeyHandlerNote
   {
-    attr Bounds = <360,10,650,170>;
+    attr Bounds = <360,-10,650,140>;
   }
 
   $rect <20,20,160,60>
@@ -189,7 +182,7 @@ class Application : Core::Root
     preset Font = Application::DigitalResFont;
   }
 
-  $rect <410,240,610,280>
+  $rect <410,190,610,230>
   method float ExecTwoOp( arg float first, arg float second, arg string op )
   {
     var float res = 0.0;
@@ -228,14 +221,14 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <410,340,610,380>
+  $rect <410,290,610,330>
   method void ResetVariables()
   {
     Text.String = "";
     //Keypad.ParanthesisOpen = false;
   }
 
-  $rect <670,20,870,60>
+  $rect <710,40,910,80>
   method bool IsOperator( arg char op )
   {
     return ( op == '+' || op == '-' || op == 'x' || op == '/' ||  op == '%' || op == '^');
@@ -247,10 +240,10 @@ class Application : Core::Root
   // Operation Handler
   note group Note
   {
-    attr Bounds = <360,200,650,400>;
+    attr Bounds = <360,150,650,350>;
   }
 
-  $rect <930,30,1130,70>
+  $rect <1030,40,1230,80>
   method int32 GetPriorityOfOperator( arg char op )
   {
     var int32 priority = 0;
@@ -276,7 +269,7 @@ class Application : Core::Root
     return priority;
   }
 
-  $rect <910,80,1180,120>
+  $rect <990,90,1260,130>
   method Application::Pair GetSubexpressionInParentheses( arg int32 startPos, arg string expression )
   {
     var string subexpression;
@@ -308,7 +301,7 @@ class Application : Core::Root
     return res; 
   }
 
-  $rect <930,140,1155,180>
+  $rect <1015,190,1240,230>
   method Application::Pair GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
@@ -338,7 +331,7 @@ class Application : Core::Root
     return res; 
   }
 
-  $rect <680,370,880,410>
+  $rect <710,340,910,380>
   method bool IsExpressionValid( arg string expression )
   {
     // check for valid operators
@@ -384,7 +377,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <680,320,880,360>
+  $rect <710,290,910,330>
   method bool IsDigit( arg char op )
   {
     return ((op >= '0') && (op <= '9') || op == '.');
@@ -393,7 +386,7 @@ class Application : Core::Root
     //return false;
   }
 
-  $rect <670,170,870,210>
+  $rect <710,390,910,430>
   method bool SubexprHasOnlyDigits( arg string expression )
   {
     var int32 i = 0;
@@ -419,7 +412,7 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <950,190,1150,230>
+  $rect <1030,140,1230,180>
   method float GetNegativeNumber( arg string expression )
   {
     var string nrStr = "";
@@ -436,7 +429,7 @@ class Application : Core::Root
     return nrStr.parse_float(-1.0);
   }
 
-  $rect <680,220,880,260>
+  $rect <710,190,910,230>
   method bool CorrectParentheses( arg string expression )
   {
     var int32 size = Application::MAX_SIZE;
@@ -478,7 +471,7 @@ class Application : Core::Root
     return (top == -1);
   }
 
-  $rect <680,270,890,310>
+  $rect <710,240,920,280>
   method bool OperatorsCorrectlyUsed( arg string expression )
   {
     var int32 i = 0;
@@ -516,7 +509,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <670,70,870,110>
+  $rect <710,90,910,130>
   method bool IsParenthesis( arg char op )
   {
       if( op == '(' || op == ')')
@@ -525,7 +518,7 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <670,120,870,160>
+  $rect <710,140,910,180>
   method bool CharactersAllowed( arg string expression )
   {
     var int32 i = 0;
@@ -539,7 +532,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <410,290,610,330>
+  $rect <410,240,610,280>
   method float ExecuteOperation( arg string expression )
   {
     var float firstOp = 0.0;
@@ -623,7 +616,7 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <680,-30,880,10>
+  $rect <710,440,910,480>
   method bool IsWhiteSpace( arg char op )
   {
     return (op == ' ' || op == '\t');
@@ -638,7 +631,7 @@ class Application : Core::Root
     preset OnCloseDialog = onDialogHandled;
   }
 
-  $rect <430,450,630,490>
+  $rect <410,450,610,490>
   slot onOpenDialog
   {
     Int32Effect.Enabled=true;
@@ -647,20 +640,20 @@ class Application : Core::Root
     ErrorDialog.OnCloseDialog = onDialogHandled;
   }
 
-  $rect <430,500,630,540>
+  $rect <410,500,610,540>
   slot onDialogHandled
   {
     ErrorDialog.Bounds.x = -270;
     ErrorDialog.Visible = false;
   }
 
-  $rect <420,400,620,440>
+  $rect <410,400,610,440>
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
   }
 
-  $rect <970,250,1170,290>
+  $rect <710,490,910,530>
   method string HandleNegation( arg string expression )
   {
     var string newexpr = "";
@@ -680,7 +673,7 @@ class Application : Core::Root
     preset Bounds = <110,144,230,199>;
   }
 
-  $rect <-250,390,-50,430>
+  $rect <410,550,610,590>
   object Effects::Int32Effect Int32Effect
   {
     preset NoOfCycles = 3;
@@ -689,6 +682,39 @@ class Application : Core::Root
     preset Enabled = true;
     preset Value1 = 155;
     preset Outlet = ^ErrorDialog.Opacity;
+  }
+
+  // Validations
+  note group Note1
+  {
+    attr Bounds = <670,-10,960,610>;
+  }
+
+  // Error & Battery Dialog
+  note group Note2
+  {
+    attr Bounds = <360,360,650,610>;
+  }
+
+  // Get Methods
+  note group Note3
+  {
+    attr Bounds = <980,-10,1270,250>;
+  }
+
+  $rect <990,410,1190,450>
+  method float NativeMethod( arg string expression )
+  {
+    var float result = 0.0;
+    trace expression;
+    $if !$prototyper                    
+    native (expression)
+    {
+      result = EvaluateRPN(expression);
+    }
+    $endif
+    trace result;
+    return result;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -729,6 +755,10 @@ class Application : Core::Root
   $member HandleNegation
   $member BatteryDialog
   $member Int32Effect
+  $member Note1
+  $member Note2
+  $member Note3
+  $member NativeMethod
 }
 
 $rect <480,20,680,60>
@@ -2763,234 +2793,7 @@ resource Resources::Bitmap BackBtn
 $rect <-50,340,150,380>
 inline Inline
 {
-  #include <iostream>
-  #include <vector>
-  #include <queue>
-
-  int GetPriorityOfOperator(const char& op)
-  {
-      int priority = 0;
-      switch (op)
-      {
-      case '+':
-          priority = 1;
-          break;
-      case '-':
-          priority = 1;
-          break;
-      case 'x':
-          priority = 2;
-          break;
-      case '/':
-          priority = 2;
-          break;
-      case '%':
-          priority = 3;
-          break;
-      case '^':
-          priority = 3;
-          break;
-      default:
-          priority = 1;
-          break;
-      }
-
-      return priority;
-  }
-
-  float ExecTwoOp(float first, float second, const char& op)
-  {
-      switch (op)
-      {
-      case '+':
-          return first + second;
-      case '-':
-          return first - second;
-      case 'x':
-          return first * second;
-      case '/':
-      {
-          if (second != 0)
-              return first / second;
-          else
-          {
-              if (first < 0.0)
-              {
-                  return -std::numeric_limits<float>::infinity();
-              }
-              else if (first > 0.0)
-              {
-                  return std::numeric_limits<float>::infinity();
-              }
-              else
-              {
-                  return std::numeric_limits<float>::quiet_NaN();
-              }
-          }
-      }
-      case '%':
-      {
-          float temp = first * second;
-          return temp / 100;
-      }
-      case '^':
-          return pow(first, second);
-      default:
-          return 0;
-      }
-  }
-
-  std::vector<std::string> TokenizeExpression(const std::string& expression)
-  {
-      std::vector<std::string> tokens;
-      int i = 0;
-
-      while (i < expression.length()) 
-      {
-          if (isspace(expression[i]))
-          {
-              i++;
-              continue;
-          }
-
-          if (isdigit(expression[i]) || (expression[i] == '.' && isdigit(expression[i + 1]))) 
-          {
-              std::string number;
-              while (i < expression.length() && (isdigit(expression[i]) || expression[i] == '.')) 
-              {
-                  number += expression[i];
-                  i++;
-              }
-              tokens.push_back(number);
-          }
-          else if (IsOperator(expression[i]) || IsParenthesis(expression[i]))
-          {
-              tokens.push_back(std::string(1, expression[i]));
-              i++;
-          }
-          else 
-          {
-              i++;
-          }
-      }
-
-      return tokens;
-  }
-
-
-  std::vector<std::string> ShuntingYardAlgorithm(const std::string& expression)
-  {
-      std::vector<std::string> tokens = TokenizeExpression(expression);
-      std::queue<std::string> output;
-      std::stack<std::string> operators;
-
-      for (const std::string& token : tokens)
-      {
-          if (token.size() == 1)
-          {
-              char t = token[0];
-              if (std::isdigit(t))
-              {
-                  output.push(token);
-              }
-              else if (IsOperator(t) || IsParenthesis(t))
-              {
-                  if (IsParenthesis(t))
-                  {
-                      if (t == '(')
-                      {
-                          operators.push("(");
-                      }
-                      else if (t == ')')
-                      {
-                          while (!operators.empty() && operators.top() != "(")
-                          {
-                              output.push(operators.top());
-                              operators.pop();
-                          }
-                          if (!operators.empty())
-                              operators.pop();
-                      }
-                  }
-                  if (IsOperator(t))
-                  {
-                      if (!operators.empty())
-                      {
-                          char top = operators.top()[0];
-                          if (IsOperator(top))
-                          {
-                              if (GetPriorityOfOperator(top) < GetPriorityOfOperator(t))
-                              {
-                                  operators.push(token);
-                              }
-                              else if (GetPriorityOfOperator(top) == GetPriorityOfOperator(t))
-                              {
-                                  output.push(operators.top());
-                                  operators.pop();
-                                  operators.push(token);
-                              }
-                          }
-                          if (top == '(')
-                          {
-                              operators.push(token);
-                          }
-
-                      }
-                      else
-                          operators.push(token);
-                  }
-              }
-          }
-          else if (token.size() > 1 && IsNumber(token))
-          {
-              output.push(token);
-          }
-      }
-
-      while (!operators.empty())
-      {
-          output.push(operators.top());
-          operators.pop();
-      }
-
-      std::vector<std::string> expr;
-
-      while (!output.empty())
-      {
-          expr.push_back(output.front());
-          output.pop();
-      }
-
-      return expr;
-  }
-
-
-  XFloat EvaluateRPN(XString expression)
-  {
-      std::string expr = expression;
-      std::vector<std::string> RPN = ShuntingYardAlgorithm(expr);
-      std::stack<float> stk;
-      int first, second;
-
-      for (const std::string& token : RPN)
-      {
-          if (IsOperator(token[0]))
-          {
-  			second = stk.top();
-  			stk.pop();
-  			first = stk.top();
-  			stk.pop();
-  			stk.push(ExecTwoOp(first, second, token[0]));
-  		}
-          else
-          {
-  			stk.push(std::stof(token));
-  		}
-      }
-
-      XFloat res = stk.top();
-      return res;
-  }
+  #include "EvaluateExpression.h"
 }
 
 $rect <220,420,420,460>
@@ -3033,7 +2836,7 @@ $rect <-335,339,-135,379>
 $output false
 class Battery : Core::Group
 {
-  $rect <170,10,370,50>
+  $rect <150,-20,350,20>
   inherited property Bounds = <0,0,120,54>;
 
   $rect <20,20,160,60>
@@ -3050,7 +2853,7 @@ class Battery : Core::Group
     preset Bitmap = Application::BatteryLine;
   }
 
-  $rect <-80,160,120,200>
+  $rect <0,120,200,160>
   slot onUseBattery
   {
     BatteryPercentage -= 0.5;
@@ -3194,7 +2997,7 @@ class Battery : Core::Group
     preset Bitmap = Application::BatteryLine;
   }
 
-  $rect <170,160,370,200>
+  $rect <-370,250,-170,290>
   object Effects::BoolEffect BoolEffect
   {
     preset Value2 = true;
@@ -3205,7 +3008,7 @@ class Battery : Core::Group
     preset Enabled = false;
   }
 
-  $rect <-321,57,-121,97>
+  $rect <0,80,200,120>
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
@@ -3213,10 +3016,10 @@ class Battery : Core::Group
     preset Enabled = true;
   }
 
-  $rect <-367,207,-167,247>
+  $rect <150,20,350,60>
   var int32 BatteryPercentage = 100;
 
-  $rect <-54,236,146,276>
+  $rect <0,160,200,200>
   method void UpdateBatteryLines( arg int32 percentage )
   {
     array Views::Image imgs [20];
@@ -3289,199 +3092,6 @@ class Battery : Core::Group
   $member UpdateBatteryLines
 }
 
-$rect <-50,550,150,590>
-inline Inline1
-{
-  /*
-
-    TO DO:
-
-    Include external header files or add type and function declarations needed
-    in the implementation of Application::DeviceClass. For example:
-
-      #include "DeviceDriver.h"
-
-      #include "your_middleware_api.h"
-
-      void Your_Middleware_Some_Function( int aSomeArg );
-
-  */
-}
-
-$rect <-50,450,150,490>
-$output false
-class DeviceClass : Templates::DeviceClass
-{
-  $rect <30,80,230,120>
-  inherited method Done()
-  {
-    // The following section is intended to perform de-initialization-related operations
-    // in the underlying device or middleware. Consequently, the section is taken in
-    // account only when generating code (not during prototyping).
-    $if !$prototyper
-      var object thisObject = this;
-
-      /*
-         TO DO:
-
-         The following native statement is intended to enclose code to communicate with
-         your device API. The variable 'thisObject' contains a pointer to the actually
-         de-initialized Application::DeviceClass object. Use the 'thisObject' pointer to
-         e.g. de-register the object from the middleware if you have registered it
-         beforehand.
-         
-      */
-
-      native ( thisObject )
-      {
-        /*
-           TO DO:
-
-           Depending on your application case you call functions of the underlying
-           middleware (or access the device directly) in order to perform the necessary
-           de-initialization steps. For example, you invoke some 'C' function:
-
-             YourDevice_DeInitialize();
-
-           IMPORTANT:
-           ----------
-
-           The variable 'thisObject' represents the actually de-initialized instance of the
-           Application::DeviceClass. If you have stored this object at the initialization
-           time (in the 'Init' method) in some global C variable or registered it by the
-           middleware, it is important to perform now the opposite operation. Set the
-           global variable to NULL or de-register 'thisObject' object from the middleware.
-           
-        */
-      }
-    $endif
-  }
-
-  $rect <30,40,230,80>
-  inherited method Init()
-  {
-    // The following section is intended to perform initialization-related operations
-    // in the underlying device or middleware. Consequently, the section is taken in
-    // account only when generating code (not during prototyping).
-    $if !$prototyper
-      var object thisObject = this;
-
-      /*
-         TO DO:
-
-         The following native statement is intended to enclose code to communicate with
-         your device API. The variable 'thisObject' contains a pointer to the actually
-         initialized Application::DeviceClass object. Use the 'thisObject' pointer to
-         e.g. register the object by the middleware as receiver of events, etc.
-         
-      */
-
-      native ( thisObject )
-      {
-        /*
-           TO DO:
-
-           Depending on your application case you call functions of the underlying
-           middleware (or access the device directly) in order to perform the necessary
-           initialization steps. For example, you invoke some 'C' function:
-
-             YourDevice_Initialize();
-
-           The variable 'thisObject' represents the actually initialized instance of the
-           Application::DeviceClass. You can store this variable e.g. in the middleware
-           and use it whenever the middleware needs to notify the GUI application about
-           some state alternation or events. In this manner, the middleware will be able
-           to invoke methods of the interface device object.
-
-           For example, you can store 'thisObject' in some global C variable:
-
-             // Declaration of the global C variable
-             XObject theDeviceObject;
-
-             // Store the instance in the global variable
-             theDeviceObject = thisObject;
-
-           Later use the global variable e.g. to provide the GUI application with events:
-
-             ApplicationDeviceClass__TriggerSomeEvent( theDeviceObject );
-
-           IMPORTANT:
-           ----------
-
-           If you store 'thisObject' for later use, don't forget to implement the opposite
-           operation in the method 'Done'. Concrete, 'Done' should set the global variable
-           again to the value NULL.
-
-        */
-      }
-    $endif
-  }
-
-  // Device classes are assembled from 'Commands', 'Properties' and 'System Events'. \
-  // For this purpose use the following prepared templates from the Gallery folder \
-  // 'Device':
-  // 
-  // Command - method to trigger actions in the underlying device or query data from \
-  // the device.
-  // 
-  // Property - variable to represent or modify a setting or state value existing \
-  // within the underlying device.
-  // 
-  // System Event - represents an event or notifications the underlying device may \
-  // report.
-  // 
-  // For more details please visit: https://doc.embedded-wizard.de/device-class-and-device-driver
-  note legend Note4
-  {
-    attr Bounds = <10,540,1100,710>;
-  }
-
-  // The method 'Init' is executed just in the moment when new instance of 'Application::DeviceClass' \
-  // is created. It is suitable to:
-  // - initialize the hardware represented by the interface.
-  // - register the instance by the middleware to receive updates and events.
-  // - open files, network connections or other system resources needed by the interface.
-  // 
-  // The method 'Done' is executed just in the moment when an instance of 'Application::DeviceClass' \
-  // is disposed. It is suitable to:
-  // - de-initialize the underlying hardware.
-  // - de-register the instance from the underlying middleware.
-  // - close files, network connections and other no longer needed system resources.
-  // 
-  // If your application case doesn't need the initialization or de-initialization, \
-  // feel free to delete the methods 'Init' or/and 'Done'.
-  note legend Note3
-  {
-    attr Bounds = <10,300,790,520>;
-  }
-
-  // Constructor and Destructor
-  note group Note1
-  {
-    attr Bounds = <10,0,250,140>;
-  }
-
-  $rect <260,40,480,80>
-  object Core::SystemEvent LoseBatteryEvent;
-
-  // This method is intended to be called by the device to notify the GUI application \
-  // about a particular system event.
-  $rect <260,80,480,120>
-  $output true
-  method void TriggerLoseBatteryEvent()
-  {
-    LoseBatteryEvent.Trigger( null, false );
-
-  }
-}
-
-$rect <-50,500,150,540>
-autoobject Application::DeviceClass Device;
-
-$rect <-301,512,-101,552>
-$output false
-class TheClass;
-
 // Directives to adapt the order of the above members according to how these members 
 // where arranged when the project content was stored. In this manner the storage 
 // and the expected order of the members don't depend. Merging of changes in the 
@@ -3517,7 +3127,3 @@ $member BatteryOutline
 $member BatteryBgk
 $member BatteryLine
 $member Battery
-$member Inline1
-$member DeviceClass
-$member Device
-$member TheClass

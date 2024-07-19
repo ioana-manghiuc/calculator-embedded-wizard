@@ -77,16 +77,17 @@ $rect <310,70,510,110>
 profile Win32 : Windows.Software.RGBA8888
 {
   attr Verbose = false;
-  attr ScreenSize = <350,590>;
+  attr ScreenSize = <340,590>;
   attr Optimization = High;
   attr ApplicationClass = Application::Application;
   attr CleanOutputDirectories = false;
   attr FontConversion = Windows;
-  attr OutputFileNameExtension = cpp;
+  attr OutputFileNameExtension = c;
   attr ScreenOrientation = Normal;
   attr OutputDirectory = .\GeneratedCode;
   attr ApplicationTitle = "calculator";
   attr ApplicationName = calculator;
+  attr PostProcess = .\Win32\Application\Project\MSVC\MSVC_ew_post_process.cmd;
 
   $rect <10,10,154,50>
   macro Author = "Dipl. Ing. Paul Banach and Dipl. Ing. Manfred Schweyer, Copyright (C) TARA Systems GmbH";
@@ -108,7 +109,7 @@ $rect <560,70,760,110>
 profile Web : Web.WebGL.RGBA8888
 {
   attr Verbose = false;
-  attr ScreenSize = <350,590>;
+  attr ScreenSize = <340,590>;
   attr Optimization = High;
   attr FontConversion = Windows;
   attr CleanOutputDirectories = false;

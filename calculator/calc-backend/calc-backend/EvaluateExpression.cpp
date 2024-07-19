@@ -1,9 +1,49 @@
-#include "ValidateExpression.h"
+#include "pch.h"
+#include "EvaluateExpression.h"
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <string>
+#include <stack>
 
-int GetPriorityOfOperator(const char& op)
+bool IsDot(char c)
+{
+    return c == '.';
+}
+
+bool IsOperator(char c)
+{
+    return c == '+' || c == '-' || c == 'x' || c == '/' || c == '%' || c == '^';
+}
+
+bool IsParenthesis(char c)
+{
+    return c == '(' || c == ')';
+}
+
+bool IsNumber(std::string expression)
+{
+    for (const char& c : expression)
+    {
+        if (!isdigit(c) && !IsDot(c))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool IsNegativeNumber(std::string expression)
+{
+    std::string subexpr = expression.substr(1, expression.length() - 1);
+    if (expression[0] == '-' && IsNumber(subexpr))
+    {
+        return true;
+    }
+    return false;
+}
+
+int GetPriorityOfOperator(char op)
 {
     int priority = 0;
     switch (op)
@@ -34,104 +74,79 @@ int GetPriorityOfOperator(const char& op)
     return priority;
 }
 
-std::pair<int, std::string> GetSubexpressionInParentheses(int startPos, const std::string expression)
-{
-    int endPos;
-    std::string subexpression = "";
-
-    if (!expression.empty())
-    {
-        for (int i = 0; i < expression.length(); i++)
-        {
-            if (expression[i] != ')')
-            {
-                subexpression += subexpression[i];
-                endPos = i;
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-    return { endPos, subexpression };
-}
-
-std::pair<int, std::string> GetNumberFromPosition(int startPos, const std::string& expression) {
-    int endPos = startPos;
-    std::string number;
-    for (int i = startPos; i < expression.length(); ++i) {
-        if (std::isdigit(expression[i]) || expression[i] == '.') {
-            number += expression[i];
-            endPos = i;
-        }
-        else {
-            break;
-        }
-    }
-    return { endPos, number };
-}
-
 float ExecTwoOp(float first, float second, const char& op)
 {
+    float res = 0.0;
     switch (op)
     {
     case '+':
-        return first + second;
+        res = first + second;
+        break;
     case '-':
-        return first - second;
+        res = first - second;
+        break;
     case 'x':
-        return first * second;
+        res = first * second;
+        break;
     case '/':
     {
         if (second != 0)
-            return first / second;
+        {
+            res = first / second;
+            break;
+        }
         else
         {
             if (first < 0.0)
             {
-                return -std::numeric_limits<float>::infinity();
+                res = -std::numeric_limits<float>::infinity();
+                break;
             }
             else if (first > 0.0)
             {
-                return std::numeric_limits<float>::infinity();
+                res = std::numeric_limits<float>::infinity();
+                break;
             }
             else
             {
-                return std::numeric_limits<float>::quiet_NaN();
+                res = std::numeric_limits<float>::quiet_NaN();
+                break;
             }
         }
     }
     case '%':
     {
         float temp = first * second;
-        return temp / 100;
+        res = temp / 100;
+        break;
     }
     case '^':
-        return pow(first, second);
+        res = pow(first, second);
+        break;
     default:
-        return 0;
+        res = 0;
+        break;
     }
+
+    return res;
 }
 
-std::vector<std::string> TokenizeExpression(const std::string& expression)
+std::vector<std::string> TokenizeExpression(std::string expression)
 {
     std::vector<std::string> tokens;
     int i = 0;
 
-    while (i < expression.length()) 
+    while (i < expression.length())
     {
         if (isspace(expression[i]))
         {
             i++;
             continue;
         }
-
-        if (isdigit(expression[i]) || (expression[i] == '.' && isdigit(expression[i + 1]))) 
+        else if (isdigit(expression[i]) || (expression[i] == '.' && isdigit(expression[i + 1])))
         {
             std::string number;
-            while (i < expression.length() && (isdigit(expression[i]) || expression[i] == '.')) 
+            while (i < expression.length() && (isdigit(expression[i]) || expression[i] == '.'))
             {
                 number += expression[i];
                 i++;
@@ -143,7 +158,7 @@ std::vector<std::string> TokenizeExpression(const std::string& expression)
             tokens.push_back(std::string(1, expression[i]));
             i++;
         }
-        else 
+        else
         {
             i++;
         }
@@ -152,10 +167,13 @@ std::vector<std::string> TokenizeExpression(const std::string& expression)
     return tokens;
 }
 
-
-std::vector<std::string> ShuntingYardAlgorithm(const std::string& expression)
+std::vector<std::string> ShuntingYardAlgorithm(std::string expression)
 {
     std::vector<std::string> tokens = TokenizeExpression(expression);
+    for (const auto token : tokens)
+    {
+        std::cout << token << "!";
+    }
     std::queue<std::string> output;
     std::stack<std::string> operators;
 
@@ -239,27 +257,26 @@ std::vector<std::string> ShuntingYardAlgorithm(const std::string& expression)
     return expr;
 }
 
-
-float EvaluateRPN(const std::string& expression)
+float EvaluateRPN(std::string expression)
 {
     std::vector<std::string> RPN = ShuntingYardAlgorithm(expression);
     std::stack<float> stk;
-    int first, second;
+    float first, second;
 
     for (const std::string& token : RPN)
     {
-        if (IsOperator(token[0]))
+        if (IsOperator(token[0]) && !IsNegativeNumber(token))
         {
-			second = stk.top();
-			stk.pop();
-			first = stk.top();
-			stk.pop();
-			stk.push(ExecTwoOp(first, second, token[0]));
-		}
+            second = stk.top();
+            stk.pop();
+            first = stk.top();
+            stk.pop();
+            stk.push(ExecTwoOp(first, second, token[0]));
+        }
         else
         {
-			stk.push(std::stof(token));
-		}
+            stk.push(std::stof(token));
+        }
     }
 
     return stk.top();
