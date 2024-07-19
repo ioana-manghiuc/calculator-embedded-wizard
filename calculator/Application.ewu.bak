@@ -992,7 +992,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButtonConfig EqualsConfig
   {
     preset OnUpdate = null;
-    preset KeyCode = Core::KeyCode.Enter;
+    preset KeyCode = Core::KeyCode.Equals;
     preset LabelColorActive = #FFFCFEFF;
     preset LabelColorFocused = #FFFCFEFF;
     preset LabelColorDisabled = #FFFCFEFF;
@@ -1152,6 +1152,7 @@ class NumKeyBtns : Core::Group
   $rect <900,150,1140,190>
   object WidgetSet::PushButtonConfig PowConfig
   {
+    preset KeyCode = Core::KeyCode.Power;
     preset IconMarginBottom = 2;
     preset IconMarginTop = 2;
     preset IconMarginRight = 2;
@@ -1170,6 +1171,7 @@ class NumKeyBtns : Core::Group
   $rect <900,200,1140,240>
   object WidgetSet::PushButtonConfig PercentConfig
   {
+    preset KeyCode = Core::KeyCode.NoKey;
     preset FaceFrameActive = 1;
     preset FaceFrameFocused = 1;
     preset FaceFrameDisabled = 0;
@@ -1222,6 +1224,7 @@ class NumKeyBtns : Core::Group
   $rect <900,250,1140,290>
   object WidgetSet::PushButtonConfig DivideConfig
   {
+    preset KeyCode = Core::KeyCode.Divide;
     preset FaceFrameActive = 1;
     preset FaceFrameFocused = 1;
     preset FaceFrameDisabled = 0;
@@ -1235,7 +1238,7 @@ class NumKeyBtns : Core::Group
   $rect <900,350,1140,390>
   object WidgetSet::PushButtonConfig MultiplyConfig
   {
-    preset KeyCode = Core::KeyCode.NoKey;
+    preset KeyCode = Core::KeyCode.Multiply;
     preset AccentColorFocused = #03040000;
     preset AccentColorDefault = #00000000;
     preset AccentLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];

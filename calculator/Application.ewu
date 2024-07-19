@@ -63,7 +63,7 @@ class Application : Core::Root
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
     var Application::Queue queue = new Application::Queue;
-    queue.Push(-1.23);
+    queue.push(-1.23);
     queue.Print();
 
     if(KeyHandler.CharCode != '\0')
@@ -3079,15 +3079,15 @@ class Battery : Core::Group
   $member UpdateBatteryLines
 }
 
-$rect <-340,100,-140,140>
+$rect <-330,170,-130,210>
 $output false
 class Vector;
 
-$rect <-340,160,-140,200>
+$rect <-330,220,-130,260>
 $output false
 class Stack;
 
-$rect <-350,220,-150,260>
+$rect <-530,190,-330,230>
 $output false
 class Queue
 {
@@ -3101,7 +3101,7 @@ class Queue
   }
 
   $rect <255,32,455,72>
-  property float Front;
+  property Application::Element Front = null;
 
   $rect <255,72,455,112>
   onset Front
@@ -3125,7 +3125,7 @@ class Queue
   }
 
   $rect <490,30,690,70>
-  property float Back;
+  property Application::Element Back = null;
 
   $rect <490,70,690,110>
   onset Back
@@ -3198,24 +3198,24 @@ class Queue
 
   // This method adds (pushes) elements to the end of the queue.
   $rect <492,178,692,218>
-  method void Push( arg float val )
+  method void push( arg Application::Element aElement )
   {
-
-
-    if (Size >= 10000) 
+    if( Back != null )
     {
-      trace "Queue is full.";
-      return;
+      Back.next = aElement;
+      aElement.prev = Back;
     }
-    var int32 rearIndex = (int32)Back % 10000; // Convert Back to an integer index
-    //Data[rearIndex] = val;
-    Back += 1.0;
-    Size++;
+    else
+    {
+      Front = aElement;
+      Back = aElement;
+    }
+
   }
 
   // This method removes (pops) elements from the beginning of the queue.
   $rect <491,224,691,264>
-  method void Pop()
+  method void pop()
   {
      if (Size == 0) 
      {
@@ -3243,29 +3243,59 @@ class Queue
     //  trace data[i];
     //}
   }
+}
 
-  $rect <740,190,940,230>
-  property class Data = null;
+$rect <-510,70,-310,110>
+$output false
+class Element
+{
+  $rect <76,82,276,122>
+  var int32 prev;
 
-  $rect <740,230,940,270>
-  onset Data
+  $rect <80,130,280,170>
+  var int32 next;
+}
+
+$rect <-510,120,-310,160>
+$output false
+class StringElement : Application::Element
+{
+  $rect <112,67,312,107>
+  property string DataStr;
+
+  $rect <112,107,312,147>
+  onset DataStr
   {
     // The value doesn't change - nothing to do.
-    if ( pure Data == value )
+    if ( pure DataStr == value )
       return;
 
     // Remember the property's new value.
-    pure Data = value;
+    pure DataStr = value;
 
     // TO DO:
     // 
     // Now you can handle the alternation of the property.
   }
 
-  $rect <740,270,940,310>
-  onget Data
+  $rect <112,147,312,187>
+  onget DataStr
   {
-    return pure Data;
+    return pure DataStr;
+  }
+}
+
+$rect <-520,250,-320,290>
+$output false
+class StrQueue : Application::Queue
+{
+  $rect <155,-92,355,-52>
+  method void Push( arg string aValue )
+  {
+    var Application::StringElement strElement = new Application::StringElement;
+    strElement.DataStr = aValue;
+
+    push( strElement );
   }
 }
 
@@ -3307,3 +3337,6 @@ $member Battery
 $member Vector
 $member Stack
 $member Queue
+$member Element
+$member StringElement
+$member StrQueue
