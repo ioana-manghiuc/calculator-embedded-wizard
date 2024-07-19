@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.NativeMethod;
+attr currentCodeInspector = Application::Queue.Init;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -41,44 +41,35 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-843,91>;
+  attr scrollTo = <-843,-5>;
   attr zoom = 0.75;
 }
 
-view class Application::Battery
+view class Application::Queue
 {
   attr enableWireMode = false;
-  attr scrollTo = <-880,-160>;
-  attr zoom = 1.0;
+  attr scrollTo = <-134,-141>;
+  attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-548,-121>;
-  attr zoom = 0.5;
+  attr scrollTo = <-7,-7>;
+  attr zoom = 1.0;
 }
 
-codeview Application::Inline
+view class Application::NumKeyBtns
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-123,-5>;
+  attr zoom = 0.75;
+}
+
+codeview Application::NumKeyBtns.onActivateKey
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <10,0>;
-  attr codeSelStart = <10,0>;
-}
-
-codeview Application::Application.NativeMethod
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <25,5>;
-  attr codeSelStart = <25,5>;
-}
-
-codeview Application::Application.ExecuteOperation
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,29>;
   attr codeSelEnd = <0,0>;
   attr codeSelStart = <0,0>;
 }
@@ -86,15 +77,23 @@ codeview Application::Application.ExecuteOperation
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,87>;
-  attr codeSelEnd = <35,89>;
-  attr codeSelStart = <35,89>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <3,8>;
+  attr codeSelStart = <3,8>;
 }
 
-codeview Application::Application.CorrectParentheses
+codeview Application::Queue.Push
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,6>;
+  attr codeFirstPos = <0,0>;
   attr codeSelEnd = <0,0>;
   attr codeSelStart = <0,0>;
+}
+
+codeview Application::Queue.Init
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <13,3>;
+  attr codeSelStart = <13,3>;
 }

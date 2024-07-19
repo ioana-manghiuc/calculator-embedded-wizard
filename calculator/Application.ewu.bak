@@ -62,6 +62,9 @@ class Application : Core::Root
     var string str = "";
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
+    var Application::Queue queue = new Application::Queue;
+    queue.Push(-1.23);
+    queue.Print();
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -114,7 +117,7 @@ class Application : Core::Root
                 temp = Text.String + str;
             }
         }
-        else if(str == "b" || KeyHandler.Code == Core::KeyCode.Backspace)
+        else if(str == "B" || KeyHandler.Code == Core::KeyCode.Backspace)
         {
             temp = Text.String.remove(Text.String.length - 1, 1);
         }
@@ -147,9 +150,6 @@ class Application : Core::Root
     {
       if(IsExpressionValid(Text.String))
       {
-        var float result = 0.0;
-        var string input = Text.String;
-        result = NativeMethod(input);
         Text.String = ExecuteOperation(Text.String);
         cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
@@ -270,11 +270,11 @@ class Application : Core::Root
   }
 
   $rect <990,90,1260,130>
-  method Application::Pair GetSubexpressionInParentheses( arg int32 startPos, arg string expression )
+  method Application::Group GetSubexpressionInParentheses( arg int32 startPos, arg string expression )
   {
     var string subexpression;
     var int32 endPos;
-    var Application::Pair res = new Application::Pair;
+    var Application::Group res = new Application::Group;
 
     var int32 i = startPos + 1;
 
@@ -302,10 +302,10 @@ class Application : Core::Root
   }
 
   $rect <1015,190,1240,230>
-  method Application::Pair GetNumberFromPosition( arg int32 startPos, arg string expression )
+  method Application::Group GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
-    var Application::Pair res = new Application::Pair;
+    var Application::Group res = new Application::Group;
     var string nrStr;
     var int32 i = startPos;
 
@@ -539,7 +539,7 @@ class Application : Core::Root
     var float secondOp = 0.0;
     var float res = 0.0;
     var int32 i = 0;
-    var Application::Pair pair = new Application::Pair;
+    var Application::Group pair = new Application::Group;
     var float intermediate = 0.0;
     var bool firstSet = false;
     var bool secondSet = false;
@@ -702,21 +702,6 @@ class Application : Core::Root
     attr Bounds = <980,-10,1270,250>;
   }
 
-  $rect <990,410,1190,450>
-  method float NativeMethod( arg string expression )
-  {
-    var float result = 0.0;
-    trace expression;
-    $if !$prototyper                    
-    native (expression)
-    {
-      result = EvaluateRPN(expression);
-    }
-    $endif
-    trace result;
-    return result;
-  }
-
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -758,7 +743,6 @@ class Application : Core::Root
   $member Note1
   $member Note2
   $member Note3
-  $member NativeMethod
 }
 
 $rect <480,20,680,60>
@@ -1363,7 +1347,7 @@ class NumKeyBtns : Core::Group
   {
     preset Bounds = <222,7,292,77>;
     preset OnActivate = onActivateKey;
-    preset Label = "b";
+    preset Label = "B";
     preset Appearance = BackConfig;
   }
 
@@ -2459,7 +2443,7 @@ resource Resources::Font MultiplyFont
 
 $rect <-50,270,150,310>
 $output false
-class Pair
+class Group
 {
   $rect <239,-10,439,30>
   property float IdentifiedNumber;
@@ -2560,7 +2544,7 @@ class Pair
 
 $rect <-50,390,150,430>
 $output false
-const int32 MAX_SIZE = 1000;
+const int32 MAX_SIZE = 10000;
 
 $rect <-50,220,150,260>
 $output false
@@ -3092,6 +3076,196 @@ class Battery : Core::Group
   $member UpdateBatteryLines
 }
 
+$rect <-340,100,-140,140>
+$output false
+class Vector;
+
+$rect <-340,160,-140,200>
+$output false
+class Stack;
+
+$rect <-350,220,-150,260>
+$output false
+class Queue
+{
+  $rect <40,50,240,90>
+  inherited method Init()
+  {
+    Front = 0.0;
+    Back = 0.0;
+    Size = 0;
+    Empty = true;
+  }
+
+  $rect <255,32,455,72>
+  property float Front;
+
+  $rect <255,72,455,112>
+  onset Front
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Front == value )
+      return;
+
+    // Remember the property's new value.
+    pure Front = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <255,112,455,152>
+  onget Front
+  {
+    return pure Front;
+  }
+
+  $rect <490,30,690,70>
+  property float Back;
+
+  $rect <490,70,690,110>
+  onset Back
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Back == value )
+      return;
+
+    // Remember the property's new value.
+    pure Back = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <490,110,690,150>
+  onget Back
+  {
+    return pure Back;
+  }
+
+  $rect <740,30,940,70>
+  property int32 Size;
+
+  $rect <740,70,940,110>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <740,110,940,150>
+  onget Size
+  {
+    return pure Size;
+  }
+
+  $rect <260,180,460,220>
+  property bool Empty;
+
+  $rect <260,220,460,260>
+  onset Empty
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Empty == value )
+      return;
+
+    // Remember the property's new value.
+    pure Empty = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <260,260,460,300>
+  onget Empty
+  {
+    return pure Empty;
+  }
+
+  // This method adds (pushes) elements to the end of the queue.
+  $rect <492,178,692,218>
+  method void Push( arg float val )
+  {
+
+
+    if (Size >= 10000) 
+    {
+      trace "Queue is full.";
+      return;
+    }
+    var int32 rearIndex = (int32)Back % 10000; // Convert Back to an integer index
+    //Data[rearIndex] = val;
+    Back += 1.0;
+    Size++;
+  }
+
+  // This method removes (pops) elements from the beginning of the queue.
+  $rect <491,224,691,264>
+  method void Pop()
+  {
+     if (Size == 0) 
+     {
+        trace "Queue is empty.";
+        return;
+    }
+    var int32 frontIndex = (int32)Front % 10000; 
+    //Data[frontIndex] = 0.0; 
+    Front += 1.0;
+    Size--;
+    if (Size == 0) 
+    {
+     Empty = true;
+    }
+  }
+
+  $rect <480,270,680,310>
+  method void Print()
+  {
+    //var int32 i = 0;
+    //array float data [Application::MAX_SIZE] = Data;
+    //
+    //for( ; i < data.size; i++)
+    //{
+    //  trace data[i];
+    //}
+  }
+
+  $rect <740,190,940,230>
+  property class Data = null;
+
+  $rect <740,230,940,270>
+  onset Data
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Data == value )
+      return;
+
+    // Remember the property's new value.
+    pure Data = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <740,270,940,310>
+  onget Data
+  {
+    return pure Data;
+  }
+}
+
 // Directives to adapt the order of the above members according to how these members 
 // where arranged when the project content was stored. In this manner the storage 
 // and the expected order of the members don't depend. Merging of changes in the 
@@ -3114,7 +3288,7 @@ $member Note3
 $member NumBoldFont
 $member DivideBtn
 $member MultiplyFont
-$member Pair
+$member Group
 $member MAX_SIZE
 $member ErrorDialog
 $member ErrorFont
@@ -3127,3 +3301,6 @@ $member BatteryOutline
 $member BatteryBgk
 $member BatteryLine
 $member Battery
+$member Vector
+$member Stack
+$member Queue
