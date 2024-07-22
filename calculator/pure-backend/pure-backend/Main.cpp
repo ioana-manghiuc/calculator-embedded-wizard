@@ -3,7 +3,8 @@
 int main() 
 {
     //std::string expression = "3 + 5.123 x 2";
-    std::string expression = "(2+3)";
+    std::string expression = "5 - 1";
+    //std::string expression = "(2+3)";
     //std::string expression = "2 x -5";
 
     //auto tokens = ShuntingYardAlgorithm(expression);

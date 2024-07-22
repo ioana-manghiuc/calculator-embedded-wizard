@@ -62,6 +62,7 @@ class Application : Core::Root
     var string str = "";
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
+    var Application::StrVector vec = new Application::StrVector;
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -147,7 +148,9 @@ class Application : Core::Root
     {
       if(IsExpressionValid(Text.String))
       {
-        //Text.String = ExecuteOperation(Text.String);
+         //trace Text.String;
+         vec = ShuntingYardAlgorithm(Text.String);
+         //vec.Print();
         cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
     }
@@ -223,7 +226,6 @@ class Application : Core::Root
   method void ResetVariables()
   {
     Text.String = "";
-    queue.Clear();
   }
 
   $rect <710,40,910,80>
@@ -372,43 +374,26 @@ class Application : Core::Root
   $rect <710,190,910,230>
   method bool CorrectParentheses( arg string expression )
   {
-    var int32 size = Application::MAX_SIZE;
-    array char stack[Application::MAX_SIZE];
-    var int32 top = -1;
+    var Application::CharStack stk = new Application::CharStack;
     var int32 i = 0;
 
-    if(expression != "")
+    for( ; i < expression.length ; i++ )
     {
-      for( ; i < expression.length; i++)
+      if( expression[i] == '(' )
       {
-        var char c = expression[i];
-
-        if(c == '(')
+        stk.Push(expression[i]);
+      }
+      else if( expression[i] == ')' ) 
+      {
+        if( stk.IsEmpty() )
         {
-          if(top < size - 1)
-          {
-            stack[++top] = c;
-          }
-          else
-          {
-            return false;   
-          }
+          return false;
         }
-        else if(c == ')')
-        {
-          if(top == -1)
-          {
-            return false;
-          }
-          else
-          {
-            top--;
-          }
-        }  
+        stk.Pop();
       }
     }
 
-    return (top == -1);
+    return stk.IsEmpty();
   }
 
   $rect <710,240,920,280>
@@ -586,35 +571,32 @@ class Application : Core::Root
     var Application::StrVector tokens = new Application::StrVector;
     var int32 i = 0;
 
-    while( i < expression.length ) 
+    for( ; i < expression.length; i++ ) 
     {
-      if( IsSpace(expression[i] )
+      if( IsSpace(expression[i]) )
       {
         i++;
         continue;
       }
       else if( IsDigit(expression[i]) || ( expression[i] == '.' && IsDigit(expression[i + 1]) ) )
       {
+        var Application::Group gr = GetNumberFromPosition(i, expression);
         var string number = "";
-        var string c = "";
-        while( i < expression.length && (IsDigit(expression[i + 1]) || expression[i] == '.' ) )
-        {
-          c = expression[i];
-          number += c;
-          i++;
-        }
+        number = gr.IdentifiedNumber;
+        i = gr.EndPosition;
         tokens.PushBack(number);
+        continue;    
       }
       else if( IsOperator(expression[i]) || IsParenthesis(expression[i]) )
       {
         var string c = "";
         c = expression[i];
         tokens.PushBack(c);
-        i++;
+        continue;
       }
       else
       {
-        i++;
+        continue;
       }
     }
 
@@ -626,7 +608,105 @@ class Application : Core::Root
   $rect <710,390,910,430>
   method bool IsSpace( arg char op )
   {
-    return op == '' || op == '\t' || op =='\n';
+    return op == '\0' || op == '\t' || op =='\n';
+  }
+
+  $rect <1034,550,1250,591>
+  method Application::StrVector ShuntingYardAlgorithm( arg string expression )
+  {
+    var Application::StrVector tokens  = new Application::StrVector;
+    var Application::StrQueue output = new Application::StrQueue;
+    var Application::StrStack operators = new Application::StrStack;
+    tokens = TokenizeExpression(expression);
+
+    var Application::StringElement token = tokens.Front;
+
+    while( token != null )
+    {
+      if( token.DataStr.length == 1 )
+      {
+        var char t = token.DataStr[0];
+        if( IsDigit(t) )
+        {
+          output.Push(token.DataStr);
+          output.Print();
+        }
+        else if( IsParenthesis(t) )
+        {
+          if( t == '(')
+          {
+            operators.Push("(");
+          }
+          else if( t == ')')
+          {
+            while ( !operators.IsEmpty() && operators.GetTop() != "(" )
+            {
+              output.Push(operators.GetTop());
+              operators.Pop();
+            }
+            if( !operators.IsEmpty() )
+            {
+              operators.Pop();
+            }
+          }
+        }
+        else if ( IsOperator(t) )
+        {
+          if( !operators.IsEmpty() )
+          {
+            var char top = operators.GetTop()[0];
+            if( IsOperator(top) )
+            {
+              if( GetPriorityOfOperator(top) < GetPriorityOfOperator(t) )
+              {
+                operators.Push(token.DataStr);
+              }
+              else if( GetPriorityOfOperator(top) == GetPriorityOfOperator(t) )
+              {
+                output.Push(operators.GetTop());
+                operators.Pop();
+                operators.Push(token.DataStr);
+              }
+            }
+            if( top == '(' )
+            {
+              operators.Push(token.DataStr);
+            }
+          }
+          else
+          {
+            operators.Push(token.DataStr);
+          }
+        }   
+      }
+      else if( IsNumber(token.DataStr) )
+      {
+        output.Push(token.DataStr);
+      }
+
+      token = token.Next;
+    }
+
+    while( !operators.IsEmpty() )
+    {
+      output.Push(operators.GetTop());
+      operators.Pop();
+    }
+
+    //output.Print();
+
+    var Application::StrVector expr  = new Application::StrVector;
+
+    while( !output.IsEmpty() )
+    {
+      trace output.GetFront();
+      expr.PushBack(output.GetFront());
+      output.Pop();
+    }
+
+
+    return expr;
+
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -671,6 +751,7 @@ class Application : Core::Root
   $member IsDot
   $member TokenizeExpression
   $member IsSpace
+  $member ShuntingYardAlgorithm
 }
 
 $rect <480,20,680,60>
@@ -2473,10 +2554,6 @@ class Group
   $member OnGetSubexpression
 }
 
-$rect <-50,520,150,560>
-$output false
-const int32 MAX_SIZE = 10000;
-
 $rect <-50,220,150,260>
 $output false
 class ErrorDialog : Core::Group
@@ -3082,7 +3159,6 @@ class StrQueue
     else
     {
       Back.Next = strElement;
-      Back.DataStr = strElement.DataStr;
       Back = strElement;
     }
   }
@@ -3101,10 +3177,6 @@ class StrQueue
        Front = Front.Next;
        aux = null;
     }
-
-    Front = null;
-    Back = null;
-
   }
 
   $rect <390,-90,590,-50>
@@ -3992,5 +4064,228 @@ class StrVector
     }
 
     return "";
+  }
+}
+
+$rect <-310,400,-110,440>
+$output false
+class CharStack
+{
+  $rect <340,200,540,240>
+  inherited method Init()
+  {
+    Top = null;
+    Size = 0;
+    Empty = true;
+  }
+
+  $rect <102,53,302,93>
+  property Application::SimpleCharElement Top;
+
+  $rect <102,93,302,133>
+  onset Top
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Top == value )
+      return;
+
+    // Remember the property's new value.
+    pure Top = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <102,133,302,173>
+  onget Top
+  {
+    return pure Top;
+  }
+
+  $rect <90,190,290,230>
+  property int32 Size;
+
+  $rect <90,230,290,270>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <90,270,290,310>
+  onget Size
+  {
+    return pure Size;
+  }
+
+  $rect <340,50,540,90>
+  property bool Empty;
+
+  $rect <340,90,540,130>
+  onset Empty
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Empty == value )
+      return;
+
+    // Remember the property's new value.
+    pure Empty = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <340,130,540,170>
+  onget Empty
+  {
+    return pure Empty;
+  }
+
+  $rect <581,54,781,94>
+  method void Push( arg char aValue )
+  {
+    var Application::SimpleCharElement charElement = new Application::SimpleCharElement;
+    charElement.DataChar = aValue;
+    charElement.Next = Top;
+    Top = charElement;
+  }
+
+  $rect <611,106,811,146>
+  method void Pop()
+  {
+    var Application::SimpleCharElement aux = Top;
+
+    if( aux == null )
+    {
+      trace "Stack is empty!";
+    }
+    else 
+    {
+       aux = Top;
+       Top = Top.Next;
+       aux = null;
+    }
+  }
+
+  $rect <615,161,815,201>
+  method float GetTop()
+  {
+    if( Top != null ) 
+    {
+      return Top.DataFloat;
+    }
+
+    return 0;
+  }
+
+  $rect <787,245,987,285>
+  method bool IsEmpty()
+  {
+    if( Top == null )
+    {
+      return true; // Stack is empty
+    }
+
+    return false;
+  }
+
+  $rect <583,238,783,278>
+  method int32 GetSize()
+  {
+    while( Top != null )
+    {
+      Size++;
+      Top = Top.Next;
+    }
+
+    return Size;
+  }
+
+  $rect <295,287,495,327>
+  method void Clear()
+  {
+    while( Top != null )
+    {
+      Pop();
+    }
+
+    Size = 0;
+  }
+
+  $rect <545,314,745,354>
+  method void Print()
+  {
+    var Application::SimpleCharElement aux = Top;
+
+    while( aux != null )
+    {
+      trace aux.DataChar;
+      aux = aux.Next;
+    }
+
+    aux = null;
+  }
+}
+
+$rect <-310,-50,-110,-10>
+$output false
+class SimpleCharElement
+{
+  $rect <141,53,341,93>
+  property char DataChar;
+
+  $rect <141,93,341,133>
+  onset DataChar
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure DataChar == value )
+      return;
+
+    // Remember the property's new value.
+    pure DataChar = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <141,133,341,173>
+  onget DataChar
+  {
+    return pure DataChar;
+  }
+
+  $rect <380,50,580,90>
+  property Application::SimpleCharElement Next;
+
+  $rect <380,90,580,130>
+  onset Next
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Next == value )
+      return;
+
+    // Remember the property's new value.
+    pure Next = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <380,130,580,170>
+  onget Next
+  {
+    return pure Next;
   }
 }

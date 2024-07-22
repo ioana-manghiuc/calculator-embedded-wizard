@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::StrQueue;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.TokenizeExpression;
+attr currentCodeInspector = Application::StrQueue.Pop;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -41,36 +41,68 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-843,-101>;
+  attr scrollTo = <-843,139>;
   attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-105,-72>;
+  attr scrollTo = <-105,-24>;
   attr zoom = 0.5;
 }
 
-view class Application::StrVector
+view class Application::StrQueue
 {
   attr enableWireMode = false;
-  attr scrollTo = <-7,-151>;
+  attr scrollTo = <-7,-343>;
   attr zoom = 1.0;
 }
 
-codeview Application::Application.TokenizeExpression
+codeview Application::Application.ShuntingYardAlgorithm
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,17>;
-  attr codeSelEnd = <8,31>;
-  attr codeSelStart = <8,31>;
+  attr codeFirstPos = <0,73>;
+  attr codeSelEnd = <0,89>;
+  attr codeSelStart = <0,89>;
 }
 
-codeview Application::StrVector.PushBack
+codeview Application::Application.CalculateExpression
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,77>;
+  attr codeSelEnd = <7,91>;
+  attr codeSelStart = <7,91>;
+}
+
+codeview Application::StrStack.Print
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <17,5>;
-  attr codeSelStart = <17,5>;
+  attr codeSelEnd = <46,0>;
+  attr codeSelStart = <46,0>;
+}
+
+codeview Application::StrQueue.Push
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <25,11>;
+  attr codeSelStart = <25,11>;
+}
+
+codeview Application::StrQueue.Print
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <2,4>;
+  attr codeSelStart = <2,4>;
+}
+
+codeview Application::StrQueue.Pop
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <1,10>;
+  attr codeSelStart = <1,10>;
 }
