@@ -1,18 +1,18 @@
 ﻿$version 13.04
 
 // This is the root component of the entire GUI application.
-$rect <-50,20,150,60>
+$rect <-300,20,-100,60>
 $output false
 class Application : Core::Root
 {
-  $rect <990,260,1190,300>
+  $rect <990,200,1190,240>
   inherited property Bounds = <0,0,340,590>;
 
   $rect <20,20,160,60>
   object Views::Text TextTxt
   {
     preset StackingPriority = 3;
-    preset Bounds = <993,317,1191,382>;
+    preset Bounds = <996,254,1194,319>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -62,7 +62,6 @@ class Application : Core::Root
     var string str = "";
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
-    var Application::StrVector vec = new Application::StrVector;
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -148,9 +147,7 @@ class Application : Core::Root
     {
       if(IsExpressionValid(Text.String))
       {
-         //trace Text.String;
-         vec = ShuntingYardAlgorithm(Text.String);
-         //vec.Print();
+        Text.String = EvaluateRPN(Text.String);
         cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
     }
@@ -183,7 +180,7 @@ class Application : Core::Root
     preset Font = Application::DigitalResFont;
   }
 
-  $rect <410,190,610,230>
+  $rect <400,340,600,380>
   method float ExecTwoOp( arg float first, arg float second, arg string op )
   {
     var float res = 0.0;
@@ -222,7 +219,7 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <410,290,610,330>
+  $rect <400,390,600,430>
   method void ResetVariables()
   {
     Text.String = "";
@@ -240,7 +237,7 @@ class Application : Core::Root
   // Operation Handler
   note group Note
   {
-    attr Bounds = <360,150,650,350>;
+    attr Bounds = <360,150,650,470>;
   }
 
   $rect <1030,40,1230,80>
@@ -269,7 +266,7 @@ class Application : Core::Root
     return priority;
   }
 
-  $rect <1015,190,1240,230>
+  $rect <1020,100,1245,140>
   method Application::Group GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
@@ -352,23 +349,6 @@ class Application : Core::Root
     //  return true;
 
     //return false;
-  }
-
-  $rect <1030,140,1230,180>
-  method float GetNegativeNumber( arg string expression )
-  {
-    var string nrStr = "";
-    var int32 i = 0;
-
-    if(expression != "")
-    {
-      for( ; i < expression.length ; i++)
-      {
-        nrStr += expression[i];
-      }
-    }
-
-    return nrStr.parse_float(-1.0);
   }
 
   $rect <710,190,910,230>
@@ -472,7 +452,7 @@ class Application : Core::Root
     preset OnCloseDialog = onDialogHandled;
   }
 
-  $rect <410,450,610,490>
+  $rect <1040,470,1240,510>
   slot onOpenDialog
   {
     Int32Effect.Enabled=true;
@@ -481,20 +461,20 @@ class Application : Core::Root
     ErrorDialog.OnCloseDialog = onDialogHandled;
   }
 
-  $rect <410,500,610,540>
+  $rect <1040,520,1240,560>
   slot onDialogHandled
   {
     ErrorDialog.Bounds.x = -270;
     ErrorDialog.Visible = false;
   }
 
-  $rect <410,400,610,440>
+  $rect <1040,420,1240,460>
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
   }
 
-  $rect <710,490,910,530>
+  $rect <1000,330,1200,370>
   method string HandleNegation( arg string expression )
   {
     var string newexpr = "";
@@ -514,7 +494,7 @@ class Application : Core::Root
     preset Bounds = <110,144,230,199>;
   }
 
-  $rect <410,550,610,590>
+  $rect <1040,570,1240,610>
   object Effects::Int32Effect Int32Effect
   {
     preset NoOfCycles = 3;
@@ -528,22 +508,22 @@ class Application : Core::Root
   // Validations
   note group Note1
   {
-    attr Bounds = <670,-10,960,610>;
+    attr Bounds = <670,-10,960,650>;
   }
 
   // Error & Battery Dialog
   note group Note2
   {
-    attr Bounds = <360,360,650,610>;
+    attr Bounds = <990,380,1280,630>;
   }
 
   // Get Methods
   note group Note3
   {
-    attr Bounds = <980,-10,1270,250>;
+    attr Bounds = <980,-10,1270,180>;
   }
 
-  $rect <706,549,906,589>
+  $rect <710,540,910,580>
   method bool IsNumber( arg string expression )
   {
     var int32 i = 0;
@@ -559,13 +539,13 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <720,620,920,660>
+  $rect <710,490,910,530>
   method bool IsDot( arg char op )
   {
     return op == '.';
   }
 
-  $rect <1014,477,1214,517>
+  $rect <410,290,610,330>
   method Application::StrVector TokenizeExpression( arg string expression )
   {
     var Application::StrVector tokens = new Application::StrVector;
@@ -611,7 +591,7 @@ class Application : Core::Root
     return op == '\0' || op == '\t' || op =='\n';
   }
 
-  $rect <1034,550,1250,591>
+  $rect <404,240,620,280>
   method Application::StrVector ShuntingYardAlgorithm( arg string expression )
   {
     var Application::StrVector tokens  = new Application::StrVector;
@@ -693,20 +673,62 @@ class Application : Core::Root
       operators.Pop();
     }
 
-    //output.Print();
-
     var Application::StrVector expr  = new Application::StrVector;
 
     while( !output.IsEmpty() )
     {
-      trace output.GetFront();
       expr.PushBack(output.GetFront());
       output.Pop();
     }
 
-
     return expr;
 
+  }
+
+  $rect <410,190,610,230>
+  method string EvaluateRPN( arg string expression )
+  {
+    var Application::StrVector RPN  = new Application::StrVector;
+    var Application::FloatStack stk = new Application::FloatStack;
+    var float firstOp;
+    var float secondOp;
+
+    RPN = ShuntingYardAlgorithm(expression);
+    var Application::StringElement token = RPN.Front;
+
+    while( token != null )
+    {
+      if( IsOperator(token.DataStr[0]) && !IsNegativeNumber(token.DataStr) )
+      {
+        secondOp = stk.GetTop();
+        stk.Pop();
+        firstOp = stk.GetTop();
+        stk.Pop();
+        stk.Push(ExecTwoOp(firstOp, secondOp, token.DataStr[0]));
+      }
+      else 
+      {
+        stk.Push(token.DataStr.parse_float(-1.0));
+      }
+      token = token.Next;
+    }
+
+    var string result = "";
+    result = stk.GetTop();
+
+    return result;
+  }
+
+  $rect <700,590,900,630>
+  method bool IsNegativeNumber( arg string expression )
+  {
+    var string subexpr = expression.right(expression.length - 1);
+    if( expression[0] == '-' && IsNumber(subexpr) )
+    {
+      return true;
+    }
+
+    return false;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -732,7 +754,6 @@ class Application : Core::Root
   $member GetNumberFromPosition
   $member IsExpressionValid
   $member IsDigit
-  $member GetNegativeNumber
   $member CorrectParentheses
   $member OperatorsCorrectlyUsed
   $member IsParenthesis
@@ -752,9 +773,11 @@ class Application : Core::Root
   $member TokenizeExpression
   $member IsSpace
   $member ShuntingYardAlgorithm
+  $member EvaluateRPN
+  $member IsNegativeNumber
 }
 
-$rect <480,20,680,60>
+$rect <-40,360,160,400>
 $output false
 resource Resources::Font NumFont
 {
@@ -770,7 +793,7 @@ resource Resources::Font NumFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <480,120,680,160>
+$rect <-40,460,160,500>
 $output false
 resource Resources::Font DigitalResFont
 {
@@ -786,7 +809,7 @@ resource Resources::Font DigitalResFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-50,120,150,160>
+$rect <-300,120,-100,160>
 $output false
 class NumKeyBtns : Core::Group
 {
@@ -1422,7 +1445,7 @@ class NumKeyBtns : Core::Group
   $member Negate
 }
 
-$rect <220,20,420,60>
+$rect <460,20,660,70>
 $output false
 resource Resources::Bitmap CustomBtn
 {
@@ -1435,7 +1458,7 @@ resource Resources::Bitmap CustomBtn
 }
 
 // This component implements an editor.
-$rect <-50,170,150,210>
+$rect <-300,170,-100,210>
 $output false
 class ResultTxtEd : Templates::TextEditor
 {
@@ -2333,7 +2356,7 @@ class ResultTxtEd : Templates::TextEditor
   property Resources::Font Font = Resources::FontMedium;
 }
 
-$rect <220,70,420,110>
+$rect <460,70,660,120>
 $output false
 resource Resources::Bitmap EqualsBtn
 {
@@ -2345,7 +2368,7 @@ resource Resources::Bitmap EqualsBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <480,170,680,210>
+$rect <-40,510,160,550>
 $output false
 resource Resources::Font EqFont
 {
@@ -2361,7 +2384,7 @@ resource Resources::Font EqFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <220,120,420,160>
+$rect <460,120,660,170>
 $output false
 resource Resources::Bitmap PercentBtn
 {
@@ -2373,7 +2396,7 @@ resource Resources::Bitmap PercentBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <220,170,420,210>
+$rect <460,170,660,220>
 $output false
 resource Resources::Bitmap PowBtn
 {
@@ -2388,28 +2411,28 @@ resource Resources::Bitmap PowBtn
 // Components
 note group Note
 {
-  attr Bounds = <-80,80,170,380>;
+  attr Bounds = <-330,80,-80,380>;
 }
 
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <200,-20,440,570>;
+  attr Bounds = <440,-20,680,580>;
 }
 
 // Fonts
 note group Note2
 {
-  attr Bounds = <460,-20,700,420>;
+  attr Bounds = <-60,300,420,580>;
 }
 
 // Application
 note group Note3
 {
-  attr Bounds = <-80,-20,170,70>;
+  attr Bounds = <-330,-20,-80,70>;
 }
 
-$rect <480,70,680,110>
+$rect <-40,410,160,450>
 $output false
 resource Resources::Font NumBoldFont
 {
@@ -2425,7 +2448,7 @@ resource Resources::Font NumBoldFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <217,219,417,259>
+$rect <457,219,657,269>
 $output false
 resource Resources::Bitmap DivideBtn
 {
@@ -2437,7 +2460,7 @@ resource Resources::Bitmap DivideBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <480,220,680,260>
+$rect <200,360,400,400>
 $output false
 resource Resources::Font MultiplyFont
 {
@@ -2453,7 +2476,7 @@ resource Resources::Font MultiplyFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-50,270,150,310>
+$rect <-300,270,-100,310>
 $output false
 class Group
 {
@@ -2554,7 +2577,7 @@ class Group
   $member OnGetSubexpression
 }
 
-$rect <-50,220,150,260>
+$rect <-300,220,-100,260>
 $output false
 class ErrorDialog : Core::Group
 {
@@ -2698,7 +2721,7 @@ class ErrorDialog : Core::Group
   }
 }
 
-$rect <480,270,680,310>
+$rect <200,410,400,450>
 $output false
 resource Resources::Font ErrorFont
 {
@@ -2714,7 +2737,7 @@ resource Resources::Font ErrorFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <480,320,680,360>
+$rect <200,460,400,500>
 $output false
 resource Resources::Font BtnFont
 {
@@ -2730,7 +2753,7 @@ resource Resources::Font BtnFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <220,320,420,360>
+$rect <460,320,660,370>
 $output false
 resource Resources::Bitmap OKBtn
 {
@@ -2742,7 +2765,7 @@ resource Resources::Bitmap OKBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <220,270,420,310>
+$rect <460,270,660,320>
 $output false
 resource Resources::Bitmap ParenthesisBtn
 {
@@ -2754,7 +2777,7 @@ resource Resources::Bitmap ParenthesisBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <480,370,680,410>
+$rect <200,510,400,550>
 $output false
 resource Resources::Font NumFont1
 {
@@ -2770,7 +2793,7 @@ resource Resources::Font NumFont1
   attr fontrowdistance RowDistance;
 }
 
-$rect <220,370,420,410>
+$rect <460,370,660,420>
 $output false
 resource Resources::Bitmap BackBtn
 {
@@ -2782,7 +2805,7 @@ resource Resources::Bitmap BackBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <220,420,420,460>
+$rect <460,420,660,470>
 $output false
 resource Resources::Bitmap BatteryOutline
 {
@@ -2794,7 +2817,7 @@ resource Resources::Bitmap BatteryOutline
   attr bitmapmode Mode = Default;
 }
 
-$rect <220,470,420,510>
+$rect <460,470,660,520>
 $output false
 resource Resources::Bitmap BatteryBgk
 {
@@ -2806,7 +2829,7 @@ resource Resources::Bitmap BatteryBgk
   attr bitmapmode Mode = Default;
 }
 
-$rect <220,520,420,560>
+$rect <460,520,660,570>
 $output false
 resource Resources::Bitmap BatteryLine
 {
@@ -2818,7 +2841,7 @@ resource Resources::Bitmap BatteryLine
   attr bitmapmode Mode = Default;
 }
 
-$rect <-50,320,150,360>
+$rect <-300,320,-100,360>
 $output false
 class Battery : Core::Group
 {
@@ -3078,7 +3101,7 @@ class Battery : Core::Group
   $member UpdateBatteryLines
 }
 
-$rect <-310,0,-110,40>
+$rect <200,130,400,170>
 $output false
 class SimpleStringElement
 {
@@ -3140,7 +3163,7 @@ class SimpleStringElement
   $reorder OnGetDataStr 1
 }
 
-$rect <-310,240,-110,280>
+$rect <-30,80,170,120>
 $output false
 class StrQueue
 {
@@ -3367,7 +3390,7 @@ class StrQueue
   $reorder Clear 1
 }
 
-$rect <-310,300,-110,340>
+$rect <-30,130,170,170>
 $output false
 class StrStack
 {
@@ -3537,7 +3560,7 @@ class StrStack
   }
 }
 
-$rect <-310,50,-110,90>
+$rect <200,180,400,220>
 $output false
 class SimpleFloatElement
 {
@@ -3590,7 +3613,7 @@ class SimpleFloatElement
   }
 }
 
-$rect <-310,350,-110,390>
+$rect <-30,180,170,220>
 $output false
 class FloatStack
 {
@@ -3760,7 +3783,7 @@ class FloatStack
   }
 }
 
-$rect <-310,110,-110,150>
+$rect <200,30,400,70>
 $output false
 class StringElement
 {
@@ -3837,7 +3860,7 @@ class StringElement
   }
 }
 
-$rect <-310,180,-110,220>
+$rect <-30,30,170,70>
 $output false
 class StrVector
 {
@@ -4067,7 +4090,7 @@ class StrVector
   }
 }
 
-$rect <-310,400,-110,440>
+$rect <-30,230,170,270>
 $output false
 class CharStack
 {
@@ -4237,7 +4260,7 @@ class CharStack
   }
 }
 
-$rect <-310,-50,-110,-10>
+$rect <200,80,400,120>
 $output false
 class SimpleCharElement
 {
@@ -4288,4 +4311,10 @@ class SimpleCharElement
   {
     return pure Next;
   }
+}
+
+// Data Structures
+note group Note4
+{
+  attr Bounds = <-60,-20,420,290>;
 }

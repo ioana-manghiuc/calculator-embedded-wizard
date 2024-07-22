@@ -3,7 +3,7 @@ $version 1.0
 attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.EvaluateRPN;
+attr currentCodeInspector = Application::Application.CalculateExpression;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -41,22 +41,15 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-843,139>;
+  attr scrollTo = <-881,-217>;
   attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-105,-24>;
+  attr scrollTo = <-465,-360>;
   attr zoom = 0.5;
-}
-
-view class Application::StrQueue
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-7,-343>;
-  attr zoom = 1.0;
 }
 
 codeview Application::Application.ShuntingYardAlgorithm
@@ -70,9 +63,9 @@ codeview Application::Application.ShuntingYardAlgorithm
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,77>;
-  attr codeSelEnd = <13,90>;
-  attr codeSelStart = <13,90>;
+  attr codeFirstPos = <0,75>;
+  attr codeSelEnd = <43,88>;
+  attr codeSelStart = <43,88>;
 }
 
 codeview Application::StrStack.Print
@@ -110,7 +103,15 @@ codeview Application::StrQueue.Pop
 codeview Application::Application.EvaluateRPN
 {
   attr codeColSelect = false;
+  attr codeFirstPos = <0,9>;
+  attr codeSelEnd = <69,10>;
+  attr codeSelStart = <69,10>;
+}
+
+codeview Application::Application.IsNegativeNumber
+{
+  attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <18,3>;
-  attr codeSelStart = <10,3>;
+  attr codeSelEnd = <14,3>;
+  attr codeSelStart = <14,3>;
 }
