@@ -147,16 +147,11 @@ class Application : Core::Root
     {
       if(IsExpressionValid(Text.String))
       {
-        Text.String = ExecuteOperation(Text.String);
+        //Text.String = ExecuteOperation(Text.String);
         cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
     }
 
-    queue.Push(str);
-    strStack.Push(str);
-    //queue.Print();
-    //trace queue.GetSize();
-    trace strStack.GetTop();
 
   }
 
@@ -272,38 +267,6 @@ class Application : Core::Root
     return priority;
   }
 
-  $rect <990,90,1260,130>
-  method Application::Group GetSubexpressionInParentheses( arg int32 startPos, arg string expression )
-  {
-    var string subexpression;
-    var int32 endPos;
-    var Application::Group res = new Application::Group;
-
-    var int32 i = startPos + 1;
-
-    if(expression != "")
-    {
-      for( ; i < expression.length; i++)
-      {
-        if(expression[i] != ')')
-        {
-          subexpression += expression[i];
-          endPos = i;
-        }
-        else
-        {  
-          break;    
-        }
-      }
-    } 
-
-    res.EndPosition = endPos;
-    res.Subexpression = subexpression;
-    res.IdentifiedNumber = 0.0;
-
-    return res; 
-  }
-
   $rect <1015,190,1240,230>
   method Application::Group GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
@@ -387,32 +350,6 @@ class Application : Core::Root
     //  return true;
 
     //return false;
-  }
-
-  $rect <710,390,910,430>
-  method bool SubexprHasOnlyDigits( arg string expression )
-  {
-    var int32 i = 0;
-    var int32 counter = 0;
-    var bool validator = false;
-
-    if(expression != "")
-    {
-      for( ; i < expression.length; i++)
-      {
-        if(IsDigit(expression[i]))
-          validator = true;
-        else if(expression[i] == '-')
-          counter++;
-        else
-          validator = false;
-      }
-    }
-
-    if( validator == true && (counter == 1 || counter == 0))
-      return true;
-
-    return false;
   }
 
   $rect <1030,140,1230,180>
@@ -535,90 +472,6 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <410,240,610,280>
-  method float ExecuteOperation( arg string expression )
-  {
-    var float firstOp = 0.0;
-    var float secondOp = 0.0;
-    var float res = 0.0;
-    var int32 i = 0;
-    var Application::Group pair = new Application::Group;
-    var float intermediate = 0.0;
-    var bool firstSet = false;
-    var bool secondSet = false;
-    var bool intermediateSet = false;
-    var char op = '\0';
-
-    for (; i < expression.length; i++) 
-    {
-      if (expression[i] == '(') 
-      {
-        pair = GetSubexpressionInParentheses(i, expression);
-        intermediate = ExecuteOperation(pair.Subexpression);
-        intermediateSet = true;
-
-        i = pair.EndPosition;
-        continue;
-      }
-
-      if (expression[i] == ')')
-         continue;
-
-      if (IsDigit(expression[i]))
-      {
-         pair = GetNumberFromPosition(i, expression);
-         i = pair.EndPosition;
-
-         if (!firstSet && !secondSet && !intermediateSet)
-         {
-           firstOp = pair.IdentifiedNumber;
-           firstSet = true;
-           continue;
-         }
-
-         if (!firstSet && !secondSet && intermediateSet) 
-         {
-           firstOp = intermediate;
-           intermediate = 0.0;
-           firstSet = true;
-           intermediateSet = false;
-         }
-
-          if (firstSet && !secondSet && !intermediateSet)
-          {
-            secondOp = pair.IdentifiedNumber;
-            secondSet = true;
-          }
-
-          if (firstSet && !secondSet && intermediateSet)
-          {
-            secondOp = intermediate;
-            intermediate = 0.0;      
-            secondSet = true;
-            intermediateSet = false;
-          }
-
-          if (firstSet && secondSet && op != '\0')
-          {
-            res = ExecTwoOp(firstOp, secondOp, op);
-            firstOp = 0.0;
-            secondOp = 0.0;
-            firstSet = false;
-            secondSet = false;
-            op = '\0';
-          }
-          continue;
-        }
-
-        if (IsOperator(expression[i])) 
-        {
-          op = expression[i];
-        }
-      }
-
-    return res;
-  }
-
   $rect <710,440,910,480>
   method bool IsWhiteSpace( arg char op )
   {
@@ -654,8 +507,6 @@ class Application : Core::Root
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
-    queue = new Application::StrQueue;
-    strStack = new Application::StrStack;
   }
 
   $rect <710,490,910,530>
@@ -707,52 +558,47 @@ class Application : Core::Root
     attr Bounds = <980,-10,1270,250>;
   }
 
-  $rect <1050,430,1250,470>
-  property Application::StrQueue queue = null;
-
-  $rect <1050,470,1250,510>
-  onset queue
+  $rect <706,549,906,589>
+  method bool IsNumber( arg string expression )
   {
-    // The value doesn't change - nothing to do.
-    if ( pure queue == value )
-      return;
+    var int32 i = 0;
 
-    // Remember the property's new value.
-    pure queue = value;
+    for( ; i < expression.length ; i++ )
+    {
+      if(!IsDigit(expression[i]) && !IsDot(expression[i]))
+      {
+        return false;
+      }
+    }
 
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
+    return true;
   }
 
-  $rect <1050,510,1250,550>
-  onget queue
+  $rect <720,620,920,660>
+  method bool IsDot( arg char op )
   {
-    return pure queue;
+    return op == '.';
   }
 
-  $rect <1290,430,1490,470>
-  property Application::StrStack strStack;
-
-  $rect <1290,470,1490,510>
-  onset strStack
+  $rect <1014,477,1214,517>
+  method Application::StrVector TokenizeExpression( arg string expression )
   {
-    // The value doesn't change - nothing to do.
-    if ( pure strStack == value )
-      return;
+    var Application::StrVector tokens = new Application::StrVector;
+    var int32 i = 0;
 
-    // Remember the property's new value.
-    pure strStack = value;
+    while( i < expression.length ) 
+    {
+    }
 
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
+    return tokens;
+
+
   }
 
-  $rect <1290,510,1490,550>
-  onget strStack
+  $rect <710,390,910,430>
+  method bool IsSpace( arg char op )
   {
-    return pure strStack;
+    return op == '' || op == '\t' || op =='\n';
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -775,17 +621,14 @@ class Application : Core::Root
   $member IsOperator
   $member Note
   $member GetPriorityOfOperator
-  $member GetSubexpressionInParentheses
   $member GetNumberFromPosition
   $member IsExpressionValid
   $member IsDigit
-  $member SubexprHasOnlyDigits
   $member GetNegativeNumber
   $member CorrectParentheses
   $member OperatorsCorrectlyUsed
   $member IsParenthesis
   $member CharactersAllowed
-  $member ExecuteOperation
   $member IsWhiteSpace
   $member ErrorDialog
   $member onOpenDialog
@@ -796,12 +639,10 @@ class Application : Core::Root
   $member Note1
   $member Note2
   $member Note3
-  $member queue
-  $member OnSetqueue
-  $member OnGetqueue
-  $member strStack
-  $member OnSetstrStack
-  $member OnGetstrStack
+  $member IsNumber
+  $member IsDot
+  $member TokenizeExpression
+  $member IsSpace
 }
 
 $rect <480,20,680,60>
@@ -4039,10 +3880,18 @@ class StrVector
   }
 
   $rect <640,150,840,190>
-  method Application::StringElement At( arg int32 pos )
+  method string At( arg int32 pos )
   {
-    /* The template just returns the given argument... */
-    return pos;
+    var int32 index = 0;
+    var Application::StringElement aux = Front;
+
+    while( aux != null && index != pos)
+    {
+      aux = aux.Next;
+      index++;
+    }
+
+    return aux.DataStr;
   }
 
   $rect <648,216,848,256>
