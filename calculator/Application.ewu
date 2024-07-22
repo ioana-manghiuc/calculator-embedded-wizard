@@ -62,9 +62,6 @@ class Application : Core::Root
     var string str = "";
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
-    var Application::Queue queue = new Application::Queue;
-    queue.push(-1.23);
-    queue.Print();
 
     if(KeyHandler.CharCode != '\0')
     {  
@@ -155,6 +152,12 @@ class Application : Core::Root
       }
     }
 
+    queue.Push(str);
+    strStack.Push(str);
+    //queue.Print();
+    //trace queue.GetSize();
+    trace strStack.GetTop();
+
   }
 
   // Key Event Handler
@@ -225,7 +228,7 @@ class Application : Core::Root
   method void ResetVariables()
   {
     Text.String = "";
-    //Keypad.ParanthesisOpen = false;
+    queue.Clear();
   }
 
   $rect <710,40,910,80>
@@ -651,6 +654,8 @@ class Application : Core::Root
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
+    queue = new Application::StrQueue;
+    strStack = new Application::StrStack;
   }
 
   $rect <710,490,910,530>
@@ -702,6 +707,54 @@ class Application : Core::Root
     attr Bounds = <980,-10,1270,250>;
   }
 
+  $rect <1050,430,1250,470>
+  property Application::StrQueue queue = null;
+
+  $rect <1050,470,1250,510>
+  onset queue
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure queue == value )
+      return;
+
+    // Remember the property's new value.
+    pure queue = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <1050,510,1250,550>
+  onget queue
+  {
+    return pure queue;
+  }
+
+  $rect <1290,430,1490,470>
+  property Application::StrStack strStack;
+
+  $rect <1290,470,1490,510>
+  onset strStack
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure strStack == value )
+      return;
+
+    // Remember the property's new value.
+    pure strStack = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <1290,510,1490,550>
+  onget strStack
+  {
+    return pure strStack;
+  }
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -743,6 +796,12 @@ class Application : Core::Root
   $member Note1
   $member Note2
   $member Note3
+  $member queue
+  $member OnSetqueue
+  $member OnGetqueue
+  $member strStack
+  $member OnSetstrStack
+  $member OnGetstrStack
 }
 
 $rect <480,20,680,60>
@@ -2379,7 +2438,7 @@ resource Resources::Bitmap PowBtn
 // Components
 note group Note
 {
-  attr Bounds = <-80,80,170,330>;
+  attr Bounds = <-80,80,170,380>;
 }
 
 // Bitmaps
@@ -2545,7 +2604,7 @@ class Group
   $member OnGetSubexpression
 }
 
-$rect <-50,390,150,430>
+$rect <-50,520,150,560>
 $output false
 const int32 MAX_SIZE = 10000;
 
@@ -2777,12 +2836,6 @@ resource Resources::Bitmap BackBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <-50,340,150,380>
-inline Inline
-{
-  #include "EvaluateExpression.h"
-}
-
 $rect <220,420,420,460>
 $output false
 resource Resources::Bitmap BatteryOutline
@@ -2819,7 +2872,7 @@ resource Resources::Bitmap BatteryLine
   attr bitmapmode Mode = Default;
 }
 
-$rect <-335,339,-135,379>
+$rect <-50,320,150,360>
 $output false
 class Battery : Core::Group
 {
@@ -3079,186 +3132,9 @@ class Battery : Core::Group
   $member UpdateBatteryLines
 }
 
-$rect <-330,170,-130,210>
+$rect <-310,0,-110,40>
 $output false
-class Vector;
-
-$rect <-330,220,-130,260>
-$output false
-class Stack;
-
-$rect <-530,190,-330,230>
-$output false
-class Queue
-{
-  $rect <40,50,240,90>
-  inherited method Init()
-  {
-    Front = 0.0;
-    Back = 0.0;
-    Size = 0;
-    Empty = true;
-  }
-
-  $rect <255,32,455,72>
-  property Application::Element Front = null;
-
-  $rect <255,72,455,112>
-  onset Front
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Front == value )
-      return;
-
-    // Remember the property's new value.
-    pure Front = value;
-
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <255,112,455,152>
-  onget Front
-  {
-    return pure Front;
-  }
-
-  $rect <490,30,690,70>
-  property Application::Element Back = null;
-
-  $rect <490,70,690,110>
-  onset Back
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Back == value )
-      return;
-
-    // Remember the property's new value.
-    pure Back = value;
-
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <490,110,690,150>
-  onget Back
-  {
-    return pure Back;
-  }
-
-  $rect <740,30,940,70>
-  property int32 Size;
-
-  $rect <740,70,940,110>
-  onset Size
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Size == value )
-      return;
-
-    // Remember the property's new value.
-    pure Size = value;
-
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <740,110,940,150>
-  onget Size
-  {
-    return pure Size;
-  }
-
-  $rect <260,180,460,220>
-  property bool Empty;
-
-  $rect <260,220,460,260>
-  onset Empty
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Empty == value )
-      return;
-
-    // Remember the property's new value.
-    pure Empty = value;
-
-    // TO DO:
-    // 
-    // Now you can handle the alternation of the property.
-  }
-
-  $rect <260,260,460,300>
-  onget Empty
-  {
-    return pure Empty;
-  }
-
-  // This method adds (pushes) elements to the end of the queue.
-  $rect <492,178,692,218>
-  method void push( arg Application::Element aElement )
-  {
-    if( Back != null )
-    {
-      Back.next = aElement;
-      aElement.prev = Back;
-    }
-    else
-    {
-      Front = aElement;
-      Back = aElement;
-    }
-
-  }
-
-  // This method removes (pops) elements from the beginning of the queue.
-  $rect <491,224,691,264>
-  method void pop()
-  {
-     if (Size == 0) 
-     {
-        trace "Queue is empty.";
-        return;
-    }
-    var int32 frontIndex = (int32)Front % 10000; 
-    //Data[frontIndex] = 0.0; 
-    Front += 1.0;
-    Size--;
-    if (Size == 0) 
-    {
-     Empty = true;
-    }
-  }
-
-  $rect <480,270,680,310>
-  method void Print()
-  {
-    //var int32 i = 0;
-    //array float data [Application::MAX_SIZE] = Data;
-    //
-    //for( ; i < data.size; i++)
-    //{
-    //  trace data[i];
-    //}
-  }
-}
-
-$rect <-510,70,-310,110>
-$output false
-class Element
-{
-  $rect <76,82,276,122>
-  var int32 prev;
-
-  $rect <80,130,280,170>
-  var int32 next;
-}
-
-$rect <-510,120,-310,160>
-$output false
-class StringElement : Application::Element
+class SimpleStringElement
 {
   $rect <112,67,312,107>
   property string DataStr;
@@ -3283,60 +3159,969 @@ class StringElement : Application::Element
   {
     return pure DataStr;
   }
+
+  $rect <350,70,550,110>
+  property Application::SimpleStringElement Next;
+
+  $rect <350,110,550,150>
+  onset Next
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Next == value )
+      return;
+
+    // Remember the property's new value.
+    pure Next = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <350,150,550,190>
+  onget Next
+  {
+    return pure Next;
+  }
+
+  // Directives to adapt the order of members belonging to this class so they appear 
+  // correctly arranged relative to the members inherited from the ancestor (super) 
+  // classes. The numbers indicate the order-displacement to apply on the respective 
+  // member once all members have been loaded and combined with members from the 
+  // ancestor classes.
+  $reorder DataStr 1
+  $reorder OnSetDataStr 1
+  $reorder OnGetDataStr 1
 }
 
-$rect <-520,250,-320,290>
+$rect <-310,240,-110,280>
 $output false
-class StrQueue : Application::Queue
+class StrQueue
 {
   $rect <155,-92,355,-52>
   method void Push( arg string aValue )
   {
-    var Application::StringElement strElement = new Application::StringElement;
+    var Application::SimpleStringElement strElement = new Application::SimpleStringElement;
     strElement.DataStr = aValue;
+    strElement.Next = null;
 
-    push( strElement );
+    if( Front == null )
+    {
+      Front = strElement;
+      Back = strElement;
+    }
+    else
+    {
+      Back.Next = strElement;
+      Back.DataStr = strElement.DataStr;
+      Back = strElement;
+    }
+  }
+
+  $rect <150,-40,350,0>
+  method void Pop()
+  {
+    var Application::SimpleStringElement aux = Front;
+
+    if( aux == null )
+    {
+      trace "Queue is empty!";
+    }
+    else 
+    {
+       Front = Front.Next;
+       aux = null;
+    }
+
+    Front = null;
+    Back = null;
+
+  }
+
+  $rect <390,-90,590,-50>
+  method string GetFront()
+  {
+    if( Front != null )
+    {
+      return Front.DataStr;
+    }
+
+    return "";
+  }
+
+  $rect <386,-35,586,5>
+  method string GetBack()
+  {
+    if( Back != null )
+    {
+      return Back.DataStr;
+    }
+
+    return "";
+  }
+
+  $rect <610,-90,810,-50>
+  method bool IsEmpty()
+  {
+    if( Front == null || Back == null )
+    {
+      return true; // queue is empty
+    }
+
+    return false;
+  }
+
+  $rect <610,-40,810,0>
+  method void Clear()
+  {
+    while( Front != null )
+    {
+      Pop();
+    }
+
+    Size = 0;
+  }
+
+  $rect <190,20,390,60>
+  inherited method Init()
+  {
+    Front = null;
+    Back = null;
+    Size = 0;
+    Empty = true;
+  }
+
+  $rect <840,-90,1040,-50>
+  method int32 GetSize()
+  {
+    while( Front != null )
+    {
+      Size++;
+      Front = Front.Next;
+    }
+
+    return Size;
+  }
+
+  $rect <830,-40,1030,0>
+  method void Print()
+  {
+    var Application::SimpleStringElement aux = Front;
+
+    while( aux != null )
+    {
+      trace aux.DataStr;
+      aux = aux.Next;
+    }
+
+    aux = null;
+  }
+
+  $rect <-66,-140,134,-100>
+  property Application::SimpleStringElement Front;
+
+  $rect <-66,-100,134,-60>
+  onset Front
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Front == value )
+      return;
+
+    // Remember the property's new value.
+    pure Front = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <-66,-60,134,-20>
+  onget Front
+  {
+    return pure Front;
+  }
+
+  $rect <-70,0,130,40>
+  property Application::SimpleStringElement Back;
+
+  $rect <-70,40,130,80>
+  onset Back
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Back == value )
+      return;
+
+    // Remember the property's new value.
+    pure Back = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <-70,80,130,120>
+  onget Back
+  {
+    return pure Back;
+  }
+
+  $rect <710,40,910,80>
+  property int32 Size;
+
+  $rect <710,80,910,120>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <710,120,910,160>
+  onget Size
+  {
+    return pure Size;
+  }
+
+  $rect <421,41,621,81>
+  property bool Empty;
+
+  $rect <421,81,621,121>
+  onset Empty
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Empty == value )
+      return;
+
+    // Remember the property's new value.
+    pure Empty = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <421,121,621,161>
+  onget Empty
+  {
+    return pure Empty;
+  }
+
+  // Directives to adapt the order of members belonging to this class so they appear 
+  // correctly arranged relative to the members inherited from the ancestor (super) 
+  // classes. The numbers indicate the order-displacement to apply on the respective 
+  // member once all members have been loaded and combined with members from the 
+  // ancestor classes.
+  $reorder Push 3
+  $reorder Pop 3
+  $reorder GetFront 1
+  $reorder GetBack 1
+  $reorder IsEmpty 1
+  $reorder Clear 1
+}
+
+$rect <-310,300,-110,340>
+$output false
+class StrStack
+{
+  $rect <340,200,540,240>
+  inherited method Init()
+  {
+    Top = null;
+    Size = 0;
+    Empty = true;
+  }
+
+  $rect <102,53,302,93>
+  property Application::SimpleStringElement Top;
+
+  $rect <102,93,302,133>
+  onset Top
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Top == value )
+      return;
+
+    // Remember the property's new value.
+    pure Top = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <102,133,302,173>
+  onget Top
+  {
+    return pure Top;
+  }
+
+  $rect <90,190,290,230>
+  property int32 Size;
+
+  $rect <90,230,290,270>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <90,270,290,310>
+  onget Size
+  {
+    return pure Size;
+  }
+
+  $rect <340,50,540,90>
+  property bool Empty;
+
+  $rect <340,90,540,130>
+  onset Empty
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Empty == value )
+      return;
+
+    // Remember the property's new value.
+    pure Empty = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <340,130,540,170>
+  onget Empty
+  {
+    return pure Empty;
+  }
+
+  $rect <581,54,781,94>
+  method void Push( arg string aValue )
+  {
+    var Application::SimpleStringElement strElement = new Application::SimpleStringElement;
+    strElement.DataStr = aValue;
+    strElement.Next = Top;
+    Top = strElement;
+  }
+
+  $rect <611,106,811,146>
+  method void Pop()
+  {
+    var Application::SimpleStringElement aux = Top;
+
+    if( aux == null )
+    {
+      trace "Stack is empty!";
+    }
+    else 
+    {
+       aux = Top;
+       Top = Top.Next;
+       aux = null;
+    }
+  }
+
+  $rect <615,161,815,201>
+  method string GetTop()
+  {
+    if( Top != null ) 
+    {
+      return Top.DataStr;
+    }
+
+    return "";
+  }
+
+  $rect <787,245,987,285>
+  method bool IsEmpty()
+  {
+    if( Top == null )
+    {
+      return true; // Stack is empty
+    }
+
+    return false;
+  }
+
+  $rect <583,238,783,278>
+  method int32 GetSize()
+  {
+    while( Top != null )
+    {
+      Size++;
+      Top = Top.Next;
+    }
+
+    return Size;
+  }
+
+  $rect <295,287,495,327>
+  method void Clear()
+  {
+    while( Top != null )
+    {
+      Pop();
+    }
+
+    Size = 0;
+  }
+
+  $rect <545,314,745,354>
+  method void Print()
+  {
+    var Application::SimpleStringElement aux = Top;
+
+    while( aux != null )
+    {
+      trace aux.DataStr;
+      aux = aux.Next;
+    }
+
+    aux = null;
   }
 }
 
-// Directives to adapt the order of the above members according to how these members 
-// where arranged when the project content was stored. In this manner the storage 
-// and the expected order of the members don't depend. Merging of changes in the 
-// project files is simplified.
-$member Inline
-$member Application
-$member NumFont
-$member DigitalResFont
-$member NumKeyBtns
-$member CustomBtn
-$member ResultTxtEd
-$member EqualsBtn
-$member EqFont
-$member PercentBtn
-$member PowBtn
-$member Note
-$member Note1
-$member Note2
-$member Note3
-$member NumBoldFont
-$member DivideBtn
-$member MultiplyFont
-$member Group
-$member MAX_SIZE
-$member ErrorDialog
-$member ErrorFont
-$member BtnFont
-$member OKBtn
-$member ParenthesisBtn
-$member NumFont1
-$member BackBtn
-$member BatteryOutline
-$member BatteryBgk
-$member BatteryLine
-$member Battery
-$member Vector
-$member Stack
-$member Queue
-$member Element
-$member StringElement
-$member StrQueue
+$rect <-310,50,-110,90>
+$output false
+class SimpleFloatElement
+{
+  $rect <141,53,341,93>
+  property float DataFloat;
+
+  $rect <141,93,341,133>
+  onset DataFloat
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure DataFloat == value )
+      return;
+
+    // Remember the property's new value.
+    pure DataFloat = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <141,133,341,173>
+  onget DataFloat
+  {
+    return pure DataFloat;
+  }
+
+  $rect <380,50,580,90>
+  property Application::SimpleFloatElement Next;
+
+  $rect <380,90,580,130>
+  onset Next
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Next == value )
+      return;
+
+    // Remember the property's new value.
+    pure Next = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <380,130,580,170>
+  onget Next
+  {
+    return pure Next;
+  }
+}
+
+$rect <-310,350,-110,390>
+$output false
+class FloatStack
+{
+  $rect <340,200,540,240>
+  inherited method Init()
+  {
+    Top = null;
+    Size = 0;
+    Empty = true;
+  }
+
+  $rect <102,53,302,93>
+  property Application::SimpleFloatElement Top;
+
+  $rect <102,93,302,133>
+  onset Top
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Top == value )
+      return;
+
+    // Remember the property's new value.
+    pure Top = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <102,133,302,173>
+  onget Top
+  {
+    return pure Top;
+  }
+
+  $rect <90,190,290,230>
+  property int32 Size;
+
+  $rect <90,230,290,270>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <90,270,290,310>
+  onget Size
+  {
+    return pure Size;
+  }
+
+  $rect <340,50,540,90>
+  property bool Empty;
+
+  $rect <340,90,540,130>
+  onset Empty
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Empty == value )
+      return;
+
+    // Remember the property's new value.
+    pure Empty = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <340,130,540,170>
+  onget Empty
+  {
+    return pure Empty;
+  }
+
+  $rect <581,54,781,94>
+  method void Push( arg float aValue )
+  {
+    var Application::SimpleFloatElement floatElement = new Application::SimpleFloatElement;
+    floatElement.DataFloat = aValue;
+    floatElement.Next = Top;
+    Top = floatElement;
+  }
+
+  $rect <611,106,811,146>
+  method void Pop()
+  {
+    var Application::SimpleFloatElement aux = Top;
+
+    if( aux == null )
+    {
+      trace "Stack is empty!";
+    }
+    else 
+    {
+       aux = Top;
+       Top = Top.Next;
+       aux = null;
+    }
+  }
+
+  $rect <615,161,815,201>
+  method float GetTop()
+  {
+    if( Top != null ) 
+    {
+      return Top.DataFloat;
+    }
+
+    return 0;
+  }
+
+  $rect <787,245,987,285>
+  method bool IsEmpty()
+  {
+    if( Top == null )
+    {
+      return true; // Stack is empty
+    }
+
+    return false;
+  }
+
+  $rect <583,238,783,278>
+  method int32 GetSize()
+  {
+    while( Top != null )
+    {
+      Size++;
+      Top = Top.Next;
+    }
+
+    return Size;
+  }
+
+  $rect <295,287,495,327>
+  method void Clear()
+  {
+    while( Top != null )
+    {
+      Pop();
+    }
+
+    Size = 0;
+  }
+
+  $rect <545,314,745,354>
+  method void Print()
+  {
+    var Application::SimpleFloatElement aux = Top;
+
+    while( aux != null )
+    {
+      trace aux.DataFloat;
+      aux = aux.Next;
+    }
+
+    aux = null;
+  }
+}
+
+$rect <-310,110,-110,150>
+$output false
+class StringElement
+{
+  $rect <-160,64,40,104>
+  property string DataStr;
+
+  $rect <-160,104,40,144>
+  onset DataStr
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure DataStr == value )
+      return;
+
+    // Remember the property's new value.
+    pure DataStr = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <-160,144,40,184>
+  onget DataStr
+  {
+    return pure DataStr;
+  }
+
+  $rect <90,60,290,100>
+  property Application::StringElement Next;
+
+  $rect <90,100,290,140>
+  onset Next
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Next == value )
+      return;
+
+    // Remember the property's new value.
+    pure Next = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <90,140,290,180>
+  onget Next
+  {
+    return pure Next;
+  }
+
+  $rect <340,60,540,100>
+  property Application::StringElement Prev;
+
+  $rect <340,100,540,140>
+  onset Prev
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Prev == value )
+      return;
+
+    // Remember the property's new value.
+    pure Prev = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <340,140,540,180>
+  onget Prev
+  {
+    return pure Prev;
+  }
+}
+
+$rect <-310,180,-110,220>
+$output false
+class StrVector
+{
+  $rect <130,-20,330,20>
+  inherited method Init()
+  {
+    Front = null;
+    Back = null;
+    Size = 0;
+    Empty = true;
+  }
+
+  $rect <133,27,333,67>
+  property Application::StringElement Front;
+
+  $rect <133,67,333,107>
+  onset Front
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Front == value )
+      return;
+
+    // Remember the property's new value.
+    pure Front = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <133,107,333,147>
+  onget Front
+  {
+    return pure Front;
+  }
+
+  $rect <130,170,330,210>
+  property Application::StringElement Back;
+
+  $rect <130,210,330,250>
+  onset Back
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Back == value )
+      return;
+
+    // Remember the property's new value.
+    pure Back = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <130,250,330,290>
+  onget Back
+  {
+    return pure Back;
+  }
+
+  $rect <380,20,580,60>
+  property int32 Size;
+
+  $rect <380,60,580,100>
+  onset Size
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Size == value )
+      return;
+
+    // Remember the property's new value.
+    pure Size = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <380,100,580,140>
+  onget Size
+  {
+    return pure Size;
+  }
+
+  $rect <385,172,585,212>
+  property bool Empty;
+
+  $rect <385,212,585,252>
+  onset Empty
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure Empty == value )
+      return;
+
+    // Remember the property's new value.
+    pure Empty = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <385,252,585,292>
+  onget Empty
+  {
+    return pure Empty;
+  }
+
+  $rect <630,40,830,80>
+  method void PushBack( arg string aValue )
+  {
+    var Application::StringElement strElement = new Application::StringElement;
+    strElement.DataStr = aValue;
+    strElement.Next = null;
+    strElement.Prev = Back;
+
+    if( Back != null )
+    {
+      Back.Next = strElement;
+    }
+    else
+    {
+      Front = strElement;
+    }
+    Back = strElement;
+  }
+
+  $rect <632,97,832,137>
+  method void Pop()
+  {
+    if( Back != null ) 
+    {
+      Back = Back.Prev;
+      Back.Next = null;
+    }
+    else
+    {
+      Back = null;
+    }
+  }
+
+  $rect <640,150,840,190>
+  method Application::StringElement At( arg int32 pos )
+  {
+    var int32 index = 0;
+    var Application::StringElement aux = Front;
+
+    while( aux != null && index != pos)
+    {
+      aux = aux.Next;
+      index++;
+    }
+
+    return aux;
+  }
+
+  $rect <648,216,848,256>
+  method bool IsEmpty()
+  {
+    if( Front == null || Back == null )
+    {
+      return true; // vectir is empty
+    }
+
+    return false;
+  }
+
+  $rect <661,273,861,313>
+  method int32 GetSize()
+  {
+    var Application::StringElement aux = Front;
+
+    while( aux != null )
+    {
+      Size++;
+      aux = aux.Next;
+    }
+
+    return Size;
+
+  }
+
+  $rect <870,140,1070,180>
+  method void Clear()
+  {
+    while( Front != Back )
+    {
+      Pop();
+    }
+    Front = null;
+  }
+
+  $rect <870,200,1070,240>
+  method void Print()
+  {
+    var Application::StringElement aux = Front;
+
+    while( aux != null )
+    {
+      trace aux.DataStr;
+      aux = aux.Next;
+    }
+
+    aux = null;
+  }
+
+  $rect <843,32,1043,72>
+  method string GetFront()
+  {
+    if( Front != null)
+    {
+      return Front.DataStr;
+    }
+
+    return "";
+  }
+
+  $rect <839,78,1039,118>
+  method string GetBack()
+  {
+    if( Back != null)
+    {
+      return Back.DataStr;
+    }
+
+    return "";
+  }
+}

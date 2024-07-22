@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::StrVector;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.CalculateExpression;
+attr currentCodeInspector = Application::StrVector.At;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,6 +32,7 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
+  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-2,-39>;
   attr zoom = 0.75;
@@ -40,95 +41,43 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-843,43>;
+  attr scrollTo = <-843,-5>;
   attr zoom = 0.75;
-}
-
-view class Application::Queue
-{
-  attr enableWireMode = false;
-  attr scrollTo = <38,-10>;
-  attr zoom = 0.75;
-}
-
-view class Application::Application
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-199,-27>;
-  attr zoom = 0.5;
-}
-
-view class Application::Element
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 1.0;
-}
-
-view class Application::NumKeyBtns
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-202,-5>;
-  attr zoom = 0.75;
-}
-
-view class Application::Vector
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 1.0;
 }
 
 view class Application::StringElement
 {
   attr enableWireMode = false;
-  attr scrollTo = <-72,-55>;
+  attr scrollTo = <-420,-7>;
   attr zoom = 1.0;
+}
+
+view class Application::StrVector
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-7,-55>;
+  attr zoom = 0.75;
 }
 
 view class Application::StrQueue
 {
   attr enableWireMode = false;
-  attr scrollTo = <-7,-439>;
-  attr zoom = 1.0;
+  attr scrollTo = <-319,-295>;
+  attr zoom = 0.75;
 }
 
-codeview Application::NumKeyBtns.onActivateKey
+codeview Application::StrVector.At
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <70,15>;
-  attr codeSelStart = <70,15>;
+  attr codeSelEnd = <10,6>;
+  attr codeSelStart = <10,6>;
 }
 
-codeview Application::Application.CalculateExpression
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,33>;
-  attr codeSelEnd = <35,87>;
-  attr codeSelStart = <35,87>;
-}
-
-codeview Application::Queue.push
+codeview Application::StrVector.Print
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <17,0>;
-  attr codeSelStart = <17,0>;
-}
-
-codeview Application::Queue.Init
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <26,2>;
-  attr codeSelStart = <26,2>;
-}
-
-codeview Application::StrQueue.Push
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <17,3>;
-  attr codeSelStart = <17,3>;
+  attr codeSelEnd = <42,0>;
+  attr codeSelStart = <37,0>;
 }
