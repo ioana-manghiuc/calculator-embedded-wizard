@@ -687,22 +687,23 @@ class Application : Core::Root
       token = token.Next;
     }
 
-    //operators.Print();
-    //output.Print();
-
     while( !operators.IsEmpty() )
     {
       output.Push(operators.GetTop());
       operators.Pop();
     }
 
+    //output.Print();
+
     var Application::StrVector expr  = new Application::StrVector;
 
     while( !output.IsEmpty() )
     {
+      trace output.GetFront();
       expr.PushBack(output.GetFront());
       output.Pop();
     }
+
 
     return expr;
 
@@ -3176,10 +3177,6 @@ class StrQueue
        Front = Front.Next;
        aux = null;
     }
-
-    Front = null;
-    Back = null;
-
   }
 
   $rect <390,-90,590,-50>

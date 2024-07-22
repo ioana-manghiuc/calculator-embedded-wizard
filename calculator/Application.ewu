@@ -148,9 +148,8 @@ class Application : Core::Root
     {
       if(IsExpressionValid(Text.String))
       {
-         //trace Text.String;
-         vec = ShuntingYardAlgorithm(Text.String);
-         //vec.Print();
+         var string s = EvaluateRPN(Text.String);
+         trace s;
         cursorPosition = Text.String.length; // Reset cursor to end after operation
       }
     }
@@ -693,20 +692,50 @@ class Application : Core::Root
       operators.Pop();
     }
 
-    //output.Print();
-
     var Application::StrVector expr  = new Application::StrVector;
 
     while( !output.IsEmpty() )
     {
-      trace output.GetFront();
       expr.PushBack(output.GetFront());
       output.Pop();
     }
 
-
     return expr;
 
+  }
+
+  $rect <1097,397,1297,437>
+  method string EvaluateRPN( arg string expression )
+  {
+    var Application::StrVector RPN  = new Application::StrVector;
+    var Application::FloatStack stk = new Application::FloatStack;
+    var float firstOp;
+    var float secondOp;
+
+    RPN = ShuntingYardAlgorithm(expression);
+    var Application::StringElement token = RPN.Front;
+
+    while( token != null )
+    {
+      if( IsOperator(token.DataStr[0]) )
+      {
+        second = stk.GetTop();
+        stk.Pop();
+        firstOp = stk.GetTop();
+        stk.Pop();
+        stk.Push(ExecTwoOp(firstOp, second, token.DataStr[0]));
+      }
+      else 
+      {
+        stk.Push(token.DataStr.parse_float(-1.0));
+      }
+      token = token.Next;
+    }
+
+    var string result = "";
+    result = stk.GetTop();
+
+    return result;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -752,6 +781,7 @@ class Application : Core::Root
   $member TokenizeExpression
   $member IsSpace
   $member ShuntingYardAlgorithm
+  $member EvaluateRPN
 }
 
 $rect <480,20,680,60>

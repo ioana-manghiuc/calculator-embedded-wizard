@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::StrQueue;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::StrQueue.Pop;
+attr currentCodeInspector = Application::Application.EvaluateRPN;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -62,17 +62,17 @@ view class Application::StrQueue
 codeview Application::Application.ShuntingYardAlgorithm
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,73>;
-  attr codeSelEnd = <0,89>;
-  attr codeSelStart = <0,89>;
+  attr codeFirstPos = <0,63>;
+  attr codeSelEnd = <21,70>;
+  attr codeSelStart = <21,70>;
 }
 
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,77>;
-  attr codeSelEnd = <7,91>;
-  attr codeSelStart = <7,91>;
+  attr codeSelEnd = <13,90>;
+  attr codeSelStart = <13,90>;
 }
 
 codeview Application::StrStack.Print
@@ -105,4 +105,12 @@ codeview Application::StrQueue.Pop
   attr codeFirstPos = <0,0>;
   attr codeSelEnd = <1,10>;
   attr codeSelStart = <1,10>;
+}
+
+codeview Application::Application.EvaluateRPN
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <18,3>;
+  attr codeSelStart = <10,3>;
 }
