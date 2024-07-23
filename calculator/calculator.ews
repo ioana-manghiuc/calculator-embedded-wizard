@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::CharStack.Clear;
+attr currentCodeInspector = Application::Application.EvaluateRPN;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -17,7 +17,7 @@ attr extractDoc_Variants = false;
 attr generateClut_ReservedColors = 0;
 attr heapMonitor_Show = false;
 attr language = Default;
-attr profile = Win32;
+attr profile = Web;
 attr profilerMonitor_Show = false;
 attr search_CaseSensitive = false;
 attr search_History = keyView;
@@ -40,16 +40,30 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-942,-123>;
+  attr scrollTo = <-942,-75>;
   attr zoom = 0.5;
+}
+
+view class Application::Application
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-213,13>;
+  attr zoom = 0.5;
+}
+
+view class Application::StrQueue
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-294,-372>;
+  attr zoom = 0.75;
 }
 
 codeview Application::Application.ShuntingYardAlgorithm
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <15,5>;
-  attr codeSelStart = <15,5>;
+  attr codeFirstPos = <0,2>;
+  attr codeSelEnd = <0,6>;
+  attr codeSelStart = <0,5>;
 }
 
 codeview Application::Application.CalculateExpression
@@ -60,23 +74,47 @@ codeview Application::Application.CalculateExpression
   attr codeSelStart = <43,88>;
 }
 
+codeview Application::Application.EvaluateRPN
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <49,6>;
+  attr codeSelStart = <49,6>;
+}
+
+codeview Application::Application.IsNegativeNumber
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <70,1>;
+  attr codeSelStart = <70,1>;
+}
+
+codeview Application::Application.TokenizeExpression
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,9>;
+  attr codeSelEnd = <5,17>;
+  attr codeSelStart = <5,17>;
+}
+
 codeview Application::StrStack.Print
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <46,0>;
-  attr codeSelStart = <46,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <47,0>;
 }
 
-codeview Application::StrQueue.Push
+codeview Application::StrQueue.IsEmpty
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <25,11>;
-  attr codeSelStart = <25,11>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
 }
 
-codeview Application::StrQueue.Print
+codeview Application::StrQueue.Pop
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
@@ -84,34 +122,18 @@ codeview Application::StrQueue.Print
   attr codeSelStart = <2,4>;
 }
 
-codeview Application::StrQueue.Pop
+codeview Application::StrQueue.Print
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <1,10>;
-  attr codeSelStart = <1,10>;
+  attr codeSelEnd = <144,3>;
+  attr codeSelStart = <144,3>;
 }
 
-codeview Application::Application.EvaluateRPN
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <74,10>;
-  attr codeSelStart = <74,10>;
-}
-
-codeview Application::Application.IsNegativeNumber
+codeview Application::StrVector.Print
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <14,3>;
-  attr codeSelStart = <14,3>;
-}
-
-codeview Application::CharStack.Clear
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
+  attr codeSelEnd = <2,4>;
+  attr codeSelStart = <2,4>;
 }

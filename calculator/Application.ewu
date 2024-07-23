@@ -5,14 +5,14 @@ $rect <-300,20,-100,60>
 $output false
 class Application : Core::Root
 {
-  $rect <990,200,1190,240>
+  $rect <990,170,1190,210>
   inherited property Bounds = <0,0,340,590>;
 
   $rect <20,20,160,60>
   object Views::Text TextTxt
   {
     preset StackingPriority = 3;
-    preset Bounds = <996,254,1194,319>;
+    preset Bounds = <996,224,1194,289>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -180,7 +180,7 @@ class Application : Core::Root
     preset Font = Application::DigitalResFont;
   }
 
-  $rect <400,340,600,380>
+  $rect <400,340,610,380>
   method float ExecTwoOp( arg float first, arg float second, arg string op )
   {
     var float res = 0.0;
@@ -219,7 +219,7 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <400,390,600,430>
+  $rect <400,390,610,430>
   method void ResetVariables()
   {
     Text.String = "";
@@ -266,16 +266,21 @@ class Application : Core::Root
     return priority;
   }
 
-  $rect <1020,100,1245,140>
+  $rect <1015,90,1240,130>
   method Application::Group GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
     var Application::Group res = new Application::Group;
-    var string nrStr;
+    var string nrStr = "";
     var int32 i = startPos;
 
     if(expression != "")
     {
+      if (expression[i] == '-')  
+      {
+        nrStr += expression[i];
+        i++;
+      }
       for( ; i < expression.length; i++)
       {
         if(!IsOperator(expression[i]) && IsDigit(expression[i]))
@@ -394,7 +399,11 @@ class Application : Core::Root
         }
         else
         {
-          if (IsOperator(expression[i]) && IsOperator(expression[i - 1]))
+          if (expression[i] == '-' && IsOperator(expression[i - 1]) && !IsDigit(expression[i + 1]))
+          {
+              return false;
+          }
+          if (IsOperator(expression[i]) && IsOperator(expression[i - 1]) && expression[i - 1] == '-' && expression[i] == '-')
           {
             return false; 
           }
@@ -452,7 +461,7 @@ class Application : Core::Root
     preset OnCloseDialog = onDialogHandled;
   }
 
-  $rect <1040,470,1240,510>
+  $rect <1040,440,1240,480>
   slot onOpenDialog
   {
     Int32Effect.Enabled=true;
@@ -461,20 +470,20 @@ class Application : Core::Root
     ErrorDialog.OnCloseDialog = onDialogHandled;
   }
 
-  $rect <1040,520,1240,560>
+  $rect <1040,490,1240,530>
   slot onDialogHandled
   {
     ErrorDialog.Bounds.x = -270;
     ErrorDialog.Visible = false;
   }
 
-  $rect <1040,420,1240,460>
+  $rect <1040,390,1240,430>
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
   }
 
-  $rect <1000,330,1200,370>
+  $rect <1000,300,1200,340>
   method string HandleNegation( arg string expression )
   {
     var string newexpr = "";
@@ -494,7 +503,7 @@ class Application : Core::Root
     preset Bounds = <110,144,230,199>;
   }
 
-  $rect <1040,570,1240,610>
+  $rect <1040,540,1240,580>
   object Effects::Int32Effect Int32Effect
   {
     preset NoOfCycles = 3;
@@ -514,13 +523,13 @@ class Application : Core::Root
   // Error & Battery Dialog
   note group Note2
   {
-    attr Bounds = <990,380,1280,630>;
+    attr Bounds = <990,350,1280,600>;
   }
 
   // Get Methods
   note group Note3
   {
-    attr Bounds = <980,-10,1270,180>;
+    attr Bounds = <980,-10,1270,150>;
   }
 
   $rect <710,540,910,580>
@@ -545,42 +554,42 @@ class Application : Core::Root
     return op == '.';
   }
 
-  $rect <410,290,610,330>
+  $rect <400,290,610,330>
   method Application::StrVector TokenizeExpression( arg string expression )
   {
     var Application::StrVector tokens = new Application::StrVector;
     var int32 i = 0;
 
-    for( ; i < expression.length; i++ ) 
+    for (; i < expression.length; i++) 
     {
-      if( IsSpace(expression[i]) )
-      {
-        i++;
-        continue;
-      }
-      else if( IsDigit(expression[i]) || ( expression[i] == '.' && IsDigit(expression[i + 1]) ) )
-      {
-        var Application::Group gr = GetNumberFromPosition(i, expression);
-        var string number = "";
-        number = gr.IdentifiedNumber;
-        i = gr.EndPosition;
-        tokens.PushBack(number);
-        continue;    
-      }
-      else if( IsOperator(expression[i]) || IsParenthesis(expression[i]) )
-      {
-        var string c = "";
-        c = expression[i];
-        tokens.PushBack(c);
-        continue;
-      }
-      else
-      {
-        continue;
-      }
+        if (IsSpace(expression[i]))
+        {
+            continue;
+        }
+        else if (IsDigit(expression[i]) || (expression[i] == '.' && IsDigit(expression[i + 1])) ||
+                 (expression[i] == '-' && (i == 0 || IsOperator(expression[i - 1]) || expression[i - 1] == '(') && (IsDigit(expression[i + 1]) || expression[i + 1] == '.')))
+        {
+            var Application::Group gr = GetNumberFromPosition(i, expression);
+            var string number = gr.IdentifiedNumber;
+            i = gr.EndPosition;
+            tokens.PushBack(number);
+            continue;    
+        }
+        else if (IsOperator(expression[i]) || IsParenthesis(expression[i]))
+        {
+            var string c = "";
+            c = expression[i];
+            tokens.PushBack(c);
+            continue;
+        }
+        else
+        {
+            continue;
+        }
     }
 
     return tokens;
+
 
 
   }
@@ -591,15 +600,13 @@ class Application : Core::Root
     return op == '\0' || op == '\t' || op =='\n';
   }
 
-  $rect <404,240,620,280>
+  $rect <400,240,620,280>
   method Application::StrVector ShuntingYardAlgorithm( arg string expression )
   {
     var Application::StrVector tokens  = new Application::StrVector;
     var Application::StrQueue output = new Application::StrQueue;
     var Application::StrStack operators = new Application::StrStack;
     tokens = TokenizeExpression(expression);
-
-    tokens.Print();
 
     var Application::StringElement token = tokens.Front;
 
@@ -661,7 +668,7 @@ class Application : Core::Root
           }
         }   
       }
-      else if( IsNumber(token.DataStr) )
+      else if( IsNumber(token.DataStr) || IsNegativeNumber(token.DataStr) )
       {
         output.Push(token.DataStr);
       }
@@ -676,18 +683,20 @@ class Application : Core::Root
     }
 
     var Application::StrVector expr  = new Application::StrVector;
+    var Application::SimpleStringElement aux = output.Front;
 
-    while( !output.IsEmpty() )
+    while( aux != null )
     {
-      expr.PushBack(output.GetFront());
-      output.Pop();
+      expr.PushBack(aux.DataStr);
+      aux = aux.Next;
     }
+    aux = null;
 
     return expr;
 
   }
 
-  $rect <410,190,610,230>
+  $rect <400,190,620,230>
   method string EvaluateRPN( arg string expression )
   {
     var Application::StrVector RPN  = new Application::StrVector;
@@ -700,7 +709,7 @@ class Application : Core::Root
 
     while( token != null )
     {
-      if( IsOperator(token.DataStr[0]) /*&& !IsNegativeNumber(token.DataStr)*/ )
+      if( IsOperator(token.DataStr[0]) && !IsNegativeNumber(token.DataStr) )
       {
         secondOp = stk.GetTop();
         stk.Pop();
@@ -710,6 +719,7 @@ class Application : Core::Root
       }
       else 
       {
+        //trace token.DataStr;
         stk.Push(token.DataStr.parse_float(-1.0));
       }
       token = token.Next;
@@ -721,11 +731,11 @@ class Application : Core::Root
     return result;
   }
 
-  $rect <700,590,900,630>
+  $rect <710,590,910,630>
   method bool IsNegativeNumber( arg string expression )
   {
     var string subexpr = expression.right(expression.length - 1);
-    if( expression[0] == '-' && IsNumber(subexpr) )
+    if( expression[0] == '-' && IsNumber(subexpr) && expression.length > 1)
     {
       return true;
     }
@@ -4251,11 +4261,11 @@ class CharStack
   }
 
   $rect <830,150,1030,190>
-  method float GetTop()
+  method char GetTop()
   {
     if( Top != null ) 
     {
-      return Top.DataFloat;
+      return Top.DataChar;
     }
 
     return 0;
