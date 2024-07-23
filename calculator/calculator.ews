@@ -1,6 +1,6 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
 attr currentCodeInspector = Application::Application.EvaluateRPN;
@@ -47,7 +47,7 @@ view unit Application
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-213,13>;
+  attr scrollTo = <-213,-35>;
   attr zoom = 0.5;
 }
 
@@ -58,18 +58,25 @@ view class Application::StrQueue
   attr zoom = 0.75;
 }
 
+view class Application::NumKeyBtns
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-275,-139>;
+  attr zoom = 0.5;
+}
+
 codeview Application::Application.ShuntingYardAlgorithm
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,2>;
-  attr codeSelEnd = <0,6>;
-  attr codeSelStart = <0,5>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <45,8>;
+  attr codeSelStart = <45,8>;
 }
 
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,63>;
+  attr codeFirstPos = <0,68>;
   attr codeSelEnd = <43,88>;
   attr codeSelStart = <43,88>;
 }
@@ -78,8 +85,8 @@ codeview Application::Application.EvaluateRPN
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <49,6>;
-  attr codeSelStart = <49,6>;
+  attr codeSelEnd = <3,19>;
+  attr codeSelStart = <3,19>;
 }
 
 codeview Application::Application.IsNegativeNumber
@@ -136,4 +143,28 @@ codeview Application::StrVector.Print
   attr codeFirstPos = <0,0>;
   attr codeSelEnd = <2,4>;
   attr codeSelStart = <2,4>;
+}
+
+codeview Application::Application.IsExpressionValid
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,12>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::Application.CorrectParentheses
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::Application.CharactersAllowed
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
 }

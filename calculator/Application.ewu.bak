@@ -706,7 +706,6 @@ class Application : Core::Root
 
     RPN = ShuntingYardAlgorithm(expression);
     var Application::StringElement token = RPN.Front;
-    RPN.Print();
 
     while( token != null )
     {

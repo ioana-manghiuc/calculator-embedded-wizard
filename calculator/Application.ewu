@@ -719,7 +719,6 @@ class Application : Core::Root
       }
       else 
       {
-        //trace token.DataStr;
         stk.Push(token.DataStr.parse_float(-1.0));
       }
       token = token.Next;
@@ -980,7 +979,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton Equals
   {
-    preset Bounds = <222,360,294,428>;
+    preset Bounds = <149,359,293,427>;
     preset OnActivate = onActivateKey;
     preset Label = "=";
     preset Appearance = EqualsConfig;
@@ -1113,7 +1112,7 @@ class NumKeyBtns : Core::Group
   object WidgetSet::PushButton Dot
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop];
-    preset Bounds = <150,360,220,430>;
+    preset Bounds = <9,360,79,430>;
     preset OnActivate = onActivateKey;
     preset Label = ".";
     preset Appearance = DigitOpConfig;
@@ -1343,15 +1342,6 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::ParenthesisBtn;
   }
 
-  $rect <20,20,160,60>
-  object WidgetSet::PushButton PlusNeg
-  {
-    preset Bounds = <10,360,80,430>;
-    preset OnActivate = onActivateKey;
-    preset Label = "+/-";
-    preset Appearance = NegateNumbers;
-  }
-
   $rect <900,450,1140,490>
   object WidgetSet::PushButtonConfig NegateNumbers
   {
@@ -1438,7 +1428,6 @@ class NumKeyBtns : Core::Group
   $member Minus
   $member Multiply
   $member Divide
-  $member PlusNeg
   $member Dot
   $member Power
   $member Percentage
