@@ -5,14 +5,14 @@ $rect <-300,20,-100,60>
 $output false
 class Application : Core::Root
 {
-  $rect <990,170,1190,210>
+  $rect <360,540,560,580>
   inherited property Bounds = <0,0,340,590>;
 
   $rect <20,20,160,60>
-  object Views::Text TextTxt
+  object Views::Text Text
   {
     preset StackingPriority = 3;
-    preset Bounds = <996,224,1194,289>;
+    preset Bounds = <18,36,318,101>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -80,7 +80,7 @@ class Application : Core::Root
     if(KeyHandler.Code == Core::KeyCode.Left)
     {
       if (cursorPosition > 0)
-      {
+      {    
         cursorPosition--; 
       }
     }
@@ -89,6 +89,7 @@ class Application : Core::Root
     {
       if (cursorPosition < Text.String.length)
       {
+        
         cursorPosition++; 
       }
     }
@@ -117,11 +118,6 @@ class Application : Core::Root
         else if(str == "B" || KeyHandler.Code == Core::KeyCode.Backspace)
         {
             temp = Text.String.remove(Text.String.length - 1, 1);
-        }
-        else if(Keypad.keyString == "+/-")
-        {
-          trace "here!";
-          temp = HandleNegation(Text.String);
         }
         else if(IsDigit(str[0]))
         {
@@ -158,7 +154,7 @@ class Application : Core::Root
   // Key Event Handler
   note group KeyHandlerNote
   {
-    attr Bounds = <360,-10,650,140>;
+    attr Bounds = <360,0,650,160>;
   }
 
   $rect <20,20,160,60>
@@ -168,19 +164,7 @@ class Application : Core::Root
     preset Color = #E2E6E9FF;
   }
 
-  $rect <20,20,160,60>
-  object Application::ResultTxtEd Text
-  {
-    preset StackingPriority = 3;
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop];
-    preset Bounds = <20,35,320,100>;
-    preset WrapText = false;
-    preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
-    preset String = "result here";
-    preset Font = Application::DigitalResFont;
-  }
-
-  $rect <400,340,610,380>
+  $rect <400,380,610,420>
   method float ExecTwoOp( arg float first, arg float second, arg string op )
   {
     var float res = 0.0;
@@ -219,7 +203,7 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <400,390,610,430>
+  $rect <400,430,610,470>
   method void ResetVariables()
   {
     Text.String = "";
@@ -237,7 +221,7 @@ class Application : Core::Root
   // Operation Handler
   note group Note
   {
-    attr Bounds = <360,150,650,470>;
+    attr Bounds = <360,190,650,510>;
   }
 
   $rect <1030,40,1230,80>
@@ -461,7 +445,7 @@ class Application : Core::Root
     preset OnCloseDialog = onDialogHandled;
   }
 
-  $rect <1040,440,1240,480>
+  $rect <1030,270,1230,310>
   slot onOpenDialog
   {
     Int32Effect.Enabled=true;
@@ -470,31 +454,17 @@ class Application : Core::Root
     ErrorDialog.OnCloseDialog = onDialogHandled;
   }
 
-  $rect <1040,490,1240,530>
+  $rect <1030,320,1230,360>
   slot onDialogHandled
   {
     ErrorDialog.Bounds.x = -270;
     ErrorDialog.Visible = false;
   }
 
-  $rect <1040,390,1240,430>
+  $rect <1030,220,1230,260>
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
-  }
-
-  $rect <1000,300,1200,340>
-  method string HandleNegation( arg string expression )
-  {
-    var string newexpr = "";
-
-    if(IsOperator(expression[expression.length - 1]))
-    {
-      newexpr = expression + "(-";  
-    }
-    return newexpr;
-
-
   }
 
   $rect <20,20,160,60>
@@ -503,7 +473,7 @@ class Application : Core::Root
     preset Bounds = <110,144,230,199>;
   }
 
-  $rect <1040,540,1240,580>
+  $rect <1030,370,1230,410>
   object Effects::Int32Effect Int32Effect
   {
     preset NoOfCycles = 3;
@@ -523,7 +493,7 @@ class Application : Core::Root
   // Error & Battery Dialog
   note group Note2
   {
-    attr Bounds = <990,350,1280,600>;
+    attr Bounds = <980,180,1270,430>;
   }
 
   // Get Methods
@@ -554,7 +524,7 @@ class Application : Core::Root
     return op == '.';
   }
 
-  $rect <400,290,610,330>
+  $rect <400,330,610,370>
   method Application::StrVector TokenizeExpression( arg string expression )
   {
     var Application::StrVector tokens = new Application::StrVector;
@@ -600,7 +570,7 @@ class Application : Core::Root
     return op == '\0' || op == '\t' || op =='\n';
   }
 
-  $rect <400,240,620,280>
+  $rect <400,280,620,320>
   method Application::StrVector ShuntingYardAlgorithm( arg string expression )
   {
     var Application::StrVector tokens  = new Application::StrVector;
@@ -696,7 +666,7 @@ class Application : Core::Root
 
   }
 
-  $rect <400,190,620,230>
+  $rect <400,230,620,270>
   method string EvaluateRPN( arg string expression )
   {
     var Application::StrVector RPN  = new Application::StrVector;
@@ -748,7 +718,7 @@ class Application : Core::Root
   // project files is simplified.
   $member Init
   $member Bounds
-  $member TextTxt
+  $member Text
   $member KeyHandlerNote
   $member Bgk
   $member OutputBgk
@@ -756,7 +726,6 @@ class Application : Core::Root
   $member Keypad
   $member KeyHandler
   $member CalculateExpression
-  $member Text
   $member ExecTwoOp
   $member ResetVariables
   $member IsOperator
@@ -773,7 +742,6 @@ class Application : Core::Root
   $member ErrorDialog
   $member onOpenDialog
   $member onDialogHandled
-  $member HandleNegation
   $member BatteryDialog
   $member Int32Effect
   $member Note1
@@ -863,7 +831,7 @@ class NumKeyBtns : Core::Group
     super(aState);
   }
 
-  $rect <900,50,1140,90>
+  $rect <880,40,1120,80>
   object WidgetSet::PushButtonConfig DigitOpConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1031,7 +999,7 @@ class NumKeyBtns : Core::Group
     preset Color = #030324FF;
   }
 
-  $rect <900,300,1140,340>
+  $rect <880,290,1120,330>
   object WidgetSet::PushButtonConfig EqualsConfig
   {
     preset OnUpdate = null;
@@ -1149,13 +1117,13 @@ class NumKeyBtns : Core::Group
   // Push Button Configurations
   note group Note2
   {
-    attr Bounds = <870,10,1170,560>;
+    attr Bounds = <850,0,1150,550>;
   }
 
   $rect <20,20,160,60>
   object WidgetSet::PushButton empty00
   {
-    preset Bounds = <1205,149,1270,199>;
+    preset Bounds = <1189,145,1254,195>;
     preset Label = "Caption";
     preset Appearance = DigitOpConfig;
   }
@@ -1192,7 +1160,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = PercentConfig;
   }
 
-  $rect <900,150,1140,190>
+  $rect <880,140,1120,180>
   object WidgetSet::PushButtonConfig PowConfig
   {
     preset KeyCode = Core::KeyCode.Power;
@@ -1211,7 +1179,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::PowBtn;
   }
 
-  $rect <900,200,1140,240>
+  $rect <880,190,1120,230>
   object WidgetSet::PushButtonConfig PercentConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1228,7 +1196,7 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton empty01
   {
-    preset Bounds = <1205,9,1270,59>;
+    preset Bounds = <1189,5,1254,55>;
     preset Label = "Caption";
     preset Appearance = PowConfig;
   }
@@ -1236,12 +1204,12 @@ class NumKeyBtns : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton empty02
   {
-    preset Bounds = <1205,79,1270,129>;
+    preset Bounds = <1189,75,1254,125>;
     preset Label = "Caption";
     preset Appearance = PercentConfig;
   }
 
-  $rect <900,100,1140,140>
+  $rect <880,90,1120,130>
   object WidgetSet::PushButtonConfig DigitOpBoldConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1264,7 +1232,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::CustomBtn;
   }
 
-  $rect <900,250,1140,290>
+  $rect <880,240,1120,280>
   object WidgetSet::PushButtonConfig DivideConfig
   {
     preset KeyCode = Core::KeyCode.Divide;
@@ -1278,7 +1246,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::DivideBtn;
   }
 
-  $rect <900,350,1140,390>
+  $rect <880,340,1120,380>
   object WidgetSet::PushButtonConfig MultiplyConfig
   {
     preset KeyCode = Core::KeyCode.Multiply;
@@ -1319,7 +1287,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = ParanthesisConfig;
   }
 
-  $rect <900,400,1140,440>
+  $rect <880,390,1120,430>
   object WidgetSet::PushButtonConfig ParanthesisConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1342,7 +1310,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::ParenthesisBtn;
   }
 
-  $rect <900,450,1140,490>
+  $rect <880,440,1120,480>
   object WidgetSet::PushButtonConfig NegateNumbers
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1365,7 +1333,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::CustomBtn;
   }
 
-  $rect <900,500,1140,540>
+  $rect <880,490,1120,530>
   object WidgetSet::PushButtonConfig BackConfig
   {
     preset KeyCode = Core::KeyCode.Backspace;
@@ -1387,9 +1355,6 @@ class NumKeyBtns : Core::Group
     preset Label = "B";
     preset Appearance = BackConfig;
   }
-
-  $rect <590,360,790,400>
-  var bool Negate = false;
 
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
@@ -1443,7 +1408,6 @@ class NumKeyBtns : Core::Group
   $member NegateNumbers
   $member BackConfig
   $member BackBtn
-  $member Negate
 }
 
 $rect <460,20,660,70>
@@ -3032,29 +2996,7 @@ class Battery : Core::Group
   $rect <0,160,200,200>
   method void UpdateBatteryLines( arg int32 percentage )
   {
-    array Views::Image imgs [20];
-    imgs[0] = line1;
-    imgs[1] = line2;
-    imgs[2] = line3;
-    imgs[3] = line4;
-    imgs[4] = line5;
-    imgs[5] = line6;
-    imgs[6] = line7;
-    imgs[7] = line8;
-    imgs[8] = line9;
-    imgs[9] = line10;
-    imgs[10] = line11;
-    imgs[11] = line12;
-    imgs[12] = line13;
-    imgs[13] = line14;
-    imgs[14] = line15;
-    imgs[15] = line16;
-    imgs[16] = line17;
-    imgs[17] = line18;
-    imgs[18] = line19;
-    imgs[19] = line20;
-
-      var int32 linesToShow = percentage / 5;
+    var int32 linesToShow = percentage / 5;
 
       var int32 i = 0;
       
@@ -3062,12 +3004,37 @@ class Battery : Core::Group
       {
         if(i < linesToShow)
         {
-          imgs[i].Visible = true;
+          batteryLines[i].Visible = true;
         }
         else
-          imgs[i].Visible = false;     
+          batteryLines[i].Visible = false;     
       }
   }
+
+  $rect <380,-20,580,20>
+  array Views::Image batteryLines[ 20 ] =
+  (
+    Default[0] = line1;
+    Default[1] = line2;
+    Default[2] = line3;
+    Default[3] = line4;
+    Default[4] = line5;
+    Default[5] = line6;
+    Default[6] = line7;
+    Default[7] = line8;
+    Default[8] = line9;
+    Default[9] = line10;
+    Default[10] = line11;
+    Default[11] = line12;
+    Default[12] = line13;
+    Default[13] = line14;
+    Default[14] = line15;
+    Default[15] = line16;
+    Default[16] = line17;
+    Default[17] = line18;
+    Default[18] = line19;
+    Default[19] = line20;
+  );
 
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
@@ -3100,6 +3067,7 @@ class Battery : Core::Group
   $member Timer
   $member BatteryPercentage
   $member UpdateBatteryLines
+  $member batteryLines
 }
 
 $rect <200,130,400,170>
@@ -4379,3 +4347,185 @@ note group Note4
 {
   attr Bounds = <-60,-20,420,290>;
 }
+
+$rect <-480,440,-280,480>
+inline Inline
+{
+  /*
+
+    TO DO:
+
+    Include external header files or add type and function declarations needed
+    in the implementation of Application::DeviceClass. For example:
+
+      #include "DeviceDriver.h"
+
+      #include "your_middleware_api.h"
+
+      void Your_Middleware_Some_Function( int aSomeArg );
+
+  */
+}
+
+$rect <-480,400,-280,440>
+$output false
+class DeviceClass : Templates::DeviceClass
+{
+  $rect <30,80,230,120>
+  inherited method Done()
+  {
+    // The following section is intended to perform de-initialization-related operations
+    // in the underlying device or middleware. Consequently, the section is taken in
+    // account only when generating code (not during prototyping).
+    $if !$prototyper
+      var object thisObject = this;
+
+      /*
+         TO DO:
+
+         The following native statement is intended to enclose code to communicate with
+         your device API. The variable 'thisObject' contains a pointer to the actually
+         de-initialized Application::DeviceClass object. Use the 'thisObject' pointer to
+         e.g. de-register the object from the middleware if you have registered it
+         beforehand.
+         
+      */
+
+      native ( thisObject )
+      {
+        /*
+           TO DO:
+
+           Depending on your application case you call functions of the underlying
+           middleware (or access the device directly) in order to perform the necessary
+           de-initialization steps. For example, you invoke some 'C' function:
+
+             YourDevice_DeInitialize();
+
+           IMPORTANT:
+           ----------
+
+           The variable 'thisObject' represents the actually de-initialized instance of the
+           Application::DeviceClass. If you have stored this object at the initialization
+           time (in the 'Init' method) in some global C variable or registered it by the
+           middleware, it is important to perform now the opposite operation. Set the
+           global variable to NULL or de-register 'thisObject' object from the middleware.
+           
+        */
+      }
+    $endif
+  }
+
+  $rect <30,40,230,80>
+  inherited method Init()
+  {
+    // The following section is intended to perform initialization-related operations
+    // in the underlying device or middleware. Consequently, the section is taken in
+    // account only when generating code (not during prototyping).
+    $if !$prototyper
+      var object thisObject = this;
+
+      /*
+         TO DO:
+
+         The following native statement is intended to enclose code to communicate with
+         your device API. The variable 'thisObject' contains a pointer to the actually
+         initialized Application::DeviceClass object. Use the 'thisObject' pointer to
+         e.g. register the object by the middleware as receiver of events, etc.
+         
+      */
+
+      native ( thisObject )
+      {
+        /*
+           TO DO:
+
+           Depending on your application case you call functions of the underlying
+           middleware (or access the device directly) in order to perform the necessary
+           initialization steps. For example, you invoke some 'C' function:
+
+             YourDevice_Initialize();
+
+           The variable 'thisObject' represents the actually initialized instance of the
+           Application::DeviceClass. You can store this variable e.g. in the middleware
+           and use it whenever the middleware needs to notify the GUI application about
+           some state alternation or events. In this manner, the middleware will be able
+           to invoke methods of the interface device object.
+
+           For example, you can store 'thisObject' in some global C variable:
+
+             // Declaration of the global C variable
+             XObject theDeviceObject;
+
+             // Store the instance in the global variable
+             theDeviceObject = thisObject;
+
+           Later use the global variable e.g. to provide the GUI application with events:
+
+             ApplicationDeviceClass__TriggerSomeEvent( theDeviceObject );
+
+           IMPORTANT:
+           ----------
+
+           If you store 'thisObject' for later use, don't forget to implement the opposite
+           operation in the method 'Done'. Concrete, 'Done' should set the global variable
+           again to the value NULL.
+
+        */
+      }
+    $endif
+  }
+
+  // Device classes are assembled from 'Commands', 'Properties' and 'System Events'. \
+  // For this purpose use the following prepared templates from the Gallery folder \
+  // 'Device':
+  // 
+  // Command - method to trigger actions in the underlying device or query data from \
+  // the device.
+  // 
+  // Property - variable to represent or modify a setting or state value existing \
+  // within the underlying device.
+  // 
+  // System Event - represents an event or notifications the underlying device may \
+  // report.
+  // 
+  // For more details please visit: https://doc.embedded-wizard.de/device-class-and-device-driver
+  note legend Note4
+  {
+    attr Bounds = <10,230,1100,400>;
+  }
+
+  // The method 'Init' is executed just in the moment when new instance of 'Application::DeviceClass' \
+  // is created. It is suitable to:
+  // - initialize the hardware represented by the interface.
+  // - register the instance by the middleware to receive updates and events.
+  // - open files, network connections or other system resources needed by the interface.
+  // 
+  // The method 'Done' is executed just in the moment when an instance of 'Application::DeviceClass' \
+  // is disposed. It is suitable to:
+  // - de-initialize the underlying hardware.
+  // - de-register the instance from the underlying middleware.
+  // - close files, network connections and other no longer needed system resources.
+  // 
+  // If your application case doesn't need the initialization or de-initialization, \
+  // feel free to delete the methods 'Init' or/and 'Done'.
+  note legend Note3
+  {
+    attr Bounds = <320,0,1100,220>;
+  }
+
+  note arrow Note2
+  {
+    attr Point1 = <250,50>;
+    attr Point2 = <320,50>;
+  }
+
+  // Constructor and Destructor
+  note group Note1
+  {
+    attr Bounds = <10,0,250,140>;
+  }
+}
+
+$rect <-280,400,-80,440>
+autoobject Application::DeviceClass Device;

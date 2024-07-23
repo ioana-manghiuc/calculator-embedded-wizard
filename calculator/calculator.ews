@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::NumKeyBtns;
+attr active = Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.EvaluateRPN;
+attr currentCodeInspector = Application::Inline;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -40,131 +40,43 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-942,-75>;
-  attr zoom = 0.5;
+  attr scrollTo = <-1592,503>;
+  attr zoom = 1.0;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-213,-35>;
+  attr scrollTo = <-603,-193>;
   attr zoom = 0.5;
-}
-
-view class Application::StrQueue
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-294,-372>;
-  attr zoom = 0.75;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-275,-139>;
+  attr scrollTo = <-275,-41>;
   attr zoom = 0.5;
 }
 
-codeview Application::Application.ShuntingYardAlgorithm
+view class Application::Battery
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-299,-103>;
+  attr zoom = 1.0;
+}
+
+codeview Application::Battery.UpdateBatteryLines
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <45,8>;
-  attr codeSelStart = <45,8>;
+  attr codeSelEnd = <18,11>;
+  attr codeSelStart = <18,11>;
 }
 
-codeview Application::Application.CalculateExpression
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,68>;
-  attr codeSelEnd = <43,88>;
-  attr codeSelStart = <43,88>;
-}
-
-codeview Application::Application.EvaluateRPN
+codeview Application::Inline
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <3,19>;
-  attr codeSelStart = <3,19>;
-}
-
-codeview Application::Application.IsNegativeNumber
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <70,1>;
-  attr codeSelStart = <70,1>;
-}
-
-codeview Application::Application.TokenizeExpression
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <5,17>;
-  attr codeSelStart = <5,17>;
-}
-
-codeview Application::StrStack.Print
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <47,0>;
-}
-
-codeview Application::StrQueue.IsEmpty
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::StrQueue.Pop
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <2,4>;
-  attr codeSelStart = <2,4>;
-}
-
-codeview Application::StrQueue.Print
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <144,3>;
-  attr codeSelStart = <144,3>;
-}
-
-codeview Application::StrVector.Print
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <2,4>;
-  attr codeSelStart = <2,4>;
-}
-
-codeview Application::Application.IsExpressionValid
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,12>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::Application.CorrectParentheses
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::Application.CharactersAllowed
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
+  attr codeSelEnd = <2,13>;
+  attr codeSelStart = <2,13>;
 }
