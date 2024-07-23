@@ -49,14 +49,14 @@ class Application : Core::Root
     preset Color = #030324FF;
   }
 
-  $rect <410,30,610,70>
+  $rect <410,40,610,80>
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = CalculateExpression;
     preset OnHold = null;
   }
 
-  $rect <410,80,610,120>
+  $rect <410,90,610,130>
   slot CalculateExpression
   {
     var string str = "";
