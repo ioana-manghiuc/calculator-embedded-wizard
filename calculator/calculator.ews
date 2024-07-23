@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.CalculateExpression;
+attr currentCodeInspector = Application::CharStack.Clear;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,7 +32,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-2,-39>;
   attr zoom = 0.75;
@@ -41,29 +40,22 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-881,-217>;
-  attr zoom = 0.75;
-}
-
-view class Application::Application
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-465,-360>;
+  attr scrollTo = <-942,-123>;
   attr zoom = 0.5;
 }
 
 codeview Application::Application.ShuntingYardAlgorithm
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,63>;
-  attr codeSelEnd = <21,70>;
-  attr codeSelStart = <21,70>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <15,5>;
+  attr codeSelStart = <15,5>;
 }
 
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,75>;
+  attr codeFirstPos = <0,63>;
   attr codeSelEnd = <43,88>;
   attr codeSelStart = <43,88>;
 }
@@ -104,8 +96,8 @@ codeview Application::Application.EvaluateRPN
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <69,10>;
-  attr codeSelStart = <69,10>;
+  attr codeSelEnd = <74,10>;
+  attr codeSelStart = <74,10>;
 }
 
 codeview Application::Application.IsNegativeNumber
@@ -114,4 +106,12 @@ codeview Application::Application.IsNegativeNumber
   attr codeFirstPos = <0,0>;
   attr codeSelEnd = <14,3>;
   attr codeSelStart = <14,3>;
+}
+
+codeview Application::CharStack.Clear
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
 }

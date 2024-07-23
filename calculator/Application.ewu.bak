@@ -809,7 +809,7 @@ resource Resources::Font DigitalResFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-300,120,-100,160>
+$rect <-300,130,-100,170>
 $output false
 class NumKeyBtns : Core::Group
 {
@@ -1458,7 +1458,7 @@ resource Resources::Bitmap CustomBtn
 }
 
 // This component implements an editor.
-$rect <-300,170,-100,210>
+$rect <-300,180,-100,220>
 $output false
 class ResultTxtEd : Templates::TextEditor
 {
@@ -2411,7 +2411,7 @@ resource Resources::Bitmap PowBtn
 // Components
 note group Note
 {
-  attr Bounds = <-330,80,-80,380>;
+  attr Bounds = <-330,90,-80,390>;
 }
 
 // Bitmaps
@@ -2429,7 +2429,7 @@ note group Note2
 // Application
 note group Note3
 {
-  attr Bounds = <-330,-20,-80,70>;
+  attr Bounds = <-330,-20,-80,80>;
 }
 
 $rect <-40,410,160,450>
@@ -2476,7 +2476,7 @@ resource Resources::Font MultiplyFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-300,270,-100,310>
+$rect <-300,280,-100,320>
 $output false
 class Group
 {
@@ -2577,7 +2577,7 @@ class Group
   $member OnGetSubexpression
 }
 
-$rect <-300,220,-100,260>
+$rect <-300,230,-100,270>
 $output false
 class ErrorDialog : Core::Group
 {
@@ -2841,7 +2841,7 @@ resource Resources::Bitmap BatteryLine
   attr bitmapmode Mode = Default;
 }
 
-$rect <-300,320,-100,360>
+$rect <-300,330,-100,370>
 $output false
 class Battery : Core::Group
 {
