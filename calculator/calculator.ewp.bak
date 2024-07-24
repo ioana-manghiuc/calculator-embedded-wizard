@@ -82,7 +82,7 @@ profile Win32 : Windows.Software.RGBA8888
   attr ApplicationClass = Application::Application;
   attr CleanOutputDirectories = false;
   attr FontConversion = Windows;
-  attr OutputFileNameExtension = c;
+  attr OutputFileNameExtension = cpp;
   attr ScreenOrientation = Normal;
   attr OutputDirectory = .\GeneratedCode;
   attr ApplicationTitle = "calculator";

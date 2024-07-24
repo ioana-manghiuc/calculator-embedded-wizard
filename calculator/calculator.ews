@@ -1,8 +1,9 @@
 $version 1.0
 
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::NumKeyBtns.onActivateKey;
+attr currentCodeInspector = Application::Application.CalculateExpression;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -40,51 +41,29 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-1592,503>;
-  attr zoom = 1.0;
+  attr scrollTo = <-949,206>;
+  attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-603,-1>;
-  attr zoom = 0.5;
-}
-
-view class Application::NumKeyBtns
-{
-  attr scrollTo = <-371,-55>;
-  attr zoom = 0.75;
-}
-
-codeview Application::Battery.UpdateBatteryLines
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <18,11>;
-  attr codeSelStart = <18,11>;
+  attr scrollTo = <-7,89>;
+  attr zoom = 1.0;
 }
 
 codeview Application::Inline
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <2,13>;
-  attr codeSelStart = <2,13>;
+  attr codeSelEnd = <54,0>;
+  attr codeSelStart = <54,0>;
 }
 
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <25,56>;
-  attr codeSelStart = <25,56>;
-}
-
-codeview Application::NumKeyBtns.onActivateKey
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,1>;
-  attr codeSelEnd = <78,10>;
-  attr codeSelStart = <78,10>;
+  attr codeSelEnd = <51,2>;
+  attr codeSelStart = <51,2>;
 }

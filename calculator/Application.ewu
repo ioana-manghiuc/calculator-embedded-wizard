@@ -63,7 +63,7 @@ class Application : Core::Root
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
 
-    if(KeyHandler.CharCode != '\0')
+    if( KeyHandler.CharCode != '\0' )
     {  
       str = KeyHandler.CharCode;
     }
@@ -72,7 +72,7 @@ class Application : Core::Root
       str = Keypad.keyString;
     }
 
-    if(Text.String == "result here" || str == "C")
+    if( Text.String == "result here" || str == "C" )
     {
       ResetVariables();
     }
@@ -85,7 +85,7 @@ class Application : Core::Root
       }
     }
 
-    if(KeyHandler.Code == Core::KeyCode.Right)
+    if( KeyHandler.Code == Core::KeyCode.Right )
     {
       if (cursorPosition < Text.String.length)
       {
@@ -94,14 +94,14 @@ class Application : Core::Root
       }
     }
 
-    if (str != "=" && str != "C")
+    if ( str != "=" && str != "C" )
     {
         var char lastChar = Text.String[Text.String.length - 1];
-        if (str == "(")
-        {
-            if (Text.String.length > 0)
+        if ( str == "(" )
+        {               
+            if ( Text.String.length > 0 )
             {
-                if (IsDigit(lastChar) || lastChar == ')')
+                if ( IsDigit(lastChar) || lastChar == ')' )
                 {
                     temp = Text.String + "x" + str;
                 }
@@ -115,13 +115,13 @@ class Application : Core::Root
                 temp = Text.String + str;
             }
         }
-        else if(str == "B" || KeyHandler.Code == Core::KeyCode.Backspace)
+        else if( str == "B" || KeyHandler.Code == Core::KeyCode.Backspace )
         {
             temp = Text.String.remove(Text.String.length - 1, 1);
         }
-        else if(IsDigit(str[0]))
+        else if( IsDigit(str[0]) )
         {
-           if(lastChar == ')')
+           if( lastChar == ')' )
            {
                temp = Text.String + "x" + str;
            }
@@ -169,7 +169,7 @@ class Application : Core::Root
   {
     var float res = 0.0;
 
-    switch (op[0])
+    switch ( op[0] )
           {
             case '+':
               res = first + second;
@@ -195,7 +195,7 @@ class Application : Core::Root
                 res = temp / 100;     
               }
             case '^': 
-              res =  math_pow(first, second);
+              res =  math_pow( first, second );
             default:
               res = 0.0;
           }
@@ -213,9 +213,6 @@ class Application : Core::Root
   method bool IsOperator( arg char op )
   {
     return ( op == '+' || op == '-' || op == 'x' || op == '/' ||  op == '%' || op == '^');
-    //  return true;
-
-    //return false;
   }
 
   // Operation Handler
@@ -229,7 +226,7 @@ class Application : Core::Root
   {
     var int32 priority = 0;
 
-    switch (op)
+    switch ( op )
           {
             case '+':
               priority = 1;
@@ -251,23 +248,23 @@ class Application : Core::Root
   }
 
   $rect <1015,90,1240,130>
-  method Application::Group GetNumberFromPosition( arg int32 startPos, arg string expression )
+  method Application::Tuple GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
-    var Application::Group res = new Application::Group;
+    var Application::Tuple res = new Application::Tuple;
     var string nrStr = "";
     var int32 i = startPos;
 
-    if(expression != "")
+    if( expression != "" )
     {
-      if (expression[i] == '-')  
+      if ( expression[i] == '-' )  
       {
         nrStr += expression[i];
         i++;
       }
-      for( ; i < expression.length; i++)
+      for( ; i < expression.length; i++ )
       {
-        if(!IsOperator(expression[i]) && IsDigit(expression[i]))
+        if( !IsOperator( expression[i] ) && IsDigit( expression[i] ) )
         {  
           nrStr += expression[i];
           endPos = i;
@@ -281,7 +278,7 @@ class Application : Core::Root
 
     res.EndPosition = endPos;
     res.Subexpression = "none";
-    res.IdentifiedNumber = nrStr.parse_float(-1.0);
+    res.IdentifiedNumber = nrStr.parse_float( -1.0 );
     return res; 
   }
 
@@ -292,36 +289,28 @@ class Application : Core::Root
     // check that operators are used correctly
     // correct paranthesis
 
-    if (expression == "")
+    if ( expression == "" )
     {
-         //signal onShowDialog;
-         //7ErrDialog.ErrorText.String = "Expression is null.";
          signal onOpenDialog;
          ErrorDialog.ErrorText.String = "Expression is null.";
          return false;
     }
     else
     {
-        if(!CorrectParentheses(expression))
+        if( !CorrectParentheses(expression) )
         {
-           //signal onShowDialog;
-           //ErrDialog.ErrorText.String = "Parantheses used incorrectly.";
            signal onOpenDialog;
            ErrorDialog.ErrorText.String = "Parantheses used incorrectly.";
            return false;
         }
-        else if(!OperatorsCorrectlyUsed(expression))
+        else if( !OperatorsCorrectlyUsed(expression) )
         {
-           //signal onShowDialog;
-           //ErrDialog.ErrorText.String = "Operators used incorrectly.";
            signal onOpenDialog;
            ErrorDialog.ErrorText.String = "Operators used incorrectly.";
            return false;
         }
-        else if (!CharactersAllowed(expression))
+        else if ( !CharactersAllowed(expression) )
         {
-           //signal onShowDialog;
-           //ErrDialog.ErrorText.String = "Expression contains characters that are not allowed.";
            signal onOpenDialog;
            ErrorDialog.ErrorText.String = "Expression contains characters that are not allowed.";
            return false;
@@ -334,10 +323,7 @@ class Application : Core::Root
   $rect <710,290,910,330>
   method bool IsDigit( arg char op )
   {
-    return ((op >= '0') && (op <= '9') || op == '.');
-    //  return true;
-
-    //return false;
+    return ( (op >= '0') && (op <= '9') || op == '.');
   }
 
   $rect <710,190,910,230>
@@ -370,33 +356,33 @@ class Application : Core::Root
   {
     var int32 i = 0;
 
-    if(expression != "")
+    if( expression != "" )
     {  
-      for ( ; i < expression.length; i++)
+      for ( ; i < expression.length; i++ )
       {
        if (i == 0)
         {
-          if (!((expression[i] >= '0' && expression[i] <= '9') || expression[i] == '-' || expression[i] == '('))
+          if ( !((expression[i] >= '0' && expression[i] <= '9') || expression[i] == '-' || expression[i] == '(') )
           {
             return false; 
           }
         }
         else
         {
-          if (expression[i] == '-' && IsOperator(expression[i - 1]) && !IsDigit(expression[i + 1]))
+          if ( expression[i] == '-' && IsOperator(expression[i - 1]) && !IsDigit(expression[i + 1]) )
           {
               return false;
           }
-          if (IsOperator(expression[i]) && IsOperator(expression[i - 1]) && expression[i - 1] == '-' && expression[i] == '-')
+          if ( IsOperator(expression[i]) && IsOperator(expression[i - 1]) && expression[i - 1] == '-' && expression[i] == '-' )
           {
             return false; 
           }
-          if (expression[i] == '.' && expression[i - 1] == '.')
+          if ( expression[i] == '.' && expression[i - 1] == '.' )
           {
             return false; 
           }
           
-          if (i == expression.length - 1 && IsOperator(expression[i]))
+          if ( i == expression.length - 1 && IsOperator(expression[i]) )
           {
             return false;  
           }
@@ -410,7 +396,7 @@ class Application : Core::Root
   $rect <710,90,910,130>
   method bool IsParenthesis( arg char op )
   {
-      if( op == '(' || op == ')')
+    if( op == '(' || op == ')')
       return true;
 
     return false;
@@ -421,9 +407,9 @@ class Application : Core::Root
   {
     var int32 i = 0;
 
-    for( ; i < expression.length; i++)
+    for( ; i < expression.length; i++ )
     {
-      if (IsOperator(expression[i]) == false && IsParenthesis(expression[i]) == false && IsDigit(expression[i]) == false)
+      if ( IsOperator(expression[i]) == false && IsParenthesis(expression[i]) == false && IsDigit(expression[i]) == false )
         return false;
     }
 
@@ -433,7 +419,7 @@ class Application : Core::Root
   $rect <710,440,910,480>
   method bool IsWhiteSpace( arg char op )
   {
-    return (op == ' ' || op == '\t');
+    return ( op == ' ' || op == '\t' );
   }
 
   $rect <20,20,160,60>
@@ -509,7 +495,7 @@ class Application : Core::Root
 
     for( ; i < expression.length ; i++ )
     {
-      if(!IsDigit(expression[i]) && !IsDot(expression[i]))
+      if( !IsDigit(expression[i]) && !IsDot(expression[i]) )
       {
         return false;
       }
@@ -530,22 +516,22 @@ class Application : Core::Root
     var Application::StrVector tokens = new Application::StrVector;
     var int32 i = 0;
 
-    for (; i < expression.length; i++) 
+    for ( ; i < expression.length; i++ )  
     {
-        if (IsSpace(expression[i]))
+        if ( IsSpace(expression[i]) )
         {
             continue;
         }
-        else if (IsDigit(expression[i]) || (expression[i] == '.' && IsDigit(expression[i + 1])) ||
-                 (expression[i] == '-' && (i == 0 || IsOperator(expression[i - 1]) || expression[i - 1] == '(') && (IsDigit(expression[i + 1]) || expression[i + 1] == '.')))
+        else if ( IsDigit(expression[i]) || (expression[i] == '.' && IsDigit(expression[i + 1])) ||
+                 (expression[i] == '-' && (i == 0 || IsOperator(expression[i - 1]) || expression[i - 1] == '(') && (IsDigit(expression[i + 1]) || expression[i + 1] == '.')) )
         {
-            var Application::Group gr = GetNumberFromPosition(i, expression);
+            var Application::Tuple gr = GetNumberFromPosition(i, expression);
             var string number = gr.IdentifiedNumber;
             i = gr.EndPosition;
             tokens.PushBack(number);
             continue;    
         }
-        else if (IsOperator(expression[i]) || IsParenthesis(expression[i]))
+        else if ( IsOperator(expression[i]) || IsParenthesis(expression[i]) )
         {
             var string c = "";
             c = expression[i];
@@ -576,8 +562,8 @@ class Application : Core::Root
     var Application::StrVector tokens  = new Application::StrVector;
     var Application::StrQueue output = new Application::StrQueue;
     var Application::StrStack operators = new Application::StrStack;
-    tokens = TokenizeExpression(expression);
 
+    tokens = TokenizeExpression( expression );
     var Application::StringElement token = tokens.Front;
 
     while( token != null )
@@ -674,7 +660,7 @@ class Application : Core::Root
     var float firstOp;
     var float secondOp;
 
-    RPN = ShuntingYardAlgorithm(expression);
+    RPN = ShuntingYardAlgorithm( expression );
     var Application::StringElement token = RPN.Front;
 
     while( token != null )
@@ -689,7 +675,7 @@ class Application : Core::Root
       }
       else 
       {
-        stk.Push(token.DataStr.parse_float(-1.0));
+        stk.Push(token.DataStr.parse_float( -1.0 ));
       }
       token = token.Next;
     }
@@ -704,6 +690,7 @@ class Application : Core::Root
   method bool IsNegativeNumber( arg string expression )
   {
     var string subexpr = expression.right(expression.length - 1);
+
     if( expression[0] == '-' && IsNumber(subexpr) && expression.length > 1)
     {
       return true;
@@ -828,7 +815,7 @@ class NumKeyBtns : Core::Group
   inherited method UpdateViewState()
   {
     // Always invoke the inherited method.
-    super(aState);
+    super( aState );
   }
 
   $rect <880,40,1120,80>
@@ -1023,24 +1010,24 @@ class NumKeyBtns : Core::Group
   slot onActivateKey
   {
     sender; /* the method is called from the sender object */
-    var WidgetSet::PushButton currentSender = (WidgetSet::PushButton )sender;
+    var WidgetSet::PushButton currentSender = ( WidgetSet::PushButton )sender;
 
-    if (currentSender != null) 
+    if ( currentSender != null ) 
     {
       keyString = currentSender.Label;
       var char charCode = '\0';
       var Core::KeyCode keyCode = Core::KeyCode.NoKey;
 
-      if (keyString != "") 
+      if ( keyString != "" ) 
       {   
         charCode = keyString[0];
-        if (charCode != '\0' && keyCode == Core::KeyCode.NoKey) 
+        if ( charCode != '\0' && keyCode == Core::KeyCode.NoKey ) 
         {
           GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, true);
           GetRoot().DriveKeyboardHitting(Core::KeyCode.NoKey, charCode, false);
         }
 
-        if (keyCode != Core::KeyCode.NoKey) 
+        if ( keyCode != Core::KeyCode.NoKey ) 
         {
           GetRoot().DriveKeyboardHitting(keyCode, '\0', true);
           GetRoot().DriveKeyboardHitting(keyCode, '\0', false);
@@ -2443,7 +2430,7 @@ resource Resources::Font MultiplyFont
 
 $rect <-300,280,-100,320>
 $output false
-class Group
+class Tuple
 {
   $rect <239,-10,439,30>
   property float IdentifiedNumber;
@@ -2832,7 +2819,7 @@ class Battery : Core::Group
   {
     BatteryPercentage -= 0.5;
 
-    if(BatteryPercentage < 0)
+    if( BatteryPercentage < 0 )
       BatteryPercentage = 0;
 
     UpdateBatteryLines(BatteryPercentage);
@@ -2998,17 +2985,17 @@ class Battery : Core::Group
   {
     var int32 linesToShow = percentage / 5;
 
-      var int32 i = 0;
+    var int32 i = 0;
       
-      for( ; i < 20; i++)
+    for( ; i < 20; i++ )
+    {
+      if( i < linesToShow )
       {
-        if(i < linesToShow)
-        {
-          batteryLines[i].Visible = true;
-        }
-        else
-          batteryLines[i].Visible = false;     
+        batteryLines[i].Visible = true;
       }
+      else
+        batteryLines[i].Visible = false;     
+    }
   }
 
   $rect <380,-20,580,20>
@@ -4075,7 +4062,7 @@ class StrVector
   $rect <880,80,1080,120>
   method string GetFront()
   {
-    if( Front != null)
+    if( Front != null )
     {
       return Front.DataStr;
     }
@@ -4086,7 +4073,7 @@ class StrVector
   $rect <880,130,1080,170>
   method string GetBack()
   {
-    if( Back != null)
+    if( Back != null )
     {
       return Back.DataStr;
     }
@@ -4348,184 +4335,8 @@ note group Note4
   attr Bounds = <-60,-20,420,290>;
 }
 
-$rect <-480,440,-280,480>
+$rect <-312,416,-112,456>
 inline Inline
 {
-  /*
-
-    TO DO:
-
-    Include external header files or add type and function declarations needed
-    in the implementation of Application::DeviceClass. For example:
-
-      #include "DeviceDriver.h"
-
-      #include "your_middleware_api.h"
-
-      void Your_Middleware_Some_Function( int aSomeArg );
-
-  */
+  import { getBatteryLevel } from './battery-logger.js';
 }
-
-$rect <-480,400,-280,440>
-$output false
-class DeviceClass : Templates::DeviceClass
-{
-  $rect <30,80,230,120>
-  inherited method Done()
-  {
-    // The following section is intended to perform de-initialization-related operations
-    // in the underlying device or middleware. Consequently, the section is taken in
-    // account only when generating code (not during prototyping).
-    $if !$prototyper
-      var object thisObject = this;
-
-      /*
-         TO DO:
-
-         The following native statement is intended to enclose code to communicate with
-         your device API. The variable 'thisObject' contains a pointer to the actually
-         de-initialized Application::DeviceClass object. Use the 'thisObject' pointer to
-         e.g. de-register the object from the middleware if you have registered it
-         beforehand.
-         
-      */
-
-      native ( thisObject )
-      {
-        /*
-           TO DO:
-
-           Depending on your application case you call functions of the underlying
-           middleware (or access the device directly) in order to perform the necessary
-           de-initialization steps. For example, you invoke some 'C' function:
-
-             YourDevice_DeInitialize();
-
-           IMPORTANT:
-           ----------
-
-           The variable 'thisObject' represents the actually de-initialized instance of the
-           Application::DeviceClass. If you have stored this object at the initialization
-           time (in the 'Init' method) in some global C variable or registered it by the
-           middleware, it is important to perform now the opposite operation. Set the
-           global variable to NULL or de-register 'thisObject' object from the middleware.
-           
-        */
-      }
-    $endif
-  }
-
-  $rect <30,40,230,80>
-  inherited method Init()
-  {
-    // The following section is intended to perform initialization-related operations
-    // in the underlying device or middleware. Consequently, the section is taken in
-    // account only when generating code (not during prototyping).
-    $if !$prototyper
-      var object thisObject = this;
-
-      /*
-         TO DO:
-
-         The following native statement is intended to enclose code to communicate with
-         your device API. The variable 'thisObject' contains a pointer to the actually
-         initialized Application::DeviceClass object. Use the 'thisObject' pointer to
-         e.g. register the object by the middleware as receiver of events, etc.
-         
-      */
-
-      native ( thisObject )
-      {
-        /*
-           TO DO:
-
-           Depending on your application case you call functions of the underlying
-           middleware (or access the device directly) in order to perform the necessary
-           initialization steps. For example, you invoke some 'C' function:
-
-             YourDevice_Initialize();
-
-           The variable 'thisObject' represents the actually initialized instance of the
-           Application::DeviceClass. You can store this variable e.g. in the middleware
-           and use it whenever the middleware needs to notify the GUI application about
-           some state alternation or events. In this manner, the middleware will be able
-           to invoke methods of the interface device object.
-
-           For example, you can store 'thisObject' in some global C variable:
-
-             // Declaration of the global C variable
-             XObject theDeviceObject;
-
-             // Store the instance in the global variable
-             theDeviceObject = thisObject;
-
-           Later use the global variable e.g. to provide the GUI application with events:
-
-             ApplicationDeviceClass__TriggerSomeEvent( theDeviceObject );
-
-           IMPORTANT:
-           ----------
-
-           If you store 'thisObject' for later use, don't forget to implement the opposite
-           operation in the method 'Done'. Concrete, 'Done' should set the global variable
-           again to the value NULL.
-
-        */
-      }
-    $endif
-  }
-
-  // Device classes are assembled from 'Commands', 'Properties' and 'System Events'. \
-  // For this purpose use the following prepared templates from the Gallery folder \
-  // 'Device':
-  // 
-  // Command - method to trigger actions in the underlying device or query data from \
-  // the device.
-  // 
-  // Property - variable to represent or modify a setting or state value existing \
-  // within the underlying device.
-  // 
-  // System Event - represents an event or notifications the underlying device may \
-  // report.
-  // 
-  // For more details please visit: https://doc.embedded-wizard.de/device-class-and-device-driver
-  note legend Note4
-  {
-    attr Bounds = <10,230,1100,400>;
-  }
-
-  // The method 'Init' is executed just in the moment when new instance of 'Application::DeviceClass' \
-  // is created. It is suitable to:
-  // - initialize the hardware represented by the interface.
-  // - register the instance by the middleware to receive updates and events.
-  // - open files, network connections or other system resources needed by the interface.
-  // 
-  // The method 'Done' is executed just in the moment when an instance of 'Application::DeviceClass' \
-  // is disposed. It is suitable to:
-  // - de-initialize the underlying hardware.
-  // - de-register the instance from the underlying middleware.
-  // - close files, network connections and other no longer needed system resources.
-  // 
-  // If your application case doesn't need the initialization or de-initialization, \
-  // feel free to delete the methods 'Init' or/and 'Done'.
-  note legend Note3
-  {
-    attr Bounds = <320,0,1100,220>;
-  }
-
-  note arrow Note2
-  {
-    attr Point1 = <250,50>;
-    attr Point2 = <320,50>;
-  }
-
-  // Constructor and Destructor
-  note group Note1
-  {
-    attr Bounds = <10,0,250,140>;
-  }
-}
-
-$rect <-280,400,-80,440>
-autoobject Application::DeviceClass Device;
