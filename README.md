@@ -16,10 +16,10 @@ All the buttons integrated into the virtual keyboard are customized using the Fa
 <img align="center" width="250" src="https://github.com/user-attachments/assets/ddbdeb1c-3c23-474f-b99d-7d2be8726b03">
 
 \
-Since the application uses images for the buttons, for them to be visible in the browser the HTML file should be opened on localhost. The easiest way to do this is:
+Since the application uses images for the buttons, the HTML file should be opened on localhost for them to be visible in the browser. The easiest way to do this is:
 - use **Node.js** (instructions for installation here: https://nodejs.org/en/download/package-manager )
 - run the command **npm install http-server -g** in CMD
-- navigate to the path of the _calculator-app.html_ file in CMD, and run **http-server**
+- navigate to the path of the _calculator-app.html_ file (_calculator\Web directory_) in CMD, and run **http-server**
 - in your browser, type **localhost:8080** and the application should run
 
 
