@@ -1,6 +1,6 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
 attr currentCodeInspector = Application::Application.CalculateExpression;
@@ -32,7 +32,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-2,-39>;
   attr zoom = 0.75;
@@ -41,23 +40,8 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-949,206>;
+  attr scrollTo = <-949,158>;
   attr zoom = 0.75;
-}
-
-view class Application::Application
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-7,89>;
-  attr zoom = 1.0;
-}
-
-codeview Application::Inline
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <54,0>;
-  attr codeSelStart = <54,0>;
 }
 
 codeview Application::Application.CalculateExpression

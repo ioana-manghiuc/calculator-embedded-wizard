@@ -492,7 +492,7 @@ null;B.h7--;},_ReInit:function(){},_Mark:function(E){var A;if((A=this.A4)&&(A._c
 ){this.__proto__=null;B.h7--;},_ReInit:function(){},_Mark:function(E){var A;if((
 A=this.Bu)&&(A._cycle!=E))A._Mark(A._cycle=E);if((A=this.L)&&(A._cycle!=E))A._Mark(
 A._cycle=E);},L:null,_cycle:0,_observers:null,_className:"Application::SimpleCharElement"
-};import{getBatteryLevel}from'./battery-logger.js';
+};
 D._Init=function(){D.H6.__proto__=B.Core.Root;D.IJ.__proto__=B.Core.Am;D.Ba.__proto__=
 B.Core.Am;D.Hf.__proto__=B.Core.Am;};D._ReInit=function(){};D.Cu=function(E){var
 A;if((A=D.Hq[0]._this)&&(A._cycle!=E))A._Done(D.Hq[0]._this=null);if((A=D.Id[0].

@@ -63,20 +63,6 @@ class Application : Core::Root
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
 
-    $if ! $prototyper
-    var int32 lvl = 0;
-
-    native
-    {
-        // Call the native function
-        lvl = getBatteryLevel();
-    }
-
-    trace lvl;
-
-    $endif
-
-
     if( KeyHandler.CharCode != '\0' )
     {  
       str = KeyHandler.CharCode;
