@@ -743,7 +743,7 @@ class Application : Core::Root
   $member IsNegativeNumber
 }
 
-$rect <-40,360,160,400>
+$rect <-40,340,160,380>
 $output false
 resource Resources::Font NumFont
 {
@@ -759,7 +759,7 @@ resource Resources::Font NumFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-40,460,160,500>
+$rect <-40,440,160,480>
 $output false
 resource Resources::Font DigitalResFont
 {
@@ -2320,7 +2320,7 @@ resource Resources::Bitmap EqualsBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <-40,510,160,550>
+$rect <-40,490,160,530>
 $output false
 resource Resources::Font EqFont
 {
@@ -2369,13 +2369,13 @@ note group Note
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <440,-20,680,580>;
+  attr Bounds = <440,-20,680,590>;
 }
 
 // Fonts
 note group Note2
 {
-  attr Bounds = <-60,300,420,580>;
+  attr Bounds = <-60,300,420,590>;
 }
 
 // Application
@@ -2384,7 +2384,7 @@ note group Note3
   attr Bounds = <-330,-20,-80,80>;
 }
 
-$rect <-40,410,160,450>
+$rect <-40,390,160,430>
 $output false
 resource Resources::Font NumBoldFont
 {
@@ -2412,7 +2412,7 @@ resource Resources::Bitmap DivideBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <200,360,400,400>
+$rect <200,340,400,380>
 $output false
 resource Resources::Font MultiplyFont
 {
@@ -2673,7 +2673,7 @@ class ErrorDialog : Core::Group
   }
 }
 
-$rect <200,410,400,450>
+$rect <200,390,400,430>
 $output false
 resource Resources::Font ErrorFont
 {
@@ -2689,7 +2689,7 @@ resource Resources::Font ErrorFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <200,460,400,500>
+$rect <200,440,400,480>
 $output false
 resource Resources::Font BtnFont
 {
@@ -2729,7 +2729,7 @@ resource Resources::Bitmap ParenthesisBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <200,510,400,550>
+$rect <200,490,400,530>
 $output false
 resource Resources::Font NumFont1
 {
@@ -2817,7 +2817,20 @@ class Battery : Core::Group
   $rect <0,120,200,160>
   slot onUseBattery
   {
-    BatteryPercentage -= 0.5;
+    BatteryPercentage -= 0.05;
+    var string str = "100";
+    // #004606FF
+    str = BatteryPercentage;
+
+    if( BatteryPercentage < 50 )
+    {
+      Text.Color = #BC5F00FF;
+    }
+    if ( BatteryPercentage < 20 )
+    {
+      Text.Color = #CB0014FF ;
+    }
+    Text.String = str;
 
     if( BatteryPercentage < 0 )
       BatteryPercentage = 0;
@@ -2973,12 +2986,12 @@ class Battery : Core::Group
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
-    preset Period = 3000;
+    preset Period = 5000;
     preset Enabled = true;
   }
 
   $rect <150,20,350,60>
-  var int32 BatteryPercentage = 100;
+  var int32 BatteryPercentage = 101;
 
   $rect <0,160,200,200>
   method void UpdateBatteryLines( arg int32 percentage )
@@ -3023,6 +3036,15 @@ class Battery : Core::Group
     Default[19] = line20;
   );
 
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <13,6,97,46>;
+    preset String = "";
+    preset Font = Application::BatteryFont;
+    preset Color = #004606FF;
+  }
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -3055,6 +3077,7 @@ class Battery : Core::Group
   $member BatteryPercentage
   $member UpdateBatteryLines
   $member batteryLines
+  $member Text
 }
 
 $rect <200,130,400,170>
@@ -4333,4 +4356,20 @@ class SimpleCharElement
 note group Note4
 {
   attr Bounds = <-60,-20,420,290>;
+}
+
+$rect <-40,540,160,580>
+$output false
+resource Resources::Font BatteryFont
+{
+  attr fontname FontName = Digital-7;
+  attr fontheight Height = 42;
+  attr fontheightmode HeightMode = Popular;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+  attr fontkerning Kerning = true;
+  attr fontrowdistance RowDistance;
 }

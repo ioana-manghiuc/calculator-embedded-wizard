@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application;
+attr active = Application::Battery;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.CalculateExpression;
+attr currentCodeInspector = Application::Battery.onUseBattery;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,6 +32,7 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
+  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-2,-39>;
   attr zoom = 0.75;
@@ -40,14 +41,37 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-949,158>;
+  attr scrollTo = <-623,350>;
   attr zoom = 0.75;
 }
 
-codeview Application::Application.CalculateExpression
+view class Application::Battery
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-178,-295>;
+  attr zoom = 1.0;
+}
+
+codeview Application::Battery.onUseBattery
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,4>;
+  attr codeSelEnd = <25,0>;
+  attr codeSelStart = <25,0>;
+}
+
+codeview Application::Battery.UpdateBatteryLines
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <51,2>;
-  attr codeSelStart = <51,2>;
+  attr codeSelEnd = <17,8>;
+  attr codeSelStart = <17,8>;
+}
+
+codeview Core::Group.Add
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <2,1>;
+  attr codeSelStart = <2,1>;
 }

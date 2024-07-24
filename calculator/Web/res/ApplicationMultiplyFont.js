@@ -25,9 +25,9 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.aco)throw new Error("The file file 'ApplicationMultiplyFont.js' included twice!"
+);if(EmWiApp.acp)throw new Error("The file file 'ApplicationMultiplyFont.js' included twice!"
 );
-EmWiApp.aco=[46,13,0,16,192,192,"\
+EmWiApp.acp=[46,13,0,16,192,192,"\
 \u0000\u8002\u7FE0\u0018\u0020\u801B\u0000\u0000\u0020\u8000\u8000\u0000\u0000\u801B\u0000\u06BC\
 \u0021\u800A\u7FDD\u0007\u0024\u801B\u0000\u06BC\u0022\u8006\u7FDD\u0010\u000C\u801B\u0000\u08B3\
 \u0023\u8001\u7FE0\u001A\u0020\u801B\u0000\u0A22\u0024\u8002\u7FDB\u0017\u002B\u801B\u0000\u10EC\

@@ -4334,9 +4334,3 @@ note group Note4
 {
   attr Bounds = <-60,-20,420,290>;
 }
-
-$rect <-312,416,-112,456>
-inline Inline
-{
-  import { getBatteryLevel } from './battery-logger.js';
-}
