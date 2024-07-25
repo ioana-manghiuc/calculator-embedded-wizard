@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Battery;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Battery.onUseBattery;
+attr currentCodeInspector = Application::Application.CalculateExpression;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -40,38 +40,68 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-623,-130>;
+  attr scrollTo = <-856,109>;
+  attr zoom = 0.75;
+}
+
+view class Application::Application
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-391,-109>;
+  attr zoom = 0.5;
+}
+
+view class Application::ChangeBattery
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-257,-215>;
+  attr zoom = 1.5;
+}
+
+view class Application::ErrorDialog
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-387,-323>;
   attr zoom = 0.75;
 }
 
 view class Application::Battery
 {
   attr enableWireMode = false;
-  attr scrollTo = <-469,-222>;
+  attr scrollTo = <-7,-103>;
   attr zoom = 1.0;
 }
 
-view class Application::Application
+codeview Application::Application.CalculateExpression
 {
-  attr enableWireMode = false;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 1.0;
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,2>;
+  attr codeSelEnd = <0,2>;
+  attr codeSelStart = <0,2>;
+}
+
+codeview Application::Application.LaptopBatteryLevel
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <47,7>;
+  attr codeSelStart = <47,7>;
 }
 
 codeview Application::Battery.onUseBattery
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,7>;
-  attr codeSelEnd = <11,20>;
-  attr codeSelStart = <11,20>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
 }
 
 codeview Application::Battery.UpdateBatteryLines
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <1,14>;
+  attr codeSelEnd = <11,13>;
+  attr codeSelStart = <11,13>;
 }
 
 codeview Core::Group.Add
@@ -90,10 +120,34 @@ codeview Application::Battery.UpdateLowBatteryLines
   attr codeSelStart = <19,0>;
 }
 
-codeview Application::Battery.HideInitialLines
+codeview Application::Application.LockKeypad
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,4>;
-  attr codeSelEnd = <15,19>;
-  attr codeSelStart = <15,19>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,2>;
+  attr codeSelStart = <0,2>;
+}
+
+codeview Application::Battery.UpdateProperty
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::Application.onBatteryOut
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <15,2>;
+  attr codeSelStart = <15,2>;
+}
+
+codeview Application::Application.ResetVariables
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <4,0>;
+  attr codeSelStart = <4,0>;
 }

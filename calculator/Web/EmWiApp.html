@@ -15,6 +15,7 @@
     <SCRIPT type="text/javascript" src="code/Effects.js"></SCRIPT>
     <SCRIPT type="text/javascript" src="code/Graphics.js"></SCRIPT>
     <SCRIPT type="text/javascript" src="code/Resources.js"></SCRIPT>
+    <SCRIPT type="text/javascript" src="res/ResourcesDefaultFont.js"></SCRIPT>
     <SCRIPT type="text/javascript" src="code/Views.js"></SCRIPT>
     <SCRIPT type="text/javascript" src="code/Application.js"></SCRIPT>
     <SCRIPT type="text/javascript" src="res/ApplicationNumFont.js"></SCRIPT>
@@ -86,5 +87,30 @@
       // Initialize the application 
       EmWiApp._Init( "_canvas_EmWiApp", params );
     </SCRIPT>
+    <script>
+
+      async function getBatteryLevel() {
+      try 
+      {
+        const battery = await navigator.getBattery();
+        return Math.round(battery.level * 100);
+      } catch (error) 
+      {
+        return 0;
+      }
+}
+      async function displayBatteryLevel() {
+          try {
+              const battery = await navigator.getBattery();
+              const batteryLevel = Math.round(battery.level * 100);
+              console.log(`Battery Level: ${batteryLevel}%`);
+              return `Battery Level: ${batteryLevel}%`;
+          } catch (error) {
+              console.log('Error fetching battery level:', error);
+          }
+      }
+
+      displayBatteryLevel();
+  </script>
   </BODY>
 </HTML>
