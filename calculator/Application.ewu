@@ -2757,19 +2757,7 @@ resource Resources::Bitmap BackBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <460,420,660,470>
-$output false
-resource Resources::Bitmap BatteryOutline
-{
-  attr bitmapfile FileName = .\resources\battery-outline.png;
-  attr bitmapformat Format = Native;
-  attr framesize FrameSize = <110,50>;
-  attr framedelay FrameDelay;
-  attr bitmapdithering Dithering = Auto;
-  attr bitmapmode Mode = Default;
-}
-
-$rect <460,470,660,520>
+$rect <460,420,660,460>
 $output false
 resource Resources::Bitmap BatteryBgk
 {
@@ -2781,7 +2769,7 @@ resource Resources::Bitmap BatteryBgk
   attr bitmapmode Mode = Default;
 }
 
-$rect <460,520,660,570>
+$rect <460,470,660,510>
 $output false
 resource Resources::Bitmap BatteryLine
 {
@@ -2830,6 +2818,7 @@ class Battery : Core::Group
     {
       Text.Color = #CB0014FF ;
     }
+
     Text.String = str;
 
     if( BatteryPercentage < 0 )
@@ -2991,7 +2980,7 @@ class Battery : Core::Group
   }
 
   $rect <150,20,350,60>
-  var int32 BatteryPercentage = 101;
+  var int32 BatteryPercentage = 23;
 
   $rect <0,160,200,200>
   method void UpdateBatteryLines( arg int32 percentage )
@@ -3004,10 +2993,30 @@ class Battery : Core::Group
     {
       if( i < linesToShow )
       {
-        batteryLines[i].Visible = true;
+        if( percentage < 20 )
+        {
+          lowBatteryLines[i].Visible = true;
+          batteryLines[i].Visible = false;
+        }
+        else
+        {
+          batteryLines[i].Visible = true;
+          lowBatteryLines[i].Visible = false;
+        }
       }
       else
-        batteryLines[i].Visible = false;     
+      {
+        if( percentage < 20 )
+        {
+          lowBatteryLines[i].Visible = false;
+          batteryLines[i].Visible = false;
+        }
+        else
+        {
+          batteryLines[i].Visible = false;
+          lowBatteryLines[i].Visible = false;
+        }
+      }     
     }
   }
 
@@ -3045,12 +3054,73 @@ class Battery : Core::Group
     preset Color = #004606FF;
   }
 
+  $rect <20,20,160,60>
+  object Views::Image low1
+  {
+    preset Bounds = <7,4,12,50>;
+    preset Bitmap = Application::LowBattery;
+    preset Visible = true;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image low2
+  {
+    preset Bounds = <12,4,17,50>;
+    preset Bitmap = Application::LowBattery;
+    preset Visible = true;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image low3
+  {
+    preset Bounds = <17,4,22,50>;
+    preset Bitmap = Application::LowBattery;
+    preset Visible = true;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Image low4
+  {
+    preset Bounds = <22,4,27,50>;
+    preset Bitmap = Application::LowBattery;
+    preset Visible = true;
+  }
+
+  $rect <380,20,580,60>
+  array Views::Image lowBatteryLines[ 20 ] =
+  (
+    Default[0] = low1;
+    Default[1] = low2;
+    Default[2] = low3;
+    Default[3] = low4;
+    Default[4] = line5;
+    Default[5] = line6;
+    Default[6] = line7;
+    Default[7] = line8;
+    Default[8] = line9;
+    Default[9] = line10;
+    Default[10] = line11;
+    Default[11] = line12;
+    Default[12] = line13;
+    Default[13] = line14;
+    Default[14] = line15;
+    Default[15] = line16;
+    Default[16] = line17;
+    Default[17] = line18;
+    Default[18] = line19;
+    Default[19] = line20;
+  );
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
   // project files is simplified.
   $member Bounds
   $member Bgk
+  $member low1
+  $member low2
+  $member low3
+  $member low4
   $member line1
   $member line2
   $member line3
@@ -3078,6 +3148,7 @@ class Battery : Core::Group
   $member UpdateBatteryLines
   $member batteryLines
   $member Text
+  $member lowBatteryLines
 }
 
 $rect <200,130,400,170>
@@ -4372,4 +4443,16 @@ resource Resources::Font BatteryFont
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
+}
+
+$rect <460,520,660,560>
+$output false
+resource Resources::Bitmap LowBattery
+{
+  attr bitmapfile FileName = .\resources\low-battery.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <5,46>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
 }
