@@ -1,6 +1,0 @@
-{
-  "type" : "module",
-  "dependencies": {
-    "systeminformation": "^5.22.11"
-  }
-}
