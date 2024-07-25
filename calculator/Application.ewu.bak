@@ -12,7 +12,7 @@ class Application : Core::Root
   object Views::Text Text
   {
     preset StackingPriority = 3;
-    preset Bounds = <18,36,318,101>;
+    preset Bounds = <14,34,314,99>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -59,6 +59,8 @@ class Application : Core::Root
   $rect <410,90,610,130>
   slot CalculateExpression
   {
+    Text1.String = LaptopBatteryLevel();
+
     var string str = "";
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
@@ -748,8 +750,18 @@ class Application : Core::Root
   $rect <20,20,160,60>
   object Application::ChangeBattery ReplaceBatteryDialog
   {
-    preset Bounds = <100,144,240,199>;
+    preset Bounds = <-260,394,-120,449>;
     preset Visible = false;
+  }
+
+  $rect <20,20,160,60>
+  object Application::TextEditor Outline
+  {
+    preset StackingPriority = 3;
+    preset Bounds = <-329,115,-29,180>;
+    preset String = "result here";
+    preset Color = #0D1A38FF;
+    preset Font = Application::DigitalResFont;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -758,11 +770,11 @@ class Application : Core::Root
   // project files is simplified.
   $member Init
   $member Bounds
-  $member Text
   $member KeyHandlerNote
   $member Bgk
   $member OutputBgk
   $member Border
+  $member Text
   $member Keypad
   $member KeyHandler
   $member CalculateExpression
@@ -799,6 +811,7 @@ class Application : Core::Root
   $member BatteryLevelObserver
   $member onBatteryOut
   $member ReplaceBatteryDialog
+  $member Outline
 }
 
 $rect <-40,340,160,380>

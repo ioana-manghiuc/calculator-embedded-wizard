@@ -25,9 +25,9 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.acm)throw new Error("The file file 'ApplicationDigitalResFont.js' included twice!"
+);if(EmWiApp.acn)throw new Error("The file file 'ApplicationDigitalResFont.js' included twice!"
 );
-EmWiApp.acm=[50,11,0,16,97,97,"\
+EmWiApp.acn=[50,11,0,16,97,97,"\
 \u0000\u8002\u7FD8\u001B\u0029\u8020\u0000\u0000\u0020\u8000\u8000\u0000\u0000\u8010\u0000\u069B\
 \u0021\u8003\u7FD9\u0004\u0027\u800A\u0000\u069B\u0022\u8003\u7FD9\u000D\u000B\u8013\u0000\u07CF\
 \u0023\u8002\u7FDF\u0019\u001B\u801D\u0000\u08CA\u0024\u8002\u7FD2\u0018\u0035\u801C\u0000\u0F6F\

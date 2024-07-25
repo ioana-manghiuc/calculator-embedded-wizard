@@ -59,8 +59,6 @@ class Application : Core::Root
   $rect <410,90,610,130>
   slot CalculateExpression
   {
-    Text1.String = LaptopBatteryLevel();
-
     var string str = "";
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
@@ -2303,7 +2301,7 @@ class Battery : Core::Group
   }
 
   $rect <190,80,390,120>
-  property int32 BatteryPercentage = 101;
+  property int32 BatteryPercentage = 7;
 
   $rect <590,80,790,120>
   onget BatteryPercentage

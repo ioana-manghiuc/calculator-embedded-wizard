@@ -26,39 +26,48 @@
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
 );if(EmWiApp.ach)throw new Error("The unit file 'Resources.js' included twice!");
-EmWiApp.ach=(function(){var B=EmWiApp;var D={};
-var AH=[0,0];var AF="The property \'FrameSize\' is READ ONLY.";
-D.Ae={bitmap:null,FrameDelay:0,NoOfFrames:1,FrameSize:B.wf,FR:false,CJ:false,Dg:function(
+EmWiApp.ach=(function(){var B=EmWiApp;var E={};
+var AX=[0,0];var AF="The property \'FrameSize\' is READ ONLY.";
+E.Ai={bitmap:null,FrameDelay:0,NoOfFrames:1,FrameSize:B.wf,ES:false,DE:false,Et:function(
 ){if(!this.bitmap)return;var handle=this.bitmap;B._FreeBitmap(handle);this.bitmap=
-null;this.FrameSize=AH;this.FrameDelay=0;this.NoOfFrames=1;this.CJ=false;},AV:function(
-aArg){if(!aArg)return;var handle=null;var noOfFrames=1;var frameSize=AH;var frameDelay=
+null;this.FrameSize=AX;this.FrameDelay=0;this.NoOfFrames=1;this.DE=false;},Bl:function(
+aArg){if(!aArg)return;var handle=null;var noOfFrames=1;var frameSize=AX;var frameDelay=
 0;{var bmp=B.aa3(aArg,this);if(bmp){noOfFrames=bmp.NoOfFrames;frameSize=bmp.FrameSize;
 frameDelay=bmp.FrameDelay;}handle=bmp;}this.bitmap=handle;this.NoOfFrames=noOfFrames;
-this.FrameSize=frameSize;this.FrameDelay=frameDelay;this.FR=true;this.CJ=(!!this.
-bitmap&&(this.FrameDelay>0))&&(this.NoOfFrames>1);},J1:function(C){throw new Error(
-AF);},Update:function(){},_Init:function(aArg){B.Core.D7._Init.call(this,aArg);this.
-__proto__=D.Ae;this.AV(aArg);},_Done:function(){this.Dg();this.__proto__=B.Core.
-D7;B.Core.D7._Done.call(this);},_className:"Resources::Bitmap"};D.Ij={_class:function(
-){return D.A2;},0:{Data:function(){return B.act;},Cache:[],_this:null}};D.A2={font:
-null,Leading:0,Descent:0,Ascent:0,Dg:function(){this.ND();},AV:function(aArg){this.
-NE(aArg);},ND:function(){if(!this.font)return;var handle=this.font;B.aal(handle);
-this.font=null;this.Ascent=0;this.Descent=0;this.Leading=0;},NE:function(aFontResource
+this.FrameSize=frameSize;this.FrameDelay=frameDelay;this.ES=true;this.DE=(!!this.
+bitmap&&(this.FrameDelay>0))&&(this.NoOfFrames>1);},IY:function(C){throw new Error(
+AF);},Update:function(){},_Init:function(aArg){B.Core.Fy._Init.call(this,aArg);this.
+__proto__=E.Ai;this.Bl(aArg);},_Done:function(){this.Et();this.__proto__=B.Core.
+Fy;B.Core.Fy._Done.call(this);},_className:"Resources::Bitmap"};E.As={font:null,
+Leading:0,Descent:0,Ascent:0,Et:function(){this.RG();},Bl:function(aArg){this.RJ(
+aArg);},RG:function(){if(!this.font)return;var handle=this.font;B.aal(handle);this.
+font=null;this.Ascent=0;this.Descent=0;this.Leading=0;},RJ:function(aFontResource
 ){if(!aFontResource)return;var handle=null;var ascent=0;var descent=0;var leading=
 0;{var font=B.aa5(aFontResource);if(font){ascent=font.Ascent;descent=font.Descent;
 leading=font.Leading;}handle=font;}this.font=handle;this.Ascent=ascent;this.Descent=
-descent;this.Leading=leading;},JW:function(aFlowString){if(!this.font)return 0;var
-handle=this.font;var advance=0;advance=B.aav(handle,aFlowString);return advance;
-},L3:function(aString,aOffset,aWidth,aMaxNoOfRows,aBidi){if(aOffset<0)aOffset=0;
-if(!this.font||((aOffset>0)&&(aOffset>=aString.length)))return B.jV;var handle=this.
-font;var result=B.jV;result=B.abv(handle,aString,aOffset,aWidth,aMaxNoOfRows,aBidi
-);return result;},Gv:function(aString,aOffset,aCount){if(aOffset<0)aOffset=0;if(
-!this.font||((aOffset>0)&&(aOffset>=aString.length)))return 0;var handle=this.font;
-var advance=0;advance=B.m9(handle,aString,aOffset,aCount);return advance;},_Init:
-function(aArg){B.Core.D7._Init.call(this,aArg);this.__proto__=D.A2;this.AV(aArg);
-},_Done:function(){this.Dg();this.__proto__=B.Core.D7;B.Core.D7._Done.call(this);
-},_className:"Resources::Font"};
-D._Init=function(){D.Ae.__proto__=B.Core.D7;D.A2.__proto__=B.Core.D7;};D._ReInit=
-function(){};D.Cv=function(E){var A;if((A=D.Ij[0]._this)&&(A._cycle!=E))A._Done(
-D.Ij[0]._this=null);};return D;})();
+descent;this.Leading=leading;},ON:function(aString,aOffset,aCount,aColumn,aMinWidth
+){if(aOffset<0)aOffset=0;if(!this.font)return 0;if((aOffset>0)&&(aOffset>aString.
+length))aOffset=aString.length;var handle=this.font;var pos=0;pos=B.aaF(handle,aString
+,aOffset,aCount,aColumn,aMinWidth);return pos;},OO:function(aString,aOffset,aCount
+,aX,aMinWidth){if(aOffset<0)aOffset=0;if(!this.font)return 0;if((aOffset>0)&&(aOffset>
+aString.length))aOffset=aString.length;var handle=this.font;var col=0;col=B.aaP(
+handle,aString,aOffset,aCount,aX,aMinWidth);return col;},MO:function(aFlowString
+){if(!this.font)return 0;var handle=this.font;var advance=0;advance=B.aav(handle
+,aFlowString);return advance;},PH:function(aString,aOffset,aWidth,aMaxNoOfRows,aBidi
+){if(aOffset<0)aOffset=0;if(!this.font||((aOffset>0)&&(aOffset>=aString.length))
+)return B.jV;var handle=this.font;var result=B.jV;result=B.abv(handle,aString,aOffset
+,aWidth,aMaxNoOfRows,aBidi);return result;},Fp:function(aString,aOffset,aCount){
+if(aOffset<0)aOffset=0;if(!this.font||((aOffset>0)&&(aOffset>=aString.length)))return 0;
+var handle=this.font;var advance=0;advance=B.m9(handle,aString,aOffset,aCount);return advance;
+},_Init:function(aArg){B.Core.Fy._Init.call(this,aArg);this.__proto__=E.As;this.
+Bl(aArg);},_Done:function(){this.Et();this.__proto__=B.Core.Fy;B.Core.Fy._Done.call(
+this);},_className:"Resources::Font"};E.JX={_class:function(){return E.As;},0:{Data:
+function(){return B.acu;},Cache:[],_this:null}};E.I5={_class:function(){return E.
+Ai;},0:{FileName:"./res/ResourcesWhiteBitmapStripe.png",Format:B._PIXEL_FORMAT_ALPHA8
+,NoOfFrames:1,FrameSize:[256,4],FrameDelay:0,_this:null}};
+E._Init=function(){E.Ai.__proto__=B.Core.Fy;E.As.__proto__=B.Core.Fy;};E._ReInit=
+function(){};E.Dm=function(D){var A;if((A=E.JX[0]._this)&&(A._cycle!=D))A._Done(
+E.JX[0]._this=null);if((A=E.I5[0]._this)&&(A._cycle!=D))A._Done(E.I5[0]._this=null
+);};return E;})();
 
 /* Embedded Wizard */

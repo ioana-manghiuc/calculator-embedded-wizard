@@ -1,6 +1,6 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::Battery;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
 attr currentCodeInspector = Application::Application.CalculateExpression;
@@ -39,7 +39,6 @@ view Project
 
 view unit Application
 {
-  attr enableWireMode = false;
   attr scrollTo = <-856,109>;
   attr zoom = 0.75;
 }
@@ -53,14 +52,12 @@ view class Application::Application
 
 view class Application::ChangeBattery
 {
-  attr enableWireMode = false;
   attr scrollTo = <-257,-215>;
   attr zoom = 1.5;
 }
 
 view class Application::ErrorDialog
 {
-  attr enableWireMode = false;
   attr scrollTo = <-387,-323>;
   attr zoom = 0.75;
 }
@@ -75,9 +72,9 @@ view class Application::Battery
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,2>;
-  attr codeSelEnd = <0,2>;
-  attr codeSelStart = <0,2>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
 }
 
 codeview Application::Application.LaptopBatteryLevel

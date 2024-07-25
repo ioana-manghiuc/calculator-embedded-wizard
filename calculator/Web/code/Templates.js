@@ -25,10 +25,12 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.acj)throw new Error("The unit file 'Templates.js' included twice!");
-EmWiApp.acj=(function(){var B=EmWiApp;var D={};
+);if(EmWiApp.aci)throw new Error("The unit file 'Templates.js' included twice!");
+EmWiApp.aci=(function(){var B=EmWiApp;var E={};
 
-
-D._Init=function(){};D._ReInit=function(){};D.Cv=function(E){};return D;})();
+E.Dw={_Init:function(aArg){B.Core.Z._Init.call(this,aArg);this.__proto__=E.Dw;},_className:
+"Templates::TextEditor"};
+E._Init=function(){E.Dw.__proto__=B.Core.Z;};E._ReInit=function(){};E.Dm=function(
+D){};return E;})();
 
 /* Embedded Wizard */

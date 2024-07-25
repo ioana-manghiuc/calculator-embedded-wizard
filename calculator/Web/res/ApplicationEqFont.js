@@ -25,9 +25,9 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.acn)throw new Error("The file file 'ApplicationEqFont.js' included twice!"
+);if(EmWiApp.aco)throw new Error("The file file 'ApplicationEqFont.js' included twice!"
 );
-EmWiApp.acn=[85,25,0,16,192,192,"\
+EmWiApp.aco=[85,25,0,16,192,192,"\
 \u0000\u800B\u7FC8\u002E\u0038\u8044\u0000\u0000\u0020\u8000\u8000\u0000\u0000\u8017\u0000\u0C28\
 \u0021\u8007\u7FC2\u000A\u003F\u8019\u0000\u0C28\u0022\u8006\u7FC1\u0014\u001C\u8021\u0000\u1085\
 \u0023\u8005\u7FC2\u002D\u003E\u8037\u0000\u1430\u0024\u8003\u7FBC\u0028\u004D\u802D\u0000\u2448\
