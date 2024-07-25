@@ -13,7 +13,7 @@ The battery component simulates the calculator losing battery as it is being use
 
 All the buttons integrated into the virtual keyboard are customized using the Face Bitmap property and change their appearance when pressed (the FaceFrame changes when in or out of focus). 
 
-<img align="center" width="250" src="https://github.com/user-attachments/assets/ddbdeb1c-3c23-474f-b99d-7d2be8726b03">
+<img align="center" width="250" src="https://github.com/user-attachments/assets/b42dad6a-97b6-4493-bc61-660e5f24d675">
 
 \
 Since the application uses images for the buttons, run the HTML file in localhost for them to be visible in the browser. The easiest way to do this is:
