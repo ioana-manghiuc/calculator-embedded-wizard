@@ -18,14 +18,14 @@ All the buttons integrated into the virtual keyboard are customized using the Fa
 \
 Since the application uses images for the buttons, run the HTML file in localhost for them to be visible in the browser. The easiest way to do this is:
 - use **Node.js** (instructions for installation here: https://nodejs.org/en/download/package-manager )
-- run the command **npm install http-server -g** in CMD
-- navigate to the path of the _EmWiApp.html_ file (_calculator\Web directory_) in CMD, and run **http-server**
-- in your browser, type **localhost:8080** and the application should run
-
-Another option is to use Node.js with **Serve**:
 - run the command **npm install -g serve** in CMD
 - navigate to the path of the _EmWiApp.html_ file (_calculator\Web directory_) in CMD, and run **serve**
 - then a message should show up, letting you know the local address (which is also automatically copied to clipboard)
+
+Another option is to use Node.js with **http-server**:
+- run the command **npm install http-server -g** in CMD
+- navigate to the path of the _EmWiApp.html_ file (_calculator\Web directory_) in CMD, and run **http-server**
+- in your browser, type **localhost:8080** and the application should run
 
 
 
