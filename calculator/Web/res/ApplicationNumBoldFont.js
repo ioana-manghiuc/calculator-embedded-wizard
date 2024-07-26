@@ -25,9 +25,9 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.acr)throw new Error("The file file 'ApplicationNumBoldFont.js' included twice!"
+);if(EmWiApp.acs)throw new Error("The file file 'ApplicationNumBoldFont.js' included twice!"
 );
-EmWiApp.acr=[47,13,1,16,192,192,"\
+EmWiApp.acs=[47,13,1,16,192,192,"\
 \u0000\u8006\u7FE1\u001A\u001F\u8026\u0000\u0000\u0020\u8000\u8000\u0000\u0000\u800D\u0000\u044E\
 \u0021\u8003\u7FDE\u0008\u0023\u800E\u0000\u044E\u0022\u8003\u7FDD\u000D\u000F\u8014\u0000\u06D5\
 \u0023\u8003\u7FDE\u0019\u0022\u801E\u0000\u0890\u0024\u8001\u7FDC\u0017\u0028\u8019\u0000\u0E5E\
