@@ -9,7 +9,7 @@ For executing operations (*addition, subtraction, multiplication, division, expo
 
 The data structures used (vector, stack, queue) have been implemented in the Chora Programming Language. The stack and queue structures use simple elements, which hold data and a reference to the next element. The vector structure uses elements that hold data, as well as references to the next and previous elements.
 
-The battery component simulates the calculator losing battery as it is being used. When the battery runs out the calculator "shuts off" (if keys are pressed nothing will show in the result textbox), and the user is prompted to "add a new battery" which means entering a new battery level (must be at least 20). Then the calculator powers back on.
+The battery component simulates the calculator losing battery as it is being used. When the battery runs out the calculator "shuts off" (if keys are pressed nothing will show in the result textbox), and the user is prompted to "add a new battery" which means entering a new battery level by using the horizontal slider (whose values range from 20 to 100, so that the user can't add a dead battery). Then the calculator powers back on.
 
 All the buttons integrated into the virtual keyboard are customized using the Face Bitmap property and change their appearance when pressed (the FaceFrame changes when in or out of focus). 
 
