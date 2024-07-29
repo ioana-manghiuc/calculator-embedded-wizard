@@ -25,9 +25,9 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.acu)throw new Error("The file file 'ApplicationNumFont1.js' included twice!"
+);if(EmWiApp.act)throw new Error("The file file 'ApplicationNumFont1.js' included twice!"
 );
-EmWiApp.acu=[29,8,0,16,192,192,"\
+EmWiApp.act=[29,8,0,16,192,192,"\
 \u0000\u8003\u7FED\u0010\u0013\u8017\u0000\u0000\u0020\u8000\u8000\u0000\u0000\u8008\u0000\u01C2\
 \u0021\u8002\u7FEB\u0003\u0015\u8008\u0000\u01C2\u0022\u8002\u7FEB\u0008\u0009\u800B\u0000\u0284\
 \u0023\u8002\u7FEB\u000F\u0015\u8012\u0000\u035E\u0024\u8001\u7FE9\u000F\u001A\u800F\u0000\u0645\

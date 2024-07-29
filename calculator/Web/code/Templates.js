@@ -28,9 +28,9 @@ var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn'
 );if(EmWiApp.aci)throw new Error("The unit file 'Templates.js' included twice!");
 EmWiApp.aci=(function(){var B=EmWiApp;var E={};
 
-E.Dy={_Init:function(aArg){B.Core.Z._Init.call(this,aArg);this.__proto__=E.Dy;},_className:
+E.DZ={_Init:function(aArg){B.Core.W._Init.call(this,aArg);this.__proto__=E.DZ;},_className:
 "Templates::TextEditor"};
-E._Init=function(){E.Dy.__proto__=B.Core.Z;};E._ReInit=function(){};E.Dp=function(
+E._Init=function(){E.DZ.__proto__=B.Core.W;};E._ReInit=function(){};E.DC=function(
 D){};return E;})();
 
 /* Embedded Wizard */

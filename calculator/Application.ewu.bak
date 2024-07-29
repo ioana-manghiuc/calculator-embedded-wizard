@@ -12,7 +12,7 @@ class Application : Core::Root
   object Views::Text Text
   {
     preset StackingPriority = 3;
-    preset Bounds = <19,33,319,98>;
+    preset Bounds = <25,35,315,100>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -49,14 +49,14 @@ class Application : Core::Root
     preset Color = #030324FF;
   }
 
-  $rect <430,30,630,70>
+  $rect <430,40,630,80>
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = CalculateExpression;
     preset OnHold = null;
   }
 
-  $rect <430,80,630,120>
+  $rect <430,90,630,130>
   slot CalculateExpression
   {
     var string str = "";
@@ -134,7 +134,6 @@ class Application : Core::Root
         {
             temp = Text.String + str;
         }
-        
         Text.String = temp;
         cursorPosition++;
     }
@@ -154,7 +153,7 @@ class Application : Core::Root
   // Key Event Handler
   note group KeyHandlerNote
   {
-    attr Bounds = <380,-10,670,150>;
+    attr Bounds = <380,0,670,160>;
   }
 
   $rect <20,20,160,60>
@@ -164,7 +163,7 @@ class Application : Core::Root
     preset Color = #E2E6E9FF;
   }
 
-  $rect <420,360,630,400>
+  $rect <420,370,630,410>
   method float ExecTwoOp( arg float first, arg float second, arg string op )
   {
     var float res = 0.0;
@@ -203,13 +202,13 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <420,410,630,450>
+  $rect <420,420,630,460>
   method void ResetVariables()
   {
     Text.String = "";
   }
 
-  $rect <730,40,930,80>
+  $rect <730,50,930,90>
   method bool IsOperator( arg char op )
   {
     return ( op == '+' || op == '-' || op == 'x' || op == '/' ||  op == '%' || op == '^');
@@ -218,10 +217,10 @@ class Application : Core::Root
   // Operation Handler
   note group Note
   {
-    attr Bounds = <380,170,670,490>;
+    attr Bounds = <380,180,670,480>;
   }
 
-  $rect <1050,40,1250,80>
+  $rect <1050,50,1250,90>
   method int32 GetPriorityOfOperator( arg char op )
   {
     var int32 priority = 0;
@@ -247,7 +246,7 @@ class Application : Core::Root
     return priority;
   }
 
-  $rect <1035,90,1260,130>
+  $rect <1035,100,1260,140>
   method Application::Tuple GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
@@ -282,7 +281,7 @@ class Application : Core::Root
     return res; 
   }
 
-  $rect <730,340,930,380>
+  $rect <730,350,930,390>
   method bool IsExpressionValid( arg string expression )
   {
     // check for valid operators
@@ -320,13 +319,13 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <730,290,930,330>
+  $rect <730,300,930,340>
   method bool IsDigit( arg char op )
   {
     return ( (op >= '0') && (op <= '9') || op == '.');
   }
 
-  $rect <730,190,930,230>
+  $rect <730,200,930,240>
   method bool CorrectParentheses( arg string expression )
   {
     var Application::CharStack stk = new Application::CharStack;
@@ -351,7 +350,7 @@ class Application : Core::Root
     return stk.IsEmpty();
   }
 
-  $rect <730,240,940,280>
+  $rect <730,250,940,290>
   method bool OperatorsCorrectlyUsed( arg string expression )
   {
     var int32 i = 0;
@@ -393,7 +392,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <730,90,930,130>
+  $rect <730,100,930,140>
   method bool IsParenthesis( arg char op )
   {
     if( op == '(' || op == ')')
@@ -402,7 +401,7 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <730,140,930,180>
+  $rect <730,150,930,190>
   method bool CharactersAllowed( arg string expression )
   {
     var int32 i = 0;
@@ -416,7 +415,7 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <730,440,930,480>
+  $rect <730,450,930,490>
   method bool IsWhiteSpace( arg char op )
   {
     return ( op == ' ' || op == '\t' );
@@ -431,7 +430,7 @@ class Application : Core::Root
     preset OnCloseDialog = onDialogHandled;
   }
 
-  $rect <1050,270,1250,310>
+  $rect <1050,280,1250,320>
   slot onOpenDialog
   {
     Int32Effect.Enabled = true;
@@ -440,14 +439,14 @@ class Application : Core::Root
     ErrorDialog.OnCloseDialog = onDialogHandled;
   }
 
-  $rect <1050,320,1250,360>
+  $rect <1050,330,1250,370>
   slot onDialogHandled
   {
     ErrorDialog.Bounds.x = -270;
     ErrorDialog.Visible = false;
   }
 
-  $rect <1050,220,1250,260>
+  $rect <1050,230,1250,270>
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
@@ -460,7 +459,7 @@ class Application : Core::Root
     preset Visible = true;
   }
 
-  $rect <1050,370,1250,410>
+  $rect <1050,380,1250,420>
   object Effects::Int32Effect Int32Effect
   {
     preset NoOfCycles = 3;
@@ -474,22 +473,22 @@ class Application : Core::Root
   // Validations
   note group Note1
   {
-    attr Bounds = <690,-10,980,660>;
+    attr Bounds = <690,0,980,670>;
   }
 
   // Error Dialog
   note group Note2
   {
-    attr Bounds = <1000,170,1290,440>;
+    attr Bounds = <1000,180,1290,450>;
   }
 
   // Get Methods
   note group Note3
   {
-    attr Bounds = <1000,-10,1290,150>;
+    attr Bounds = <1000,0,1290,160>;
   }
 
-  $rect <730,540,930,580>
+  $rect <730,550,930,590>
   method bool IsNumber( arg string expression )
   {
     var int32 i = 0;
@@ -505,13 +504,13 @@ class Application : Core::Root
     return true;
   }
 
-  $rect <730,490,930,530>
+  $rect <730,500,930,540>
   method bool IsDot( arg char op )
   {
     return op == '.';
   }
 
-  $rect <420,310,630,350>
+  $rect <420,320,630,360>
   method Application::StrVector TokenizeExpression( arg string expression )
   {
     var Application::StrVector tokens = new Application::StrVector;
@@ -551,13 +550,13 @@ class Application : Core::Root
 
   }
 
-  $rect <730,390,930,430>
+  $rect <730,400,930,440>
   method bool IsSpace( arg char op )
   {
     return op == '\0' || op == '\t' || op =='\n';
   }
 
-  $rect <420,260,640,300>
+  $rect <420,270,640,310>
   method Application::StrVector ShuntingYardAlgorithm( arg string expression )
   {
     var Application::StrVector tokens  = new Application::StrVector;
@@ -607,7 +606,7 @@ class Application : Core::Root
               {
                 operators.Push(token.DataStr);
               }
-              else if( GetPriorityOfOperator(top) == GetPriorityOfOperator(t) )
+              else if( GetPriorityOfOperator(top) == GetPriorityOfOperator(t) || GetPriorityOfOperator(top) > GetPriorityOfOperator(t) )
               {
                 output.Push(operators.GetTop());
                 operators.Pop();
@@ -653,7 +652,7 @@ class Application : Core::Root
 
   }
 
-  $rect <420,210,640,250>
+  $rect <420,220,640,260>
   method string EvaluateRPN( arg string expression )
   {
     var Application::StrVector RPN  = new Application::StrVector;
@@ -687,7 +686,7 @@ class Application : Core::Root
     return result;
   }
 
-  $rect <730,590,930,630>
+  $rect <730,600,930,640>
   method bool IsNegativeNumber( arg string expression )
   {
     var string subexpr = expression.right(expression.length - 1);
@@ -700,7 +699,7 @@ class Application : Core::Root
     return false;
   }
 
-  $rect <1010,600,1210,640>
+  $rect <1010,610,1210,650>
   method void PowerOff()
   {
     BatteryDialog.Int32Effect.Enabled = true;
@@ -708,7 +707,7 @@ class Application : Core::Root
     ResetVariables();
   }
 
-  $rect <1010,500,1210,540>
+  $rect <1010,510,1210,550>
   object Core::PropertyObserver BatteryLevelObserver
   {
     preset OnEvent = onBatteryOut;
@@ -717,7 +716,7 @@ class Application : Core::Root
 
   // This slot method is executed when the associated property observer 'PropertyObserver' \
   // is notified.
-  $rect <1010,550,1210,590>
+  $rect <1010,560,1210,600>
   slot onBatteryOut
   {
     if( BatteryDialog.BatteryPercentage == 0 )
@@ -727,7 +726,7 @@ class Application : Core::Root
   }
 
   $rect <20,20,160,60>
-  object Application::TextEditor Outline
+  object Application::TextEditor TextEd
   {
     preset StackingPriority = 3;
     preset Bounds = <-323,7,-23,72>;
@@ -736,28 +735,28 @@ class Application : Core::Root
     preset Font = Application::DigitalResFont;
   }
 
-  $rect <1380,30,1580,70>
+  $rect <1380,40,1580,80>
   var color ScreenOn = #CFE4F8FF;
 
-  $rect <1380,80,1580,120>
+  $rect <1380,90,1580,130>
   var color ScreenOnB = #99A8B7FF;
 
-  $rect <1380,130,1580,170>
+  $rect <1380,140,1580,180>
   var color ScreenT = #FFFFFFFF;
 
-  $rect <1380,180,1580,220>
+  $rect <1380,190,1580,230>
   var color ScreenOff = #4E555CFF;
 
-  $rect <1380,230,1580,270>
+  $rect <1380,240,1580,280>
   var color ScreenOffBL = #948F64FF;
 
-  $rect <1380,280,1580,320>
+  $rect <1380,290,1580,330>
   var color ScreenOffBR = #9E986AFF;
 
   // Screen Colors & Methods
   note group Note4
   {
-    attr Bounds = <1330,-10,1620,440>;
+    attr Bounds = <1330,0,1620,450>;
   }
 
   $rect <20,20,160,60>
@@ -767,7 +766,7 @@ class Application : Core::Root
     preset Visible = false;
   }
 
-  $rect <1210,500,1410,540>
+  $rect <1220,510,1410,550>
   object Core::PropertyObserver StateObserver
   {
     preset OnEvent = onStateTrue;
@@ -776,7 +775,7 @@ class Application : Core::Root
 
   // This slot method is executed when the associated property observer 'PropertyObserver' \
   // is notified.
-  $rect <1210,550,1410,590>
+  $rect <1210,560,1410,600>
   slot onStateTrue
   {
     if ( BatteryDialog.State == true )
@@ -784,11 +783,12 @@ class Application : Core::Root
       BatteryDialog.Visible = false;
       ReplaceBatteryDialog.Visible = true;
       ReplaceBatteryDialog.Bounds.x = 105;
-      ReplaceBatteryDialog.Enabled = true;
+      ReplaceBatteryDialog.Text.String = "add new battery..";
+      ReplaceBatteryDialog.Enabled = true; 
     }
   }
 
-  $rect <1380,330,1580,370>
+  $rect <1380,340,1580,380>
   method void TurnScreenOn()
   {
     OutputBgk.Color = ScreenOn;
@@ -796,7 +796,7 @@ class Application : Core::Root
     OutputBgk.ColorBR = ScreenOnB;
   }
 
-  $rect <1380,380,1580,420>
+  $rect <1380,390,1580,430>
   method void TurnScreenOff()
   {
     OutputBgk.Color = ScreenOff;
@@ -807,10 +807,10 @@ class Application : Core::Root
   // Battery Dialog
   note group Note5
   {
-    attr Bounds = <1000,460,1630,650>;
+    attr Bounds = <1000,470,1630,660>;
   }
 
-  $rect <1420,500,1620,540>
+  $rect <1420,510,1620,550>
   object Core::PropertyObserver NewBatteryObserver
   {
     preset OnEvent = onValidBattery;
@@ -819,7 +819,7 @@ class Application : Core::Root
 
   // This slot method is executed when the associated property observer 'PropertyObserver' \
   // is notified.
-  $rect <1420,550,1620,590>
+  $rect <1420,560,1620,600>
   slot onValidBattery
   {
     if( ReplaceBatteryDialog.NewBatteryLvl >= 20 || ReplaceBatteryDialog.Enabled == false)
@@ -833,7 +833,7 @@ class Application : Core::Root
     }
   }
 
-  $rect <1210,600,1410,640>
+  $rect <1210,610,1410,650>
   method void PowerOn()
   {
     KeyHandler.Enabled = true;
@@ -900,7 +900,7 @@ class Application : Core::Root
   $member BatteryLevelObserver
   $member onBatteryOut
   $member ReplaceBatteryDialog
-  $member Outline
+  $member TextEd
   $member StateObserver
   $member onStateTrue
   $member TurnScreenOn
@@ -947,7 +947,7 @@ $rect <-300,130,-100,170>
 $output false
 class NumKeyBtns : Core::Group
 {
-  $rect <340,400,540,440>
+  $rect <340,380,540,420>
   inherited property Bounds = <0,0,300,440>;
 
   $rect <360,100,560,140>
@@ -1219,7 +1219,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = DigitOpConfig;
   }
 
-  $rect <360,320,560,360>
+  $rect <360,300,560,340>
   object Core::Timer FlashKeyTimer
   {
     preset OnTrigger = triggerTimer;
@@ -1228,7 +1228,7 @@ class NumKeyBtns : Core::Group
     preset Enabled = false;
   }
 
-  $rect <600,320,800,360>
+  $rect <600,300,800,340>
   slot triggerTimer
   {
     sender; /* the method is called from the sender object */
@@ -1238,13 +1238,13 @@ class NumKeyBtns : Core::Group
   // Flash effect
   note group Note
   {
-    attr Bounds = <340,270,820,390>;
+    attr Bounds = <340,250,820,370>;
   }
 
   // Handling pressed key
   note group Note1
   {
-    attr Bounds = <340,0,820,250>;
+    attr Bounds = <340,0,820,220>;
   }
 
   // Push Button Configurations
@@ -1646,7 +1646,7 @@ note group Note1
 // Fonts
 note group Note2
 {
-  attr Bounds = <-60,300,420,640>;
+  attr Bounds = <-60,300,420,650>;
 }
 
 // Application
@@ -1842,7 +1842,7 @@ class ErrorDialog : Core::Group
     preset Color = #460400FF;
   }
 
-  $rect <630,60,870,100>
+  $rect <630,40,870,80>
   object WidgetSet::PushButtonConfig ExitBtnConfig
   {
     preset KeyCode = Core::KeyCode.Enter;
@@ -1884,7 +1884,7 @@ class ErrorDialog : Core::Group
     preset Appearance = OkBtnConfig;
   }
 
-  $rect <630,110,870,150>
+  $rect <630,90,870,130>
   object WidgetSet::PushButtonConfig OkBtnConfig
   {
     preset KeyCode = Core::KeyCode.Enter;
@@ -1911,13 +1911,13 @@ class ErrorDialog : Core::Group
     preset FaceBitmapDefault = Application::OKBtn;
   }
 
-  $rect <330,110,530,150>
+  $rect <330,90,530,130>
   slot onClose
   {
     idlesignal OnCloseDialog;
   }
 
-  $rect <330,60,530,100>
+  $rect <330,40,530,80>
   property slot OnCloseDialog = null;
 
   $rect <20,20,160,60>
@@ -1934,13 +1934,13 @@ class ErrorDialog : Core::Group
   // Button Configs
   note group Note
   {
-    attr Bounds = <600,0,900,170>;
+    attr Bounds = <600,0,900,150>;
   }
 
   // Close Dialog
   note group Note1
   {
-    attr Bounds = <280,0,580,170>;
+    attr Bounds = <280,0,580,150>;
   }
 }
 
@@ -2073,7 +2073,7 @@ class Battery : Core::Group
     preset Bitmap = Application::BatteryLine;
   }
 
-  $rect <-10,170,190,210>
+  $rect <0,350,200,390>
   slot onUseBattery
   {
     BatteryPercentage -= 0.05;
@@ -2234,15 +2234,15 @@ class Battery : Core::Group
     preset Bitmap = Application::BatteryLine;
   }
 
-  $rect <-10,130,190,170>
+  $rect <0,300,200,340>
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
-    preset Period = 1000;
+    preset Period = 7000;
     preset Enabled = true;
   }
 
-  $rect <200,130,400,170>
+  $rect <200,300,400,340>
   method void UpdateBatteryLines( arg int32 percentage )
   {
     var int32 linesToShow = percentage / 5;
@@ -2353,7 +2353,7 @@ class Battery : Core::Group
     Default[19] = line20;
   );
 
-  $rect <200,170,420,210>
+  $rect <200,350,420,390>
   method void UpdateLowBatteryLines( arg int32 percentage )
   {
     HideInitialLines();
@@ -2375,7 +2375,7 @@ class Battery : Core::Group
     }
   }
 
-  $rect <440,130,640,170>
+  $rect <400,300,600,340>
   method void HideInitialLines()
   {
     batteryLines[0].Visible = false;
@@ -2401,10 +2401,10 @@ class Battery : Core::Group
 
   }
 
-  $rect <190,80,390,120>
-  property int32 BatteryPercentage = 7;
+  $rect <200,120,400,160>
+  property int32 BatteryPercentage = 101;
 
-  $rect <590,80,790,120>
+  $rect <600,120,800,160>
   onget BatteryPercentage
   {
     // Per default return the value stored already in the property.
@@ -2439,7 +2439,7 @@ class Battery : Core::Group
     */
   }
 
-  $rect <390,80,590,120>
+  $rect <400,120,600,160>
   onset BatteryPercentage
   {
     // The property doesn't change -> nothing to do.
@@ -2476,7 +2476,7 @@ class Battery : Core::Group
 
   // This method is intended to be called by the device to notify the GUI application \
   // about an alternation of its setting or state value.
-  $rect <-10,80,190,120>
+  $rect <0,120,200,160>
   $output true
   method void UpdateBatteryPercentage( arg int32 aNewValue )
   {
@@ -2491,7 +2491,7 @@ class Battery : Core::Group
     }
   }
 
-  $rect <440,170,640,210>
+  $rect <600,300,800,340>
   object Effects::Int32Effect Int32Effect
   {
     preset OnFinished = onEffectFinished;
@@ -2500,16 +2500,16 @@ class Battery : Core::Group
     preset Outlet = ^Text.Opacity;
   }
 
-  $rect <650,170,850,210>
+  $rect <600,350,800,390>
   slot onEffectFinished
   {
     State = true; 
   }
 
-  $rect <190,230,390,270>
+  $rect <200,170,400,210>
   property bool State = false;
 
-  $rect <590,230,790,270>
+  $rect <600,170,800,210>
   onget State
   {
     // Per default return the value stored already in the property.
@@ -2544,7 +2544,7 @@ class Battery : Core::Group
     */
   }
 
-  $rect <390,230,590,270>
+  $rect <400,170,600,210>
   onset State
   {
     // The property doesn't change -> nothing to do.
@@ -2559,7 +2559,7 @@ class Battery : Core::Group
 
   // This method is intended to be called by the device to notify the GUI application \
   // about an alternation of its setting or state value.
-  $rect <-10,230,190,270>
+  $rect <0,170,200,210>
   $output true
   method void UpdateState( arg bool aNewValue )
   {
@@ -2574,19 +2574,31 @@ class Battery : Core::Group
     }
   }
 
-  $rect <890,40,1090,80>
+  $rect <860,70,1060,110>
   var color Green = #004606FF;
 
-  $rect <890,90,1090,130>
+  $rect <860,120,1060,160>
   var color Orange = #BC5F00FF;
 
-  $rect <890,140,1090,180>
+  $rect <860,170,1060,210>
   var color Red = #CB0014FF;
 
   // Text Colors
   note group Note
   {
-    attr Bounds = <870,0,1110,200>;
+    attr Bounds = <840,30,1080,230>;
+  }
+
+  // Properties
+  note group Note1
+  {
+    attr Bounds = <-10,80,810,230>;
+  }
+
+  // Timer, battery update & effects
+  note group Note2
+  {
+    attr Bounds = <-10,250,810,410>;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -2641,6 +2653,8 @@ class Battery : Core::Group
   $member Orange
   $member Red
   $member Note
+  $member Note1
+  $member Note2
 }
 
 $rect <200,130,400,170>
@@ -3963,32 +3977,6 @@ class ChangeBattery : Core::Group
     preset Color = #4C5670FF;
   }
 
-  $rect <370,0,570,40>
-  object Core::KeyPressHandler KeyHandler
-  {
-    preset OnPress = onKeyPressed;
-  }
-
-  $rect <580,0,780,40>
-  slot onKeyPressed
-  {
-    if( TextEd.String == "add new battery.." )
-    { 
-      TextEd.String = "";
-      TextEd.Font = Application::NewBatteryFont; 
-    }
-    else if ( KeyHandler.Code == Core::KeyCode.Backspace )
-    {
-      var string temp = "";
-      temp = TextEd.String.remove(TextEd.String.length - 1, 1);
-      TextEd.String = temp;
-    }
-    else
-    {
-      TextEd.String += KeyHandler.CharCode;
-    }
-  }
-
   $rect <190,90,390,130>
   property int32 NewBatteryLvl;
 
@@ -4082,7 +4070,7 @@ class ChangeBattery : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::HorizontalSlider HorizontalSlider
   {
-    preset Bounds = <5,23,125,63>;
+    preset Bounds = <6,29,126,64>;
     preset OnChange = onChangeSlider;
     preset OnEnd = onEndSlider;
     preset Outlet = ^NewBatteryLvl;
@@ -4090,7 +4078,7 @@ class ChangeBattery : Core::Group
     preset Appearance = HorizontalSliderConfig;
   }
 
-  $rect <406,180,646,220>
+  $rect <440,30,680,70>
   object WidgetSet::HorizontalSliderConfig HorizontalSliderConfig
   {
     preset ThumbFrameActive = 0;
@@ -4109,7 +4097,7 @@ class ChangeBattery : Core::Group
     preset TrackLeftBitmapDefault = Application::SliderFront;
   }
 
-  $rect <527,121,727,161>
+  $rect <460,130,660,170>
   slot onEndSlider
   {
     this.Enabled = false;
@@ -4121,15 +4109,21 @@ class ChangeBattery : Core::Group
   $rect <20,20,160,60>
   object Views::Text Text
   {
-    preset Bounds = <43,1,83,31>;
-    preset String = "";
+    preset Bounds = <10,2,120,32>;
+    preset String = "add new battery..";
     preset Font = Application::ChangeFont;
   }
 
-  $rect <299,227,499,267>
+  $rect <460,80,660,120>
   slot onChangeSlider
   {
     this.Text.String = NewBatteryLvl;
+  }
+
+  // Slider Config
+  note group Note
+  {
+    attr Bounds = <430,-10,690,190>;
   }
 }
 

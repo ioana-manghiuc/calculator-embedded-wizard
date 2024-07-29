@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Application;
+attr active = Application::NumKeyBtns;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.onStateTrue;
+attr currentCodeInspector = Application::Application.CalculateExpression;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,7 +32,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-2,-87>;
   attr zoom = 0.75;
@@ -41,83 +40,28 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-7,1001>;
-  attr zoom = 1.0;
+  attr scrollTo = <-481,-79>;
+  attr zoom = 0.5;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-246,-103>;
+  attr scrollTo = <-190,-77>;
   attr zoom = 0.5;
 }
 
-view class Application::ChangeBattery
+view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-151,-199>;
-  attr zoom = 1.0;
+  attr scrollTo = <-136,-104>;
+  attr zoom = 0.75;
 }
 
-view class Application::Battery
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-111,-199>;
-  attr zoom = 1.0;
-}
-
-codeview Application::Application.onStateTrue
+codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <38,6>;
-  attr codeSelStart = <38,6>;
-}
-
-codeview Application::Application.PowerOn
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <29,7>;
-  attr codeSelStart = <29,7>;
-}
-
-codeview Application::Application.onValidBattery
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <47,0>;
-  attr codeSelStart = <47,0>;
-}
-
-codeview Application::ChangeBattery.onEndSlider
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
-}
-
-codeview Application::Application.onBatteryOut
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <11,0>;
-  attr codeSelStart = <11,0>;
-}
-
-codeview Application::Application.PowerOff
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <17,2>;
-  attr codeSelStart = <17,2>;
-}
-
-codeview Application::Application.onDialogHandled
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
+  attr codeFirstPos = <0,67>;
+  attr codeSelEnd = <23,75>;
+  attr codeSelStart = <23,75>;
 }

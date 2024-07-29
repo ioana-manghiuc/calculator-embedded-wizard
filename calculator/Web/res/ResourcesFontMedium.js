@@ -25,9 +25,9 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.acv)throw new Error("The file file 'ResourcesFontMedium.js' included twice!"
+);if(EmWiApp.acu)throw new Error("The file file 'ResourcesFontMedium.js' included twice!"
 );
-EmWiApp.acv=[19,5,0,16,192,192,"\
+EmWiApp.acu=[19,5,0,16,192,192,"\
 \u0000\u8001\u7FF2\u0007\u000E\u8009\u0000\u0000\u0020\u8000\u8000\u0000\u0000\u8005\u0000\u0144\
 \u0021\u8001\u7FF2\u0003\u000E\u8005\u0000\u0144\u0022\u8001\u7FF1\u0005\u0005\u8006\u0000\u01A6\
 \u0023\u8001\u7FF2\u000C\u000E\u800C\u0000\u01EC\u0024\u8001\u7FEF\u000A\u0013\u800B\u0000\u03ED\
