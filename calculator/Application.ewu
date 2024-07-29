@@ -782,11 +782,10 @@ class Application : Core::Root
     if ( BatteryDialog.State == true )
     {
       BatteryDialog.Visible = false;
-      ReplaceBatteryDialog.TextEd.Font = Application::ChangeFont;
-      ReplaceBatteryDialog.TextEd.String = "add new battery..";
       ReplaceBatteryDialog.Visible = true;
       ReplaceBatteryDialog.Bounds.x = 105;
-      ReplaceBatteryDialog.Enabled = true;
+      ReplaceBatteryDialog.Text.String = "add new battery..";
+      ReplaceBatteryDialog.Enabled = true; 
     }
   }
 
@@ -824,7 +823,7 @@ class Application : Core::Root
   $rect <1420,550,1620,590>
   slot onValidBattery
   {
-    if( ReplaceBatteryDialog.NewBatteryLvl >= 20)
+    if( ReplaceBatteryDialog.NewBatteryLvl >= 20 || ReplaceBatteryDialog.Enabled == false)
     {
       PowerOn();
     }
@@ -1642,7 +1641,7 @@ note group Note
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <440,-20,680,680>;
+  attr Bounds = <440,-20,680,840>;
 }
 
 // Fonts
@@ -2240,7 +2239,7 @@ class Battery : Core::Group
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
-    preset Period = 7000;
+    preset Period = 1000;
     preset Enabled = true;
   }
 
@@ -2404,7 +2403,7 @@ class Battery : Core::Group
   }
 
   $rect <190,80,390,120>
-  property int32 BatteryPercentage = 101;
+  property int32 BatteryPercentage = 7;
 
   $rect <590,80,790,120>
   onget BatteryPercentage
@@ -3958,68 +3957,11 @@ class ChangeBattery : Core::Group
   $rect <160,0,360,40>
   inherited property Bounds = <0,0,130,65>;
 
-  $rect <790,0,1030,40>
-  object WidgetSet::PushButtonConfig ChangeBatteryConfig
-  {
-    preset LabelColorActive = #C5D9ECFF;
-    preset LabelColorFocused = #C5D9ECFF;
-    preset LabelColorDisabled = #002B4CFF;
-    preset LabelColorDefault = #002B4CFF;
-    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignHorzJustified, AlignVertCenter];
-    preset LabelFont = Application::ChangeFont;
-    preset FaceFrameActive = 1;
-    preset FaceFrameFocused = 1;
-    preset FaceFrameDisabled = 0;
-    preset FaceFrameDefault = 0;
-    preset FaceBitmapActive = Application::ChangeBtn;
-    preset FaceBitmapFocused = Application::ChangeBtn;
-    preset FaceBitmapDisabled = Application::ChangeBtn;
-    preset FaceBitmapDefault = Application::ChangeBtn;
-  }
-
   $rect <20,20,160,60>
   object Views::Rectangle Rectangle
   {
     preset Bounds = <0,0,130,65>;
-    preset Color = #4B546DFF;
-  }
-
-  $rect <20,20,160,60>
-  object Application::TextEditor TextEd
-  {
-    preset Bounds = <7,10,127,40>;
-    preset String = "add new battery..";
-    preset Color = #FFFFFFFF;
-    preset Font = Application::ChangeFont;
-  }
-
-  $rect <790,40,1030,80>
-  object WidgetSet::PushButtonConfig OkChangeConfig
-  {
-    preset LabelColorActive = #C5D9ECFF;
-    preset LabelColorFocused = #C5D9ECFF;
-    preset LabelColorDisabled = #002B4CFF;
-    preset LabelColorDefault = #002B4CFF;
-    preset LabelMarginBottom = 1;
-    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignHorzJustified, AlignVertCenter];
-    preset LabelFont = Application::ChangeFont;
-    preset FaceFrameActive = 1;
-    preset FaceFrameFocused = 1;
-    preset FaceFrameDisabled = 0;
-    preset FaceFrameDefault = 0;
-    preset FaceBitmapActive = Application::OkChangeBtn;
-    preset FaceBitmapFocused = Application::OkChangeBtn;
-    preset FaceBitmapDisabled = Application::OkChangeBtn;
-    preset FaceBitmapDefault = Application::OkChangeBtn;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::PushButton OK
-  {
-    preset Bounds = <5,41,125,61>;
-    preset OnActivate = onOkPressed;
-    preset Label = "OK";
-    preset Appearance = OkChangeConfig;
+    preset Color = #4C5670FF;
   }
 
   $rect <370,0,570,40>
@@ -4138,44 +4080,57 @@ class ChangeBattery : Core::Group
     }
   }
 
-  $rect <570,50,770,90>
-  slot onOkPressed
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider HorizontalSlider
   {
-    var float level = 0;
-    var string lvl = "";
-    lvl = TextEd.String;
-    var int32 i = 0;
-    var bool validator = false;
+    preset Bounds = <6,29,126,64>;
+    preset OnChange = onChangeSlider;
+    preset OnEnd = onEndSlider;
+    preset Outlet = ^NewBatteryLvl;
+    preset MinValue = 20;
+    preset Appearance = HorizontalSliderConfig;
+  }
 
-    for( ; i < lvl.length; i++ )
-    {
-      if( (lvl[i] >= '0') && (lvl[i] <= '9') )
-      {
-        validator = true;
-      }
-      else
-      {
-        validator = false;
-        break;
-      }
-    }
+  $rect <570,60,810,100>
+  object WidgetSet::HorizontalSliderConfig HorizontalSliderConfig
+  {
+    preset ThumbFrameActive = 0;
+    preset ThumbFrameFocused = 0;
+    preset ThumbFrameDisabled = 0;
+    preset ThumbFrameDefault = 1;
+    preset ThumbBitmapActive = Application::EnergySymbol;
+    preset ThumbBitmapFocused = Application::EnergySymbol;
+    preset ThumbBitmapDisabled = Application::EnergySymbol;
+    preset ThumbBitmapDefault = Application::EnergySymbol;
+    preset TrackRightBitmapActive = Application::SliderBack;
+    preset TrackRightBitmapFocused = Application::SliderBack;
+    preset TrackRightBitmapDefault = Application::SliderBack;
+    preset TrackLeftBitmapActive = Application::SliderFront;
+    preset TrackLeftBitmapFocused = Application::SliderFront;
+    preset TrackLeftBitmapDefault = Application::SliderFront;
+  }
 
-    if( validator == true )
-    {
-      level = TextEd.String.parse_float( - 1.0 );
-    }
+  $rect <570,160,770,200>
+  slot onEndSlider
+  {
+    this.Enabled = false;
+    this.Bounds.x = -270;
+    this.Visible = true;
 
-    if( level >= 20.0 )
-    {
-      NewBatteryLvl = (int32)level;
-      this.Enabled = false;
-      this.Bounds.x = -270;
-      this.Visible = true;
-    }
-    else
-    { 
-      NewBatteryLvl = -1;
-    }
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <10,2,120,32>;
+    preset String = "add new battery..";
+    preset Font = Application::ChangeFont;
+  }
+
+  $rect <570,110,770,150>
+  slot onChangeSlider
+  {
+    this.Text.String = NewBatteryLvl;
   }
 }
 
@@ -5132,4 +5087,40 @@ resource Resources::Font NewBatteryFont
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
+}
+
+$rect <460,680,660,720>
+$output false
+resource Resources::Bitmap EnergySymbol
+{
+  attr bitmapfile FileName = .\resources\battery-symbol.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <30,30>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <460,730,660,770>
+$output false
+resource Resources::Bitmap SliderFront
+{
+  attr bitmapfile FileName = .\resources\slider-front.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <120,20>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <460,780,660,820>
+$output false
+resource Resources::Bitmap SliderBack
+{
+  attr bitmapfile FileName = .\resources\slider-back.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <120,20>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
 }

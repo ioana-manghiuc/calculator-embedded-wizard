@@ -59,7 +59,6 @@ class Application : Core::Root
   $rect <430,80,630,120>
   slot CalculateExpression
   {
-    trace "key pressed";
     var string str = "";
     var string temp = "";
     var int32 cursorPosition = Text.String.length - 1; 
@@ -783,8 +782,6 @@ class Application : Core::Root
     if ( BatteryDialog.State == true )
     {
       BatteryDialog.Visible = false;
-      ReplaceBatteryDialog.TextEd.Font = Application::ChangeFont;
-      ReplaceBatteryDialog.TextEd.String = "add new battery..";
       ReplaceBatteryDialog.Visible = true;
       ReplaceBatteryDialog.Bounds.x = 105;
       ReplaceBatteryDialog.Enabled = true;
@@ -825,7 +822,7 @@ class Application : Core::Root
   $rect <1420,550,1620,590>
   slot onValidBattery
   {
-    if( ReplaceBatteryDialog.NewBatteryLvl >= 20)
+    if( ReplaceBatteryDialog.NewBatteryLvl >= 20 || ReplaceBatteryDialog.Enabled == false)
     {
       PowerOn();
     }
@@ -1643,7 +1640,7 @@ note group Note
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <440,-20,680,680>;
+  attr Bounds = <440,-20,680,840>;
 }
 
 // Fonts
@@ -2241,7 +2238,7 @@ class Battery : Core::Group
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
-    preset Period = 7000;
+    preset Period = 1000;
     preset Enabled = true;
   }
 
@@ -2405,7 +2402,7 @@ class Battery : Core::Group
   }
 
   $rect <190,80,390,120>
-  property int32 BatteryPercentage = 101;
+  property int32 BatteryPercentage = 7;
 
   $rect <590,80,790,120>
   onget BatteryPercentage
@@ -2712,7 +2709,7 @@ $rect <-30,80,170,120>
 $output false
 class StrQueue
 {
-  $rect <450,-80,650,-40>
+  $rect <640,150,840,190>
   method void Push( arg string aValue )
   {
     var Application::SimpleStringElement strElement = new Application::SimpleStringElement;
@@ -2731,7 +2728,7 @@ class StrQueue
     }
   }
 
-  $rect <450,-30,650,10>
+  $rect <640,200,840,240>
   method void Pop()
   {
     var Application::SimpleStringElement aux = Front;
@@ -2747,7 +2744,7 @@ class StrQueue
     }
   }
 
-  $rect <690,-80,890,-40>
+  $rect <880,150,1080,190>
   method string GetFront()
   {
     if( Front != null )
@@ -2758,7 +2755,7 @@ class StrQueue
     return "";
   }
 
-  $rect <690,-30,890,10>
+  $rect <880,200,1080,240>
   method string GetBack()
   {
     if( Back != null )
@@ -2769,7 +2766,7 @@ class StrQueue
     return "";
   }
 
-  $rect <450,70,650,110>
+  $rect <640,300,840,340>
   method bool IsEmpty()
   {
     if( Front == null || Back == null )
@@ -2780,7 +2777,7 @@ class StrQueue
     return false;
   }
 
-  $rect <450,20,650,60>
+  $rect <640,250,840,290>
   method void Clear()
   {
     while( Front != null )
@@ -2791,7 +2788,7 @@ class StrQueue
     Size = 0;
   }
 
-  $rect <450,-130,650,-90>
+  $rect <640,100,840,140>
   inherited method Init()
   {
     Front = null;
@@ -2800,7 +2797,7 @@ class StrQueue
     Empty = true;
   }
 
-  $rect <690,-130,890,-90>
+  $rect <880,100,1080,140>
   method int32 GetSize()
   {
     while( Front != null )
@@ -2812,7 +2809,7 @@ class StrQueue
     return Size;
   }
 
-  $rect <690,20,890,60>
+  $rect <880,250,1080,290>
   method void Print()
   {
     var Application::SimpleStringElement aux = Front;
@@ -2826,10 +2823,10 @@ class StrQueue
     aux = null;
   }
 
-  $rect <-66,-150,134,-110>
+  $rect <124,80,324,120>
   property Application::SimpleStringElement Front;
 
-  $rect <-66,-110,134,-70>
+  $rect <124,120,324,160>
   onset Front
   {
     // The value doesn't change - nothing to do.
@@ -2844,16 +2841,16 @@ class StrQueue
     // Now you can handle the alternation of the property.
   }
 
-  $rect <-66,-70,134,-30>
+  $rect <124,160,324,200>
   onget Front
   {
     return pure Front;
   }
 
-  $rect <-70,-10,130,30>
+  $rect <120,220,320,260>
   property Application::SimpleStringElement Back;
 
-  $rect <-70,30,130,70>
+  $rect <120,260,320,300>
   onset Back
   {
     // The value doesn't change - nothing to do.
@@ -2868,16 +2865,16 @@ class StrQueue
     // Now you can handle the alternation of the property.
   }
 
-  $rect <-70,70,130,110>
+  $rect <120,300,320,340>
   onget Back
   {
     return pure Back;
   }
 
-  $rect <180,-150,380,-110>
+  $rect <370,80,570,120>
   property int32 Size;
 
-  $rect <180,-110,380,-70>
+  $rect <370,120,570,160>
   onset Size
   {
     // The value doesn't change - nothing to do.
@@ -2892,16 +2889,16 @@ class StrQueue
     // Now you can handle the alternation of the property.
   }
 
-  $rect <180,-70,380,-30>
+  $rect <370,160,570,200>
   onget Size
   {
     return pure Size;
   }
 
-  $rect <180,-10,380,30>
+  $rect <370,220,570,260>
   property bool Empty;
 
-  $rect <180,30,380,70>
+  $rect <370,260,570,300>
   onset Empty
   {
     // The value doesn't change - nothing to do.
@@ -2916,7 +2913,7 @@ class StrQueue
     // Now you can handle the alternation of the property.
   }
 
-  $rect <180,70,380,110>
+  $rect <370,300,570,340>
   onget Empty
   {
     return pure Empty;
@@ -2925,13 +2922,13 @@ class StrQueue
   // Properties
   note group Note
   {
-    attr Bounds = <-90,-190,400,130>;
+    attr Bounds = <100,40,590,360>;
   }
 
   // Methods
   note group Note1
   {
-    attr Bounds = <430,-190,920,130>;
+    attr Bounds = <620,40,1110,360>;
   }
 
   // Directives to adapt the order of members belonging to this class so they appear 
@@ -3368,10 +3365,10 @@ $rect <200,30,400,70>
 $output false
 class StringElement
 {
-  $rect <-160,64,40,104>
+  $rect <130,114,330,154>
   property string DataStr;
 
-  $rect <-160,104,40,144>
+  $rect <130,154,330,194>
   onset DataStr
   {
     // The value doesn't change - nothing to do.
@@ -3386,16 +3383,16 @@ class StringElement
     // Now you can handle the alternation of the property.
   }
 
-  $rect <-160,144,40,184>
+  $rect <130,194,330,234>
   onget DataStr
   {
     return pure DataStr;
   }
 
-  $rect <90,60,290,100>
+  $rect <380,110,580,150>
   property Application::StringElement Next;
 
-  $rect <90,100,290,140>
+  $rect <380,150,580,190>
   onset Next
   {
     // The value doesn't change - nothing to do.
@@ -3410,16 +3407,16 @@ class StringElement
     // Now you can handle the alternation of the property.
   }
 
-  $rect <90,140,290,180>
+  $rect <380,190,580,230>
   onget Next
   {
     return pure Next;
   }
 
-  $rect <340,60,540,100>
+  $rect <630,110,830,150>
   property Application::StringElement Prev;
 
-  $rect <340,100,540,140>
+  $rect <630,150,830,190>
   onset Prev
   {
     // The value doesn't change - nothing to do.
@@ -3434,7 +3431,7 @@ class StringElement
     // Now you can handle the alternation of the property.
   }
 
-  $rect <340,140,540,180>
+  $rect <630,190,830,230>
   onget Prev
   {
     return pure Prev;
@@ -3959,68 +3956,11 @@ class ChangeBattery : Core::Group
   $rect <160,0,360,40>
   inherited property Bounds = <0,0,130,65>;
 
-  $rect <790,0,1030,40>
-  object WidgetSet::PushButtonConfig ChangeBatteryConfig
-  {
-    preset LabelColorActive = #C5D9ECFF;
-    preset LabelColorFocused = #C5D9ECFF;
-    preset LabelColorDisabled = #002B4CFF;
-    preset LabelColorDefault = #002B4CFF;
-    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignHorzJustified, AlignVertCenter];
-    preset LabelFont = Application::ChangeFont;
-    preset FaceFrameActive = 1;
-    preset FaceFrameFocused = 1;
-    preset FaceFrameDisabled = 0;
-    preset FaceFrameDefault = 0;
-    preset FaceBitmapActive = Application::ChangeBtn;
-    preset FaceBitmapFocused = Application::ChangeBtn;
-    preset FaceBitmapDisabled = Application::ChangeBtn;
-    preset FaceBitmapDefault = Application::ChangeBtn;
-  }
-
   $rect <20,20,160,60>
   object Views::Rectangle Rectangle
   {
     preset Bounds = <0,0,130,65>;
-    preset Color = #4B546DFF;
-  }
-
-  $rect <20,20,160,60>
-  object Application::TextEditor TextEd
-  {
-    preset Bounds = <7,10,127,40>;
-    preset String = "add new battery..";
-    preset Color = #FFFFFFFF;
-    preset Font = Application::ChangeFont;
-  }
-
-  $rect <790,40,1030,80>
-  object WidgetSet::PushButtonConfig OkChangeConfig
-  {
-    preset LabelColorActive = #C5D9ECFF;
-    preset LabelColorFocused = #C5D9ECFF;
-    preset LabelColorDisabled = #002B4CFF;
-    preset LabelColorDefault = #002B4CFF;
-    preset LabelMarginBottom = 1;
-    preset LabelAlignment = Views::TextAlignment[AlignHorzCenter, AlignHorzJustified, AlignVertCenter];
-    preset LabelFont = Application::ChangeFont;
-    preset FaceFrameActive = 1;
-    preset FaceFrameFocused = 1;
-    preset FaceFrameDisabled = 0;
-    preset FaceFrameDefault = 0;
-    preset FaceBitmapActive = Application::OkChangeBtn;
-    preset FaceBitmapFocused = Application::OkChangeBtn;
-    preset FaceBitmapDisabled = Application::OkChangeBtn;
-    preset FaceBitmapDefault = Application::OkChangeBtn;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::PushButton OK
-  {
-    preset Bounds = <5,41,125,61>;
-    preset OnActivate = onOkPressed;
-    preset Label = "OK";
-    preset Appearance = OkChangeConfig;
+    preset Color = #4C5670FF;
   }
 
   $rect <370,0,570,40>
@@ -4139,44 +4079,57 @@ class ChangeBattery : Core::Group
     }
   }
 
-  $rect <570,50,770,90>
-  slot onOkPressed
+  $rect <20,20,160,60>
+  object WidgetSet::HorizontalSlider HorizontalSlider
   {
-    var float level = 0;
-    var string lvl = "";
-    lvl = TextEd.String;
-    var int32 i = 0;
-    var bool validator = false;
+    preset Bounds = <5,23,125,63>;
+    preset OnChange = onChangeSlider;
+    preset OnEnd = onEndSlider;
+    preset Outlet = ^NewBatteryLvl;
+    preset MinValue = 20;
+    preset Appearance = HorizontalSliderConfig;
+  }
 
-    for( ; i < lvl.length; i++ )
-    {
-      if( (lvl[i] >= '0') && (lvl[i] <= '9') )
-      {
-        validator = true;
-      }
-      else
-      {
-        validator = false;
-        break;
-      }
-    }
+  $rect <406,180,646,220>
+  object WidgetSet::HorizontalSliderConfig HorizontalSliderConfig
+  {
+    preset ThumbFrameActive = 0;
+    preset ThumbFrameFocused = 0;
+    preset ThumbFrameDisabled = 0;
+    preset ThumbFrameDefault = 1;
+    preset ThumbBitmapActive = Application::EnergySymbol;
+    preset ThumbBitmapFocused = Application::EnergySymbol;
+    preset ThumbBitmapDisabled = Application::EnergySymbol;
+    preset ThumbBitmapDefault = Application::EnergySymbol;
+    preset TrackRightBitmapActive = Application::SliderBack;
+    preset TrackRightBitmapFocused = Application::SliderBack;
+    preset TrackRightBitmapDefault = Application::SliderBack;
+    preset TrackLeftBitmapActive = Application::SliderFront;
+    preset TrackLeftBitmapFocused = Application::SliderFront;
+    preset TrackLeftBitmapDefault = Application::SliderFront;
+  }
 
-    if( validator == true )
-    {
-      level = TextEd.String.parse_float( - 1.0 );
-    }
+  $rect <527,121,727,161>
+  slot onEndSlider
+  {
+    this.Enabled = false;
+    this.Bounds.x = -270;
+    this.Visible = true;
 
-    if( level >= 20.0 )
-    {
-      NewBatteryLvl = (int32)level;
-      this.Enabled = false;
-      this.Bounds.x = -270;
-      this.Visible = true;
-    }
-    else
-    { 
-      NewBatteryLvl = -1;
-    }
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <43,1,83,31>;
+    preset String = "";
+    preset Font = Application::ChangeFont;
+  }
+
+  $rect <299,227,499,267>
+  slot onChangeSlider
+  {
+    this.Text.String = NewBatteryLvl;
   }
 }
 
@@ -5133,4 +5086,40 @@ resource Resources::Font NewBatteryFont
   attr fontitalic Italic = false;
   attr fontkerning Kerning = true;
   attr fontrowdistance RowDistance;
+}
+
+$rect <460,680,660,720>
+$output false
+resource Resources::Bitmap EnergySymbol
+{
+  attr bitmapfile FileName = .\resources\battery-symbol.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <30,30>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <460,730,660,770>
+$output false
+resource Resources::Bitmap SliderFront
+{
+  attr bitmapfile FileName = .\resources\slider-front.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <120,20>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+$rect <460,780,660,820>
+$output false
+resource Resources::Bitmap SliderBack
+{
+  attr bitmapfile FileName = .\resources\slider-back.png;
+  attr bitmapformat Format = Native;
+  attr framesize FrameSize = <120,20>;
+  attr framedelay FrameDelay;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
 }
