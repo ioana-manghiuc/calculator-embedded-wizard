@@ -1,6 +1,6 @@
 $version 1.0
 
-attr active = Application::NumKeyBtns;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
 attr currentCodeInspector = Application::Application.CalculateExpression;
@@ -40,28 +40,44 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-481,-79>;
-  attr zoom = 0.5;
+  attr scrollTo = <-1093,-83>;
+  attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-190,-77>;
-  attr zoom = 0.5;
+  attr scrollTo = <-559,-38>;
+  attr zoom = 0.75;
 }
 
 view class Application::NumKeyBtns
 {
   attr enableWireMode = false;
-  attr scrollTo = <-136,-104>;
-  attr zoom = 0.75;
+  attr scrollTo = <-7,-151>;
+  attr zoom = 1.0;
 }
 
 codeview Application::Application.CalculateExpression
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,67>;
-  attr codeSelEnd = <23,75>;
-  attr codeSelStart = <23,75>;
+  attr codeFirstPos = <0,48>;
+  attr codeSelEnd = <81,56>;
+  attr codeSelStart = <81,56>;
+}
+
+codeview Application::Application.RemoveExtraSymbols
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <77,5>;
+  attr codeSelStart = <77,5>;
+}
+
+codeview Application::Application.ResetVariables
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <4,0>;
+  attr codeSelStart = <4,0>;
 }

@@ -5,14 +5,14 @@ $rect <-300,20,-100,60>
 $output false
 class Application : Core::Root
 {
-  $rect <380,500,580,540>
+  $rect <380,550,580,590>
   inherited property Bounds = <0,0,340,590>;
 
   $rect <20,20,160,60>
   object Views::Text Text
   {
     preset StackingPriority = 3;
-    preset Bounds = <25,35,315,100>;
+    preset Bounds = <25,34,315,99>;
     preset Alignment = Views::TextAlignment[AlignHorzRight, AlignVertCenter];
     preset String = "result here";
     preset Font = Application::DigitalResFont;
@@ -115,7 +115,7 @@ class Application : Core::Root
                 temp = Text.String + str;
             }
         }
-        else if( str == "B" || KeyHandler.Code == Core::KeyCode.Backspace )
+        else if( str == "B" || str == "b" || KeyHandler.Code == Core::KeyCode.Backspace )
         {
             temp = Text.String.remove(Text.String.length - 1, 1);
         }
@@ -130,6 +130,10 @@ class Application : Core::Root
                temp = Text.String + str;
            }
         }
+        else if ( str == "%" || str == "^" )
+        {
+          temp = Text.String + "%" + str;
+        }
         else
         {
             temp = Text.String + str;
@@ -140,10 +144,12 @@ class Application : Core::Root
 
     if (str == "=")
     {
+      temp = Text.String;
+      Text.String = RemoveExtraSymbols(temp);
       if(IsExpressionValid(Text.String))
       {
         Text.String = EvaluateRPN(Text.String);
-        cursorPosition = Text.String.length; // Reset cursor to end after operation
+        cursorPosition = Text.String.length;
       }
     }
 
@@ -202,7 +208,7 @@ class Application : Core::Root
     return res;
   }
 
-  $rect <420,420,630,460>
+  $rect <420,470,630,510>
   method void ResetVariables()
   {
     Text.String = "";
@@ -217,7 +223,7 @@ class Application : Core::Root
   // Operation Handler
   note group Note
   {
-    attr Bounds = <380,180,670,480>;
+    attr Bounds = <380,180,670,530>;
   }
 
   $rect <1050,50,1250,90>
@@ -408,7 +414,8 @@ class Application : Core::Root
 
     for( ; i < expression.length; i++ )
     {
-      if ( IsOperator(expression[i]) == false && IsParenthesis(expression[i]) == false && IsDigit(expression[i]) == false )
+      if ( IsOperator(expression[i]) == false && IsParenthesis(expression[i]) == false && IsDigit(expression[i]) == false
+          && IsWhiteSpace(expression[i]) == false )
         return false;
     }
 
@@ -601,17 +608,14 @@ class Application : Core::Root
           {
             var char top = operators.GetTop()[0];
             if( IsOperator(top) )
-            {
-              if( GetPriorityOfOperator(top) < GetPriorityOfOperator(t) )
-              {
-                operators.Push(token.DataStr);
-              }
-              else if( GetPriorityOfOperator(top) == GetPriorityOfOperator(t) || GetPriorityOfOperator(top) > GetPriorityOfOperator(t) )
+            {   
+              while( !operators.IsEmpty() && operators.GetTop() != "(" && 
+                  (GetPriorityOfOperator(top) == GetPriorityOfOperator(t) || GetPriorityOfOperator(top) > GetPriorityOfOperator(t)) )
               {
                 output.Push(operators.GetTop());
                 operators.Pop();
-                operators.Push(token.DataStr);
               }
+              operators.Push(token.DataStr);
             }
             if( top == '(' )
             {
@@ -723,16 +727,6 @@ class Application : Core::Root
     {
       PowerOff();
     }
-  }
-
-  $rect <20,20,160,60>
-  object Application::TextEditor TextEd
-  {
-    preset StackingPriority = 3;
-    preset Bounds = <-323,7,-23,72>;
-    preset String = "result here";
-    preset Color = #0D1A38FF;
-    preset Font = Application::DigitalResFont;
   }
 
   $rect <1380,40,1580,80>
@@ -847,6 +841,24 @@ class Application : Core::Root
     Keypad.StackingPriority = 3;
   }
 
+  $rect <420,420,620,460>
+  method string RemoveExtraSymbols( arg string expression )
+  {
+    var int32 i = 0;
+    var string cleanExpression = "";
+
+    for( ; i < expression.length; i++ )
+    {
+      if( expression [i] == '%' && ( expression[i + 1] == '%' || expression[i + 1] == '^' ))
+      {
+        continue;
+      }
+      cleanExpression += expression[i];
+    }
+
+    return cleanExpression;
+  }
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -900,7 +912,6 @@ class Application : Core::Root
   $member BatteryLevelObserver
   $member onBatteryOut
   $member ReplaceBatteryDialog
-  $member TextEd
   $member StateObserver
   $member onStateTrue
   $member TurnScreenOn
@@ -909,9 +920,10 @@ class Application : Core::Root
   $member NewBatteryObserver
   $member onValidBattery
   $member PowerOn
+  $member RemoveExtraSymbols
 }
 
-$rect <-40,340,160,380>
+$rect <460,20,660,60>
 $output false
 resource Resources::Font NumFont
 {
@@ -927,7 +939,7 @@ resource Resources::Font NumFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-40,440,160,480>
+$rect <460,120,660,160>
 $output false
 resource Resources::Font DigitalResFont
 {
@@ -947,7 +959,7 @@ $rect <-300,130,-100,170>
 $output false
 class NumKeyBtns : Core::Group
 {
-  $rect <340,380,540,420>
+  $rect <340,370,540,410>
   inherited property Bounds = <0,0,300,440>;
 
   $rect <360,100,560,140>
@@ -986,7 +998,7 @@ class NumKeyBtns : Core::Group
     super( aState );
   }
 
-  $rect <880,40,1120,80>
+  $rect <870,40,1110,80>
   object WidgetSet::PushButtonConfig DigitOpConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1154,7 +1166,7 @@ class NumKeyBtns : Core::Group
     preset Color = #030324FF;
   }
 
-  $rect <880,290,1120,330>
+  $rect <870,290,1110,330>
   object WidgetSet::PushButtonConfig EqualsConfig
   {
     preset OnUpdate = null;
@@ -1219,7 +1231,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = DigitOpConfig;
   }
 
-  $rect <360,300,560,340>
+  $rect <360,290,560,330>
   object Core::Timer FlashKeyTimer
   {
     preset OnTrigger = triggerTimer;
@@ -1228,7 +1240,7 @@ class NumKeyBtns : Core::Group
     preset Enabled = false;
   }
 
-  $rect <600,300,800,340>
+  $rect <600,290,800,330>
   slot triggerTimer
   {
     sender; /* the method is called from the sender object */
@@ -1238,7 +1250,7 @@ class NumKeyBtns : Core::Group
   // Flash effect
   note group Note
   {
-    attr Bounds = <340,250,820,370>;
+    attr Bounds = <340,240,820,360>;
   }
 
   // Handling pressed key
@@ -1250,7 +1262,7 @@ class NumKeyBtns : Core::Group
   // Push Button Configurations
   note group Note2
   {
-    attr Bounds = <850,0,1150,550>;
+    attr Bounds = <840,0,1140,500>;
   }
 
   $rect <20,20,160,60>
@@ -1293,7 +1305,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = PercentConfig;
   }
 
-  $rect <880,140,1120,180>
+  $rect <870,140,1110,180>
   object WidgetSet::PushButtonConfig PowConfig
   {
     preset KeyCode = Core::KeyCode.Power;
@@ -1312,7 +1324,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::PowBtn;
   }
 
-  $rect <880,190,1120,230>
+  $rect <870,190,1110,230>
   object WidgetSet::PushButtonConfig PercentConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1342,7 +1354,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = PercentConfig;
   }
 
-  $rect <880,90,1120,130>
+  $rect <870,90,1110,130>
   object WidgetSet::PushButtonConfig DigitOpBoldConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1365,7 +1377,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::CustomBtn;
   }
 
-  $rect <880,240,1120,280>
+  $rect <870,240,1110,280>
   object WidgetSet::PushButtonConfig DivideConfig
   {
     preset KeyCode = Core::KeyCode.Divide;
@@ -1379,7 +1391,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::DivideBtn;
   }
 
-  $rect <880,340,1120,380>
+  $rect <870,340,1110,380>
   object WidgetSet::PushButtonConfig MultiplyConfig
   {
     preset KeyCode = Core::KeyCode.Multiply;
@@ -1420,7 +1432,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = ParanthesisConfig;
   }
 
-  $rect <880,390,1120,430>
+  $rect <870,390,1110,430>
   object WidgetSet::PushButtonConfig ParanthesisConfig
   {
     preset KeyCode = Core::KeyCode.NoKey;
@@ -1443,30 +1455,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::ParenthesisBtn;
   }
 
-  $rect <880,440,1120,480>
-  object WidgetSet::PushButtonConfig NegateNumbers
-  {
-    preset KeyCode = Core::KeyCode.NoKey;
-    preset AccentColorFocused = #03040000;
-    preset AccentColorDefault = #00000000;
-    preset AccentLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
-    preset LabelColorActive = #8E6B74FF;
-    preset LabelColorFocused = #8E6B74FF;
-    preset LabelColorDisabled = #8E6B74FF;
-    preset LabelColorDefault = #000000FF;
-    preset LabelFont = Application::NumFont1;
-    preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
-    preset FaceFrameActive = 1;
-    preset FaceFrameFocused = 1;
-    preset FaceFrameDisabled = 0;
-    preset FaceFrameDefault = 0;
-    preset FaceBitmapActive = Application::CustomBtn;
-    preset FaceBitmapFocused = Application::CustomBtn;
-    preset FaceBitmapDisabled = Application::CustomBtn;
-    preset FaceBitmapDefault = Application::CustomBtn;
-  }
-
-  $rect <880,490,1120,530>
+  $rect <870,440,1110,480>
   object WidgetSet::PushButtonConfig BackConfig
   {
     preset KeyCode = Core::KeyCode.Backspace;
@@ -1559,7 +1548,6 @@ class NumKeyBtns : Core::Group
   $member DivideConfig
   $member MultiplyConfig
   $member ParanthesisConfig
-  $member NegateNumbers
   $member BackConfig
   $member BackBtn
   $member keyString
@@ -1567,7 +1555,7 @@ class NumKeyBtns : Core::Group
   $member OnGetkeyString
 }
 
-$rect <463,30,663,70>
+$rect <-37,340,163,380>
 $output false
 resource Resources::Bitmap CustomBtn
 {
@@ -1579,7 +1567,7 @@ resource Resources::Bitmap CustomBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <463,80,663,120>
+$rect <-37,390,163,430>
 $output false
 resource Resources::Bitmap EqualsBtn
 {
@@ -1591,7 +1579,7 @@ resource Resources::Bitmap EqualsBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <-40,490,160,530>
+$rect <460,170,660,210>
 $output false
 resource Resources::Font EqFont
 {
@@ -1607,7 +1595,7 @@ resource Resources::Font EqFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <463,130,663,170>
+$rect <-37,440,163,480>
 $output false
 resource Resources::Bitmap PercentBtn
 {
@@ -1619,7 +1607,7 @@ resource Resources::Bitmap PercentBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <463,180,663,220>
+$rect <-37,490,163,530>
 $output false
 resource Resources::Bitmap PowBtn
 {
@@ -1634,19 +1622,19 @@ resource Resources::Bitmap PowBtn
 // Components
 note group Note
 {
-  attr Bounds = <-330,90,-80,440>;
+  attr Bounds = <-330,90,-80,340>;
 }
 
 // Bitmaps
 note group Note1
 {
-  attr Bounds = <440,-20,680,840>;
+  attr Bounds = <-60,300,420,700>;
 }
 
 // Fonts
 note group Note2
 {
-  attr Bounds = <-60,300,420,650>;
+  attr Bounds = <440,-20,680,480>;
 }
 
 // Application
@@ -1655,7 +1643,7 @@ note group Note3
   attr Bounds = <-330,-20,-80,80>;
 }
 
-$rect <-40,390,160,430>
+$rect <460,70,660,110>
 $output false
 resource Resources::Font NumBoldFont
 {
@@ -1671,7 +1659,7 @@ resource Resources::Font NumBoldFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <460,229,660,269>
+$rect <-40,539,160,579>
 $output false
 resource Resources::Bitmap DivideBtn
 {
@@ -1683,7 +1671,7 @@ resource Resources::Bitmap DivideBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <200,340,400,380>
+$rect <460,270,660,310>
 $output false
 resource Resources::Font MultiplyFont
 {
@@ -1699,7 +1687,7 @@ resource Resources::Font MultiplyFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <-300,330,-100,370>
+$rect <200,230,400,270>
 $output false
 class Tuple
 {
@@ -1944,7 +1932,7 @@ class ErrorDialog : Core::Group
   }
 }
 
-$rect <200,390,400,430>
+$rect <460,320,660,360>
 $output false
 resource Resources::Font ErrorFont
 {
@@ -1960,7 +1948,7 @@ resource Resources::Font ErrorFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <200,440,400,480>
+$rect <460,370,660,410>
 $output false
 resource Resources::Font BtnFont
 {
@@ -1976,7 +1964,7 @@ resource Resources::Font BtnFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <463,330,663,370>
+$rect <-37,640,163,680>
 $output false
 resource Resources::Bitmap OKBtn
 {
@@ -1988,7 +1976,7 @@ resource Resources::Bitmap OKBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <463,280,663,320>
+$rect <-37,590,163,630>
 $output false
 resource Resources::Bitmap ParenthesisBtn
 {
@@ -2000,23 +1988,7 @@ resource Resources::Bitmap ParenthesisBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <200,490,400,530>
-$output false
-resource Resources::Font NumFont1
-{
-  attr fontname FontName = Book Antiqua;
-  attr fontheight Height = 30;
-  attr fontheightmode HeightMode = Popular;
-  attr fontquality Quality = High;
-  attr fontranges Ranges = 0x20-0xFF;
-  attr fontaspectratio AspectRatio = 1.0;
-  attr fontbold Bold = false;
-  attr fontitalic Italic = false;
-  attr fontkerning Kerning = true;
-  attr fontrowdistance RowDistance;
-}
-
-$rect <463,380,663,420>
+$rect <193,340,393,380>
 $output false
 resource Resources::Bitmap BackBtn
 {
@@ -2028,7 +2000,7 @@ resource Resources::Bitmap BackBtn
   attr bitmapmode Mode = Default;
 }
 
-$rect <463,430,663,470>
+$rect <193,390,393,430>
 $output false
 resource Resources::Bitmap BatteryBgk
 {
@@ -2040,7 +2012,7 @@ resource Resources::Bitmap BatteryBgk
   attr bitmapmode Mode = Default;
 }
 
-$rect <463,480,663,520>
+$rect <193,440,393,480>
 $output false
 resource Resources::Bitmap BatteryLine
 {
@@ -3935,7 +3907,7 @@ note group Note4
   attr Bounds = <-60,-20,420,290>;
 }
 
-$rect <-40,540,160,580>
+$rect <460,220,660,260>
 $output false
 resource Resources::Font BatteryFont
 {
@@ -3951,7 +3923,7 @@ resource Resources::Font BatteryFont
   attr fontrowdistance RowDistance;
 }
 
-$rect <463,530,663,570>
+$rect <193,490,393,530>
 $output false
 resource Resources::Bitmap LowBattery
 {
@@ -3974,7 +3946,8 @@ class ChangeBattery : Core::Group
   object Views::Rectangle Rectangle
   {
     preset Bounds = <0,0,130,65>;
-    preset Color = #4C5670FF;
+    preset Radius = 3;
+    preset Color = #476984FF;
   }
 
   $rect <190,90,390,130>
@@ -4125,21 +4098,36 @@ class ChangeBattery : Core::Group
   {
     attr Bounds = <430,-10,690,190>;
   }
+
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset Bounds = <0,0,130,65>;
+    preset Radius = 3;
+    preset Width = 2;
+    preset Color = #050B25FF;
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Bounds
+  $member Rectangle
+  $member Border
+  $member NewBatteryLvl
+  $member OnGetNewBatteryLvl
+  $member OnSetNewBatteryLvl
+  $member UpdateProperty
+  $member HorizontalSlider
+  $member HorizontalSliderConfig
+  $member onEndSlider
+  $member Text
+  $member onChangeSlider
+  $member Note
 }
 
-$rect <460,580,660,620>
-$output false
-resource Resources::Bitmap ChangeBtn
-{
-  attr bitmapfile FileName = .\resources\change.png;
-  attr bitmapformat Format = Native;
-  attr framesize FrameSize = <130,36>;
-  attr framedelay FrameDelay;
-  attr bitmapdithering Dithering = Auto;
-  attr bitmapmode Mode = Default;
-}
-
-$rect <200,540,400,580>
+$rect <460,420,660,460>
 $output false
 resource Resources::Font ChangeFont
 {
@@ -4155,934 +4143,7 @@ resource Resources::Font ChangeFont
   attr fontrowdistance RowDistance;
 }
 
-// This component implements an editor.
-$rect <-300,380,-100,420>
-$output false
-class TextEditor : Templates::TextEditor
-{
-  $rect <670,620,870,660>
-  inherited property Bounds = <0,0,160,120>;
-
-  $rect <680,280,880,320>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited version of the method
-    super( aState );
-
-    // Activate the caret blinking if the editor component has the input focus
-    if ( aState.contains( Core::ViewState[ Focused ]))
-      blinkEffect.Enabled = true;
-
-    // ... otherwise hide the caret
-    else
-    {
-      blinkEffect.Enabled = false;
-      Caret.Visible       = false;
-    }
-  }
-
-  // To do:
-  // 
-  // - Adjust the visible size of the text editor (the thick blue border). This will \
-  // be the editor's default size.
-  // - Resize and arrange the member 'Text' so it covers the area where you intend \
-  // to display the text. This is usually the entire area.
-  // - Adjust the position and the size of the 'SimpleTouchHandler' and 'SlideTouchHandler', \
-  // so they cover the 'Text' view.
-  // - If your design it expects, add and configure more views in the component, \
-  // e.g. views to display background, borders, etc.
-  // - The editor implements several handler to process keyboard inputs. See the \
-  // annotation 'Keyboard events'. Feel free to add more handler for other key events \
-  // or remove the handler you don't need in your version.
-  // - The editor displays a magnifying glass when the user touches and holds the \
-  // finger for a while (see the method 'onHoldTouch'). If you don't want it, remove \
-  // the contents within the annotation 'Magnifying glass' and the slot method 'onHoldTouch'.
-  // - The editor reacts to touch interactions. See the annotation 'Touch screen \
-  // events'. If your device is not touch driven, you can remove the both handlers \
-  // 'SimpleTouchHandler', 'SlideTouchHandler' and the methods from the annotation \
-  // 'Touch screen events'.
-  // - Adapt the implementation of the 'UpdateViewState()' method. This method should \
-  // update your views so they reflect the editor's current state (e.g. focused editor \
-  // may appear with other colors, etc.)
-  // - The editor is implemented with various properties allowing the configuration \
-  // of the text (e.g. 'Font', 'Color', ...). If your version of the editor doesn't \
-  // need such configuration, remove the properties and the associated OnSet methods.
-  // - If you need other properties to configure the editor, add from the Gallery \
-  // folder 'Chora' new properties. One property for every new setting (e.g. 'BorderWidth', \
-  // etc.)
-  // - Rename the properties accordingly their usage and remove their 'OnGet...' \
-  // methods.
-  // - For every newly added property adapt their 'OnSet...' method implementation. \
-  // Ensure in the method that the assigned value is correctly passed to the corresponding \
-  // view (e.g. a property 'BorderWidth' should update the eventually used 'Border' \
-  // view, etc.).
-  // - Feel free to modify any other member in this component accordingly your needs. \
-  // Please note the member description and inline comments within methods.
-  note legend Note6
-  {
-    attr Bounds = <10,690,990,1150>;
-  }
-
-  // Magnifying glass
-  note group Note5
-  {
-    attr Bounds = <440,500,660,670>;
-  }
-
-  // Caret
-  note group Note4
-  {
-    attr Bounds = <10,500,430,670>;
-  }
-
-  // State management
-  note group Note3
-  {
-    attr Bounds = <670,240,890,330>;
-  }
-
-  // Touch screen events
-  note group Note2
-  {
-    attr Bounds = <440,240,660,450>;
-  }
-
-  // Keyboard events
-  note group Note1
-  {
-    attr Bounds = <10,240,430,490>;
-  }
-
-  // This internal variable refers to a temporary Views::Image object used to show \
-  // the background for the augmented text content around the caret. This view appears \
-  // during the user is moving this caret by touching the caret with the finger.
-  $rect <450,620,650,660>
-  var Views::Rectangle magnifyingBack = null;
-
-  // This internal variable refers to a temporary Views::WarpGroup object used to \
-  // show the augmented text content around the caret. This view appears during the \
-  // user is moving this caret by touching the caret with the finger.
-  $rect <450,580,650,620>
-  var Views::WarpGroup magnifyingView = null;
-
-  // This flag is set if it is evtl. necessary to scroll the editor content in order \
-  // to ensure that the caret is still visible.
-  $rect <220,620,420,660>
-  var bool autoScroll;
-
-  // This internal variable stores the current caret index. This is the position \
-  // within Text.String property where the user can input text or delete signs.
-  $rect <20,620,220,660>
-  var int32 caretIndex = 0;
-
-  // This slot method is called after the caret has been adjusted. Its job is to \
-  // adjust too the position of the magnifying glass view where the augmented text \
-  // content around the caret is shown.
-  $rect <450,540,650,580>
-  slot updateMagnifyingView
-  {
-    // There is actually no magnifying glass displayed. Nothing to do.
-    if ( magnifyingView == null )
-      return;
-
-    var rect  srcArea = magnifyingView.SourceArea;
-    var rect  extent  = magnifyingView.GetExtent();
-    var rect  bounds  = Bounds;
-    var point caret   = Caret.Point1;
-
-    // Calculate the start position of the area to show in the magnifying
-    // view. Preferably the caret should appear in the center of this area.
-    var int32 srcX = caret.x - ( srcArea.w / 2 );
-
-    // However, the part of magnifying glass displaying the caret should 
-    // remain arranged horizontally within the editor area.
-    if ( srcX < 0 )
-      srcX = 0;
-
-    if (( srcX + srcArea.w ) > bounds.w )
-      srcX = bounds.w - srcArea.w;
-
-    // The resulting start position of the area to augment
-    magnifyingView.SourceArea.origin = point( srcX, caret.y );
-
-    // Now calculate the position for the magnifyingView. Preferably the
-    // the view should be arranged so it shows the augmented caret 
-    // exactly above the origin caret
-    var int32 dstX = ( bounds.x1 + caret.x ) - ( caret.x - srcX ) * 2;
-
-    // From the new magnifyingView position and its current position calculate
-    // an offset.
-    var point ofs = point( dstX - extent.x1, bounds.y1 + caret.y - extent.y2 );
-
-    // Move the magnifyingView and its background by the just calculated offset
-    magnifyingView.MoveView( ofs, false );
-    magnifyingBack.MoveView( ofs, false );
-  }
-
-  // This slot method is called after a short delay when the user has moved the caret \
-  // or modified the text. Its job is to ensure that the caret is still visible. \
-  // If necessary, the editor content is scrolled.
-  $rect <220,540,420,580>
-  slot updateScrollOffset
-  {
-    // Get the visible area of the text view
-    var rect  bounds = Text.Bounds;
-    var int32 ofsX   = 0;
-    var int32 ofsY   = 0;
-
-    // Calculate an offset to scroll the text content if the caret lies
-    // outside the visible area
-    if ( Caret.Point1.x < bounds.x1 ) ofsX = bounds.x1 - Caret.Point1.x;
-    if ( Caret.Point1.x > bounds.x2 ) ofsX = bounds.x2 - Caret.Point1.x;
-    if ( Caret.Point1.y < bounds.y1 ) ofsY = bounds.y1 - Caret.Point1.y;
-    if ( Caret.Point2.y > bounds.y2 ) ofsY = bounds.y2 - Caret.Point2.y;
-
-    // Should the cont be scrolled?
-    if (( ofsX != 0 ) || ( ofsY != 0 ))
-      Text.ScrollOffset = Text.ScrollOffset + point( ofsX, ofsY );
-
-    // The following code takes care of the automatic adjustment of the
-    // text scroll position if after modifying the text, its area is small
-    // enough to be completely visible.
-    ofsX = Text.ScrollOffset.x;
-    ofsY = Text.ScrollOffset.y;
-
-    // Get the current text area of the 
-    var point size = Text.GetContentArea().size;
-
-    // Does the area fit completely within the text editor?
-    if ( size.x <= Text.Bounds.w ) ofsX = 0;
-    if ( size.y <= Text.Bounds.h ) ofsY = 0;
-
-    // If possible arrange the text so it fits within the text editor.
-    Text.ScrollOffset = point( ofsX, ofsY );
-  }
-
-  // This slot method is attached to the Text view. Each time the Text view has rearranged \
-  // the text, this method is called. Its job is to adjust the caret to the evtl. \
-  // new position.
-  $rect <20,540,220,580>
-  slot updateCaret
-  {
-    // Without the font we don't know the height of the caret
-    if ( Font == null )
-      return;
-
-    // Get the pixel position of the sign right to the caret
-    var point rowCol = Text.StringIndex2RowCol( caretIndex );
-    var point pos    = Text.RowCol2Position( rowCol );
-
-    // Arrange the caret at the just determined position. The height of 
-    // the caret corresponds to the height of a text row drawn with the
-    // font
-    Caret.Point1 = pos - point( 0, Font.Ascent  );
-    Caret.Point2 = pos + point( 0, Font.Descent );
-
-    // Restart the blink effect -> this ensures that the user can see the
-    // caret while it is moved or the text is modified
-    if ( blinkEffect.Enabled )
-    {
-      blinkEffect.Enabled = false;
-      blinkEffect.Enabled = true;
-    }
-
-    // Should adjust the scroll position so that the caret remains in the visible
-    // area? Finally clear the 'autoScroll' flag again.
-    if ( autoScroll )
-    {
-      postsignal updateScrollOffset;
-      autoScroll = false;
-    }
-
-    // If there is a magnifying glass view visible -> arrange it also to the
-    // current caret position.
-    if ( magnifyingView != null )
-      postsignal updateMagnifyingView;
-  }
-
-  // This method is called from the corresponding SimpleTouchHandler. Its job is \
-  // to hide the magnifying glass view again.
-  $rect <450,400,650,440>
-  slot onReleaseTouch
-  {
-    // Hide the views used temporarily to show the augmented editor content
-    if ( magnifyingView != null )
-    {
-      Owner.Remove( magnifyingView );
-      Owner.Remove( magnifyingBack );
-      magnifyingView = null;
-      magnifyingBack = null;
-
-      // Free the temporary used off-screen memory
-      Buffered = false;
-    }
-  }
-
-  // This method is called from the corresponding SimpleTouchHandler. Its job is \
-  // to move the caret accordingly to the user's finger movement.
-  $rect <450,360,650,400>
-  slot onDragTouch
-  {
-    // Does the user currently drag the caret?
-    if ( magnifyingView != null )
-    {
-      // From the touched screen position estimate the corresponding position
-      // within the text string.
-      var point  rc            = Text.Position2RowCol( SimpleTouchHandler.CurrentPos );
-      var int32  newCaretIndex = Text.RowCol2StringIndex( rc );
-      var char   ch            = Text.String[ newCaretIndex ];
-
-      // The caret points to a special control sign? In this case the sign comes
-      // together with the preceding '%' escape sign - otherwise the user couldn't
-      // see the sign. Adjust the caret position to refer the escape sign.
-      if (( ch == '^' ) || ( ch == '~' ) || ( ch == '%' ))
-        newCaretIndex = newCaretIndex - 1;
-
-      // Does the caret position change? Force the editor to update the
-      // position of the blinking caret
-      if ( newCaretIndex != caretIndex )
-      {
-        caretIndex = newCaretIndex;
-        postsignal updateCaret;
-
-        // Ensure the caret is still visible later in the updateText slot method
-        autoScroll = true;
-      }
-    }
-
-    // No, then redirect the touch interaction to the slide touch handler when the
-    // user moved the finger a little bit. In this manner the user can scroll the text.
-    else
-    {
-      var point ofs   = SimpleTouchHandler.CurrentPos - SimpleTouchHandler.HittingPos;
-      var int32 limit = GetRoot().CursorDragLimit;
-
-      // Start the slide mode if the user has dragged the finger a little bit
-      if (( ofs.x < -limit ) || ( ofs.x > limit ) ||
-          ( ofs.y < -limit ) || ( ofs.y > limit ))
-        GetRoot().DeflectCursor( SlideTouchHandler, <0,0>);
-    }
-  }
-
-  // This method is called from the corresponding SimpleTouchHandler. Its job is \
-  // to activate the caret movement mode if the user has pressed the finger on the \
-  // screen for a while. The method also shows a small magnifying glass where the \
-  // text around the caret is shown. This should help the user to navigate the caret \
-  // with the finger.
-  $rect <450,320,650,360>
-  slot onHoldTouch
-  {
-    // When the user presses the finger within the text editor area,
-    // the editor enters the caret dragging mode. In this mode the
-    // user can move the caret with the finger. For convenience the
-    // area below the finger is displayed in a kind of magnifying glass.
-    // Does enter the mode?
-    if (( SimpleTouchHandler.HoldPeriod >= 300 ) && ( magnifyingView == null ))
-    {
-      // Calculate the size of the area to augment
-      var int32 height = Caret.Point2.y - Caret.Point1.y;
-      var int32 width  = height * 3;
-
-      // Limit to the available size of the editor component
-      if ( height > Bounds.h ) height = Bounds.h;
-      if ( width  > Bounds.w ) width  = Bounds.w;
-
-      // The editor component should store its content in an off-screen bitmap
-      // in order to be able to to show it augmented in an overlay 'magnifyingView'
-      Buffered = true;
-
-      // Create a temporary view to show the augmented content and to show the
-      // 'magnifying glass' background
-      magnifyingView = new Views::WarpGroup;
-      magnifyingBack = new Views::Rectangle;
-
-      // Prepare a magnifyingView to show an augmented content of the edited text
-      // row. The content is augmented by the factor x 2
-      magnifyingView.Group       = this;
-      magnifyingView.Quality     = true;
-      magnifyingView.Opacity     = 200;
-      magnifyingView.SourceArea  = rect( 0, 0, width, height );
-      magnifyingView.Point2.x    = width  * 2;
-      magnifyingView.Point3.x    = width  * 2;
-      magnifyingView.Point3.y    = height * 2;
-      magnifyingView.Point4.y    = height * 2;
-
-      // Also prepare the magnifying glass background view. It is a semitransparent
-      // rectangle.
-      magnifyingBack.Bounds.size   = point( width * 2, height * 2 ) + <20,20>;
-      magnifyingBack.Bounds.origin = <-10,-10>;
-      magnifyingBack.Color         = #EEEEEECC;
-
-      // Make the just created views visible on the screen
-      Owner.Add( magnifyingBack, 0 );
-      Owner.Add( magnifyingView, 0 );
-
-      // Arrange the 'magnifying glass' views at the correct position
-      postsignal updateMagnifyingView;
-    }
-
-    // Even if the user is not moving the cursor (finger) continue the scrolling when
-    // the user holds the finger near an edge of the text editor.
-    if ( magnifyingView != null )
-      signal onDragTouch;
-  }
-
-  // This method is called from the corresponding SimpleTouchHandler. Its job is \
-  // to obtain the focused state for the editor so the user can interact with the \
-  // editor content and to place the caret at the touched position.
-  $rect <450,280,650,320>
-  slot onPressTouch
-  {
-    // With the first touch focus the text editor
-    if ( !HasViewState( Core::ViewState[ Focused ]))
-      ObtainFocus();
-
-    // Estimate the position within the text string corresponding to the
-    // position touched on the screen.
-    var point rc            = Text.Position2RowCol( SimpleTouchHandler.CurrentPos );
-    var int32 newCaretIndex = Text.RowCol2StringIndex( rc );
-    var char  ch            = Text.String[ newCaretIndex ];
-
-    // The caret points to a special control sign? In this case the sign comes
-    // together with the preceding '%' escape sign - otherwise the user couldn't
-    // see the sign. Adjust the caret position to refer the escape sign.
-    if (( ch == '^' ) || ( ch == '~' ) || ( ch == '%' ))
-      newCaretIndex = newCaretIndex - 1;
-
-    // Does the caret position change? Force the text editor to update the
-    // position of the blinking caret
-    if ( newCaretIndex != caretIndex )
-    {
-      caretIndex = newCaretIndex;
-      postsignal updateCaret;
-
-      // Ensure the caret is still visible later in the updateText slot method
-      autoScroll = true;
-    }
-  }
-
-  // This method is called from the corresponding keyboard handler. Its job is to \
-  // move the caret up/down/left or right in the editor text.
-  $rect <220,440,420,480>
-  slot onCursorKey
-  {
-    // No font specified to show the text -> no navigation
-    // possible
-    if ( Font == null )
-      return;
-
-    // Knowing the position of the caret within the string, get the
-    // corresponding row/column position in the displayed text.
-    var point rc = Text.StringIndex2RowCol( caretIndex );
-
-    // Has the user moved the caret to the left? Get the new resulting
-    // row/column number
-    if ( CursorKeyHandler.Code == Core::KeyCode.Left )
-    {
-      // Navigate to the previous column
-      rc.x = rc.x - 1;
-
-      // The begin of the row reached? Skip to the end of the preceding row.
-      if ( Text.RowCol2StringIndex( rc ) == caretIndex )
-      {
-        rc.y = rc.y - 1;
-        rc.x = Text.GetRowString( rc.y ).length;
-      }
-    }
-
-    // Has the user moved the caret to the right? Get the resulting
-    // row/column number
-    if ( CursorKeyHandler.Code == Core::KeyCode.Right )
-    {
-      // Navigate to the next column
-      rc.x = rc.x + 1;
-
-      // The end of the current row reached? Skip to the begin of the next
-      // following row.
-      if ( Text.RowCol2StringIndex( rc ) == caretIndex )
-      {
-        rc.y = rc.y + 1;
-        rc.x = 0;
-      }
-    }
-
-    // Has the user moved the caret one row up? Get the resulting
-    // row/column number
-    if ( CursorKeyHandler.Code == Core::KeyCode.Up )
-    {
-      // Get the pixel position where the sign at actual caret position
-      // is displayed
-      var point pos       = Text.RowCol2Position( rc );
-      var int32 rowHeight = Font.Ascent + Font.Descent + Font.Leading;
-
-      // Get the row/column corresponding to the sign in the row just above
-      rc = Text.Position2RowCol( pos - point( 0, rowHeight ));
-    }
-
-    // Has the user moved the caret one row down? Get the resulting
-    // row/column number
-    if ( CursorKeyHandler.Code == Core::KeyCode.Down )
-    {
-      // Get the pixel position where the sign at actual caret position
-      // is displayed
-      var point pos       = Text.RowCol2Position( rc );
-      var int32 rowHeight = Font.Ascent + Font.Descent + Font.Leading;
-
-      // Get the row/column corresponding to the sign in the row just below
-      rc = Text.Position2RowCol( pos + point( 0, rowHeight ));
-    }
-
-    // From the just determined new row/column position get the corresponding
-    // position within the text string
-    var int32 newCaretIndex = Text.RowCol2StringIndex( rc );
-    var char  ch            = Text.String[ newCaretIndex ];
-
-    // The caret points to a special control sign? In this case the sign comes
-    // together with the preceding '%' escape sign - otherwise the user couldn't
-    // see the sign. Adjust the caret position to refer the escape sign.
-    if (( ch == '^' ) || ( ch == '~' ) || ( ch == '%' ))
-      newCaretIndex = newCaretIndex - 1;
-
-    // Does the caret position change? Force the editor to update the
-    // position of the blinking caret
-    if ( newCaretIndex != caretIndex )
-    {
-      caretIndex = newCaretIndex;
-      postsignal updateCaret;
-
-      // Ensure the caret is still visible later in the updateText slot method
-      autoScroll = true;
-    }
-  }
-
-  // This method is called from the corresponding keyboard handler. Its job is to \
-  // delete the sign preceding the current caret position and to move the caret accordingly.
-  $rect <220,400,420,440>
-  slot onBackspaceKey
-  {
-    // No signs preceding the caret -> Nothing to delete
-    if ( caretIndex == 0 )
-      return;
-
-    // Get the sign which should be deleted from the text.
-    var char  ch    = Text.String[ caretIndex - 1 ];
-    var int32 count = 1;
-
-    // The sign was a special control sign? In this case the sign comes
-    // together with the preceding '%' escape sign - otherwise the user
-    // couldn't see the sign
-    if (( ch == '^' ) || ( ch == '~' ) || ( ch == '%' ))
-      count = 2;
-
-    // Remove the affected text portion and adjust the caret position
-    Text.String = Text.String.remove( caretIndex - count, count );
-    caretIndex  = caretIndex - count;
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll = true;
-
-    // Inform the owner of this text editor component, that the text has been
-    // modified by the user
-    postsignal OnChange;
-  }
-
-  // This method is called from the corresponding keyboard handler. Its job is to \
-  // delete the sign at the current caret position.
-  $rect <220,360,420,400>
-  slot onDeleteKey
-  {
-    // No signs following the caret -> Nothing to delete
-    if ( caretIndex >= ( Text.String.length - 1 ))
-      return;
-
-    // Get the sign which should be deleted from the text.
-    var char  ch    = Text.String[ caretIndex ];
-    var int32 count = 1;
-
-    // The sign was a special control sign? In this case the sign comes
-    // together with the preceding '%' escape sign - otherwise the user
-    // couldn't see the sign
-    if ( ch == '%' )
-      count = 2;
-
-    // Remove the affected text fragment
-    Text.String = Text.String.remove( caretIndex, count );
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll = true;
-
-    // Inform the owner of this text editor component, that the text has been
-    // modified by the user
-    postsignal OnChange;
-  }
-
-  // This method is called from the corresponding keyboard handler. Its job is to \
-  // insert at the current caret position the <new line> sign and to move the caret \
-  // to the next row.
-  $rect <220,320,420,360>
-  slot onNewlineKey
-  {
-    // Take over the just input sign and adjust the caret position
-    Text.String = Text.String.insert( '\n', caretIndex );
-    caretIndex  = caretIndex + 1;
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll = true;
-
-    // Inform the owner of this text editor component, that the text has been
-    // modified by the user
-    postsignal OnChange;
-  }
-
-  // This method is called from the corresponding keyboard handler. Its job is to \
-  // insert at the current caret position the sign which has been input by the user \
-  // and to move the caret to the next column.
-  $rect <220,280,420,320>
-  slot onCharacterKey
-  {
-    var char   ch  = CharacterKeyHandler.CharCode;
-    var string str = ch;
-
-    // Precede all special control signs with the '%' escape sign. Otherwise
-    // the user can't input nor see them
-    if (( ch == '^' ) || ( ch == '~' ) || ( ch == '\xAD' ) || ( ch == '%' ))
-      str = "%" + ch;
-
-    // Take over the just input sign and adjust the caret position
-    Text.String = Text.String.insert( str, caretIndex );
-    caretIndex  = caretIndex + str.length;
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll = true;
-
-    // Inform the owner of this text editor component, that the text has been
-    // modified by the user
-    postsignal OnChange;
-  }
-
-  $rect <390,180,590,220>
-  onset WrapText
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure WrapText == value )
-      return;
-
-    // Remember the new value ...
-    pure WrapText = value;
-    Text.WrapText = value;
-
-    // If the text is warp automatically in rows, there is no need to
-    // scroll the text horizontally.
-    SlideTouchHandler.SlideHorz = !value;
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll        = true;
-    Text.ScrollOffset = <0,0>;
-  }
-
-  $rect <190,180,390,220>
-  onset Alignment
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Alignment == value )
-      return;
-
-    // Remember the new value ...
-    pure Alignment = value;
-    Text.Alignment = value;
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll        = true;
-    Text.ScrollOffset = <0,0>;
-  }
-
-  $rect <590,90,790,130>
-  onget String
-  {
-    // Get the current text view content
-    var string str = Text.String;
-
-    // In the following steps remove any special text view control signs
-    // which are usually used to control the text flow. The resulting string
-    // should contain the 'pure' text only.
-    var int32 inx = str.find( '%', 0 );
-
-    // The special control/escape signs are not visible until there is a
-    // '%' sign in front of them. Remove all superfluous '%' signs
-    while ( inx >= 0 )
-    {
-      str = str.remove( inx, 1 );
-      inx = str.find( '%', inx + 1 );
-    }
-
-    // Finally remove the <new line> sign at the end of text which was used
-    // as workaround for a text flow parser issue
-    return str.left( str.length - 1 );
-  }
-
-  $rect <590,50,790,90>
-  onset String
-  {
-    // In the following steps disarm in the assigned Unicode string the special
-    // control and escape signs, which usually control the text flow in a  text
-    // view. Without this conversion step, signs like '%' couldn't be seen in
-    // the editor.
-    var string str = value;
-    var int32  inx = str.find( '%', 0 );
-
-    // The special '%' escape sign is not visible until there is other
-    // '%' sign in front of it. Convert all '%' signs into '%%' sequences
-    while ( inx >= 0 )
-    {
-      str = str.insert( "%", inx );
-      inx = str.find( '%', inx + 2 );
-    }
-
-    inx = str.find( '^', 0 );
-
-    // The special '^' control sign is not visible until there is a '%'
-    // sign in front of it. Convert all '^' signs into '%^' sequences
-    while ( inx >= 0 )
-    {
-      str = str.insert( "%", inx );
-      inx = str.find( '^', inx + 2 );
-    }
-
-    inx = str.find( '~', 0 );
-
-    // The special '~' control sign is not visible until there is a '%'
-    // sign in front of it. Convert all '~' signs into '%~' sequences
-    while ( inx >= 0 )
-    {
-      str = str.insert( "%", inx );
-      inx = str.find( '~', inx + 2 );
-    }
-
-    inx = str.find( '\xAD', 0 );
-
-    // The special '\xAD' hyphen sign is not visible until there is a '%'
-    // sign in front of it. Convert all '\xAD' hyphen signs into '%\xAD'
-    // sequences
-    while ( inx >= 0 )
-    {
-      str = str.insert( "%", inx );
-      inx = str.find( '\xAD', inx + 2 );
-    }
-
-    // Ensure that the caret still refers to a sign within the string
-    if ( caretIndex > str.length )
-      caretIndex = str.length;
-
-    // Now show the new string in the editor's text view. The additional
-    // <new line> is a workaround for a flow text parser issue
-    Text.String = str + "\n";
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll        = true;
-    Text.ScrollOffset = <0,0>;
-  }
-
-  $rect <390,50,590,90>
-  onset Color
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Color == value )
-      return;
-
-    // Store the new Color
-    pure Color  = value;
-    Text.Color  = value;
-    Caret.Color = value;
-  }
-
-  $rect <190,50,390,90>
-  onset Font
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure Font == value )
-      return;
-
-    // Store the new font...
-    pure Font = value;
-    Text.Font = value;
-
-    // Ensure the caret is still visible later in the updateText slot method
-    autoScroll        = true;
-    Text.ScrollOffset = <0,0>;
-  }
-
-  // This bool change effect is used to blink the caret.
-  $rect <20,580,220,620>
-  object Effects::BoolEffect blinkEffect
-  {
-    preset Value2 = false;
-    preset Value1 = true;
-    preset Outlet = ^Caret.Visible;
-    preset CycleDuration = 500;
-    preset InterCycleDelay = 500;
-  }
-
-  // This key handler reacts to user inputs if the user has pressed the 'up', 'down', \
-  // 'left' or 'right' key. In this case the associated onCursorKey method is called.
-  $rect <20,440,220,480>
-  object Core::KeyPressHandler CursorKeyHandler
-  {
-    preset OnPress = onCursorKey;
-    preset Filter = Core::KeyCode.CursorKeys;
-    preset OnHold = onCursorKey;
-  }
-
-  // This key handler reacts to user inputs if the user has pressed the 'backspace' \
-  // key. In this case the associated onBackspaceKey method is called.
-  $rect <20,400,220,440>
-  object Core::KeyPressHandler BackspaceKeyHandler
-  {
-    preset OnPress = onBackspaceKey;
-    preset Filter = Core::KeyCode.Backspace;
-    preset OnHold = onBackspaceKey;
-  }
-
-  // This key handler reacts to user inputs if the user has pressed the 'delete' \
-  // key. In this case the associated onDeleteKey method is called.
-  $rect <20,360,220,400>
-  object Core::KeyPressHandler DeleteKeyHandler
-  {
-    preset OnPress = onDeleteKey;
-    preset Filter = Core::KeyCode.Delete;
-    preset OnHold = onDeleteKey;
-  }
-
-  // This key handler reacts to user inputs if the user has pressed the 'enter' key. \
-  // In this case the associated onNewlineKey method is called.
-  $rect <20,320,220,360>
-  object Core::KeyPressHandler NewlineKeyHandler
-  {
-    preset OnPress = onNewlineKey;
-    preset Filter = Core::KeyCode.Enter;
-    preset OnHold = onNewlineKey;
-  }
-
-  // This key handler reacts to user inputs if the user has pressed a key corresponding \
-  // to character/digit. In this case the associated onCharacterKey method is called.
-  $rect <20,280,220,320>
-  object Core::KeyPressHandler CharacterKeyHandler
-  {
-    preset OnPress = onCharacterKey;
-    preset Filter = Core::KeyCode.CharacterKeys;
-    preset OnHold = onCharacterKey;
-  }
-
-  // This slide gesture handler is used to scroll the text content.
-  $rect <20,20,160,60>
-  object Core::SlideTouchHandler SlideTouchHandler
-  {
-    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <0,0,160,120>;
-    preset SlideHorz = false;
-    preset Friction = 0.05;
-  }
-
-  // This generic touch handler is used to move the caret.
-  $rect <20,20,160,60>
-  object Core::SimpleTouchHandler SimpleTouchHandler
-  {
-    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
-    preset Point4 = <0,120>;
-    preset Point3 = <160,120>;
-    preset Point2 = <160,0>;
-    preset Point1 = <0,0>;
-    preset OnDrag = onDragTouch;
-    preset OnHold = onHoldTouch;
-    preset OnRelease = onReleaseTouch;
-    preset OnPress = onPressTouch;
-    preset MaxStrikeCount = 3;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text Text
-  {
-    preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <2,2,157,117>;
-    preset OnUpdate = updateCaret;
-    preset SlideHandler = SlideTouchHandler;
-    preset WrapText = true;
-    preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
-    preset String = "Text\n";
-    preset Font = Resources::FontMedium;
-    preset Color = #000000FF;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Line Caret
-  {
-    preset Point2 = <50,70>;
-    preset Point1 = <50,50>;
-    preset Width2 = 2;
-    preset Width1 = 2;
-    preset Color = #000000FF;
-    preset Visible = false;
-  }
-
-  // The property 'OnChange' can refer to a slot method, which should be invoked \
-  // by the text editor when the user modifies the text.
-  $rect <590,140,790,180>
-  property slot OnChange = null;
-
-  // The property 'WrapText' determines whether long text rows should be wrapped \
-  // automatically.
-  $rect <390,140,590,180>
-  property bool WrapText = true;
-
-  // The property 'Alignment' determines how the editor should display the text rows \
-  // if their size differs from the size of the editor. 
-  // In this manner the rows can be aligned horizontally. The entire text block can \
-  // be aligned vertically.
-  $rect <190,140,390,180>
-  property Views::TextAlignment Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
-
-  // The property 'String' stores the text of the editor.
-  $rect <590,10,790,50>
-  property string String = "Text";
-
-  // The property 'Color' controls the color of the text.
-  $rect <390,10,590,50>
-  property color Color = #000000FF;
-
-  // The property 'Font' refers to the font object used to display the text. The \
-  // text is determined by the property @String.
-  $rect <190,10,390,50>
-  property Resources::Font Font = Resources::FontMedium;
-}
-
-$rect <460,630,660,670>
-$output false
-resource Resources::Bitmap OkChangeBtn
-{
-  attr bitmapfile FileName = .\resources\ok-change.png;
-  attr bitmapformat Format = Native;
-  attr framesize FrameSize = <120,20>;
-  attr framedelay FrameDelay;
-  attr bitmapdithering Dithering = Auto;
-  attr bitmapmode Mode = Default;
-}
-
-$rect <-40,590,160,630>
-$output false
-resource Resources::Font NewBatteryFont
-{
-  attr fontname FontName = Digital-7;
-  attr fontheight Height = 27;
-  attr fontheightmode HeightMode = Popular;
-  attr fontquality Quality = High;
-  attr fontranges Ranges = 0x20-0xFF;
-  attr fontaspectratio AspectRatio = 1.0;
-  attr fontbold Bold = false;
-  attr fontitalic Italic = false;
-  attr fontkerning Kerning = true;
-  attr fontrowdistance RowDistance;
-}
-
-$rect <460,680,660,720>
+$rect <190,540,390,580>
 $output false
 resource Resources::Bitmap EnergySymbol
 {
@@ -5094,7 +4155,7 @@ resource Resources::Bitmap EnergySymbol
   attr bitmapmode Mode = Default;
 }
 
-$rect <460,730,660,770>
+$rect <190,590,390,630>
 $output false
 resource Resources::Bitmap SliderFront
 {
@@ -5106,7 +4167,7 @@ resource Resources::Bitmap SliderFront
   attr bitmapmode Mode = Default;
 }
 
-$rect <460,780,660,820>
+$rect <190,640,390,680>
 $output false
 resource Resources::Bitmap SliderBack
 {
