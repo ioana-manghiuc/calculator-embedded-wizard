@@ -72,7 +72,7 @@ class Application : Core::Root
       str = Keypad.keyString;
     }
 
-    if( Text.String == "result here" || str == "C" )
+    if( Text.String == "result here" || str == "C" || str == "c" )
     {
       ResetVariables();
     }
@@ -115,7 +115,7 @@ class Application : Core::Root
                 temp = Text.String + str;
             }
         }
-        else if( str == "B" || str == "b" || KeyHandler.Code == Core::KeyCode.Backspace )
+        else if( str == "B" || str == "b" || KeyHandler.Code == Core::KeyCode.Delete )
         {
             temp = Text.String.remove(Text.String.length - 1, 1);
         }

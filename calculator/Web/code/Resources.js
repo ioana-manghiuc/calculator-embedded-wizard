@@ -27,47 +27,36 @@
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
 );if(EmWiApp.ach)throw new Error("The unit file 'Resources.js' included twice!");
 EmWiApp.ach=(function(){var B=EmWiApp;var E={};
-var AN=[0,0];var AO="The property \'FrameSize\' is READ ONLY.";
-E.Aa={bitmap:null,FrameDelay:0,NoOfFrames:1,FrameSize:B.wf,E7:false,DS:false,EB:function(
+var AF=[0,0];var AV="The property \'FrameSize\' is READ ONLY.";
+E.X={bitmap:null,FrameDelay:0,NoOfFrames:1,FrameSize:B.wf,Gv:false,C4:false,DB:function(
 ){if(!this.bitmap)return;var handle=this.bitmap;B._FreeBitmap(handle);this.bitmap=
-null;this.FrameSize=AN;this.FrameDelay=0;this.NoOfFrames=1;this.DS=false;},Bt:function(
-aArg){if(!aArg)return;var handle=null;var noOfFrames=1;var frameSize=AN;var frameDelay=
+null;this.FrameSize=AF;this.FrameDelay=0;this.NoOfFrames=1;this.C4=false;},A9:function(
+aArg){if(!aArg)return;var handle=null;var noOfFrames=1;var frameSize=AF;var frameDelay=
 0;{var bmp=B.aa3(aArg,this);if(bmp){noOfFrames=bmp.NoOfFrames;frameSize=bmp.FrameSize;
 frameDelay=bmp.FrameDelay;}handle=bmp;}this.bitmap=handle;this.NoOfFrames=noOfFrames;
-this.FrameSize=frameSize;this.FrameDelay=frameDelay;this.E7=true;this.DS=(!!this.
-bitmap&&(this.FrameDelay>0))&&(this.NoOfFrames>1);},Js:function(C){throw new Error(
-AO);},Update:function(){},_Init:function(aArg){B.Core.FQ._Init.call(this,aArg);this.
-__proto__=E.Aa;this.Bt(aArg);},_Done:function(){this.EB();this.__proto__=B.Core.
-FQ;B.Core.FQ._Done.call(this);},_className:"Resources::Bitmap"};E.At={font:null,
-Leading:0,Descent:0,Ascent:0,EB:function(){this.SW();},Bt:function(aArg){this.SZ(
-aArg);},SW:function(){if(!this.font)return;var handle=this.font;B.aal(handle);this.
-font=null;this.Ascent=0;this.Descent=0;this.Leading=0;},SZ:function(aFontResource
-){if(!aFontResource)return;var handle=null;var ascent=0;var descent=0;var leading=
-0;{var font=B.aa5(aFontResource);if(font){ascent=font.Ascent;descent=font.Descent;
-leading=font.Leading;}handle=font;}this.font=handle;this.Ascent=ascent;this.Descent=
-descent;this.Leading=leading;},PR:function(aString,aOffset,aCount,aColumn,aMinWidth
-){if(aOffset<0)aOffset=0;if(!this.font)return 0;if((aOffset>0)&&(aOffset>aString.
-length))aOffset=aString.length;var handle=this.font;var pos=0;pos=B.aaF(handle,aString
-,aOffset,aCount,aColumn,aMinWidth);return pos;},PS:function(aString,aOffset,aCount
-,aX,aMinWidth){if(aOffset<0)aOffset=0;if(!this.font)return 0;if((aOffset>0)&&(aOffset>
-aString.length))aOffset=aString.length;var handle=this.font;var col=0;col=B.aaP(
-handle,aString,aOffset,aCount,aX,aMinWidth);return col;},NM:function(aFlowString
-){if(!this.font)return 0;var handle=this.font;var advance=0;advance=B.aav(handle
-,aFlowString);return advance;},QW:function(aString,aOffset,aWidth,aMaxNoOfRows,aBidi
-){if(aOffset<0)aOffset=0;if(!this.font||((aOffset>0)&&(aOffset>=aString.length))
-)return B.jV;var handle=this.font;var result=B.jV;result=B.abv(handle,aString,aOffset
-,aWidth,aMaxNoOfRows,aBidi);return result;},FE:function(aString,aOffset,aCount){
-if(aOffset<0)aOffset=0;if(!this.font||((aOffset>0)&&(aOffset>=aString.length)))return 0;
-var handle=this.font;var advance=0;advance=B.m9(handle,aString,aOffset,aCount);return advance;
-},_Init:function(aArg){B.Core.FQ._Init.call(this,aArg);this.__proto__=E.At;this.
-Bt(aArg);},_Done:function(){this.EB();this.__proto__=B.Core.FQ;B.Core.FQ._Done.call(
-this);},_className:"Resources::Font"};E.KG={_class:function(){return E.At;},0:{Data:
-function(){return B.acu;},Cache:[],_this:null}};E.JM={_class:function(){return E.
-Aa;},0:{FileName:"./res/ResourcesWhiteBitmapStripe.png",Format:B._PIXEL_FORMAT_ALPHA8
-,NoOfFrames:1,FrameSize:[256,4],FrameDelay:0,_this:null}};
-E._Init=function(){E.Aa.__proto__=B.Core.FQ;E.At.__proto__=B.Core.FQ;};E._ReInit=
-function(){};E.DC=function(D){var A;if((A=E.KG[0]._this)&&(A._cycle!=D))A._Done(
-E.KG[0]._this=null);if((A=E.JM[0]._this)&&(A._cycle!=D))A._Done(E.JM[0]._this=null
-);};return E;})();
+this.FrameSize=frameSize;this.FrameDelay=frameDelay;this.Gv=true;this.C4=(!!this.
+bitmap&&(this.FrameDelay>0))&&(this.NoOfFrames>1);},Lc:function(C){throw new Error(
+AV);},Update:function(){},_Init:function(aArg){B.Core.Ez._Init.call(this,aArg);this.
+__proto__=E.X;this.A9(aArg);},_Done:function(){this.DB();this.__proto__=B.Core.Ez;
+B.Core.Ez._Done.call(this);},_className:"Resources::Bitmap"};E.Bk={font:null,Leading:
+0,Descent:0,Ascent:0,DB:function(){this.Ph();},A9:function(aArg){this.Pi(aArg);}
+,Ph:function(){if(!this.font)return;var handle=this.font;B.aal(handle);this.font=
+null;this.Ascent=0;this.Descent=0;this.Leading=0;},Pi:function(aFontResource){if(
+!aFontResource)return;var handle=null;var ascent=0;var descent=0;var leading=0;{
+var font=B.aa5(aFontResource);if(font){ascent=font.Ascent;descent=font.Descent;leading=
+font.Leading;}handle=font;}this.font=handle;this.Ascent=ascent;this.Descent=descent;
+this.Leading=leading;},K7:function(aFlowString){if(!this.font)return 0;var handle=
+this.font;var advance=0;advance=B.aav(handle,aFlowString);return advance;},Nz:function(
+aString,aOffset,aWidth,aMaxNoOfRows,aBidi){if(aOffset<0)aOffset=0;if(!this.font||((
+aOffset>0)&&(aOffset>=aString.length)))return B.jV;var handle=this.font;var result=
+B.jV;result=B.abv(handle,aString,aOffset,aWidth,aMaxNoOfRows,aBidi);return result;
+},G7:function(aString,aOffset,aCount){if(aOffset<0)aOffset=0;if(!this.font||((aOffset>
+0)&&(aOffset>=aString.length)))return 0;var handle=this.font;var advance=0;advance=
+B.m9(handle,aString,aOffset,aCount);return advance;},_Init:function(aArg){B.Core.
+Ez._Init.call(this,aArg);this.__proto__=E.Bk;this.A9(aArg);},_Done:function(){this.
+DB();this.__proto__=B.Core.Ez;B.Core.Ez._Done.call(this);},_className:"Resources::Font"
+};
+E._Init=function(){E.X.__proto__=B.Core.Ez;E.Bk.__proto__=B.Core.Ez;};E._ReInit=function(
+){};E.CP=function(D){};return E;})();
 
 /* Embedded Wizard */

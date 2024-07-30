@@ -142,7 +142,7 @@ class Application : Core::Root
         cursorPosition++;
     }
 
-    if (str == "=")
+    if (str == "=" )
     {
       temp = Text.String;
       Text.String = RemoveExtraSymbols(temp);
