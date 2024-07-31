@@ -4265,8 +4265,10 @@ class Home : Core::Root
     this.MenuView.Enabled = false;
     this.StandardPg.Visible = false;
     this.StandardPg.Enabled = false;
+    this.StandardPg.Keypad.Enabled = false;
     this.ConverterPg.Visible = true;
     this.ConverterPg.Enabled = true;
+    this.ConverterPg.Keypad.Enabled = true;
   }
 }
 
@@ -4274,7 +4276,7 @@ $rect <-300,190,-100,230>
 $output false
 class ConverterPage : Core::Group
 {
-  $rect <670,300,870,340>
+  $rect <670,540,870,580>
   inherited property Bounds = <0,0,340,600>;
 
   $rect <420,70,620,110>
@@ -4459,20 +4461,21 @@ class ConverterPage : Core::Group
   method string ConvertValue( arg string val, arg string initialMetric, arg string newMetric )
   {
     var string newVal = "";
+    trace initialMetric;
 
-    if( initialMetric == "Milimeters" )
+    if( initialMetric == "0" )
     {
         newVal = ConvertMilimeters(val, newMetric);
     }
-    else if( initialMetric == "Centimeters" )
+    else if( initialMetric == "1" )
     {
         newVal = ConvertCentimeters(val, newMetric);
     }
-    else if( initialMetric == "Meters" )
+    else if( initialMetric == "2" )
     {
         newVal = ConvertMeters(val, newMetric);
     }
-    else if( initialMetric == "Kilometers" )
+    else if( initialMetric == "3" )
     {
         newVal = ConvertKilometers(val, newMetric);
     }
@@ -4492,12 +4495,6 @@ class ConverterPage : Core::Group
     SecondMetric = string( ComboBoxTwo.SelectedItem );
   }
 
-  $rect <690,170,890,210>
-  property string FirstMetric;
-
-  $rect <690,220,890,260>
-  property string SecondMetric;
-
   // Initialization
   note group Note
   {
@@ -4513,33 +4510,33 @@ class ConverterPage : Core::Group
   // Metrics
   note group Note2
   {
-    attr Bounds = <670,30,910,280>;
+    attr Bounds = <670,30,910,490>;
   }
 
   $rect <427,436,627,476>
   method string ConvertMilimeters( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
-    var float initialValue = initialValue.parse_float( -1.0 );
+    var float initialVal = initialValue.parse_float( -1.0 );
     var float newValue = 0.0;
 
-    if( newMetric == "Milimeters" )
+    if( newMetric == "0" )
     {
        newVal = initialValue;
     }
-    else if( newMetric == "Centimeters")
+    else if( newMetric == "1")
     {
-       newValue = initialValue / 10;
+       newValue = initialVal / 10;
        newVal = newValue;
     }
-    else if( newMetric == "Meters")
+    else if( newMetric == "2")
     {
-       newValue = initialValue / 1000;
+       newValue = initialVal / 1000;
        newVal = newValue;
     }
-    else if( newMetric == "Kilometers")
+    else if( newMetric == "3")
     {
-       newValue = initialValue /  1e+6;
+       newValue = initialVal /  1000000;
        newVal = newValue;
     }
 
@@ -4550,26 +4547,26 @@ class ConverterPage : Core::Group
   method string ConvertCentimeters( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
-    var float initialValue = initialValue.parse_float( -1.0 );
+    var float initialVal = initialValue.parse_float( -1.0 );
     var float newValue = 0.0;
 
-    if( newMetric == "Milimeters" )
+    if( newMetric == "0" )
     {
-       newVal = initialValue * 10;
+       newVal = initialVal * 10;
        newVal = newValue;
     }
-    else if( newMetric == "Centimeters")
+    else if( newMetric == "1")
     {
        newVal = initialValue;
     }
-    else if( newMetric == "Meters")
+    else if( newMetric == "2")
     {
-       newValue = initialValue / 100;
+       newValue = initialVal / 100;
        newVal = newValue;
     }
-    else if( newMetric == "Kilometers")
+    else if( newMetric == "3")
     {
-       newValue = initialValue / 100000;
+       newValue = initialVal / 100000;
        newVal = newValue;
     }
 
@@ -4580,26 +4577,26 @@ class ConverterPage : Core::Group
   method string ConvertMeters( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
-    var float initialValue = initialValue.parse_float( -1.0 );
+    var float initialVal = initialValue.parse_float( -1.0 );
     var float newValue = 0.0;
-
-    if( newMetric == "Milimeters" )
+         
+    if( newMetric == "0" )
     {
-       newValue = initialValue * 1000;
+       newValue = initialVal * 1000;
        newVal = newValue;
     }
-    else if( newMetric == "Centimeters")
+    else if( newMetric == "1")
     {
-       newValue = initialValue * 100;
+       newValue = initialVal * 100;
        newVal = newValue;
     }
-    else if( newMetric == "Meters")
+    else if( newMetric == "2")
     {
        newVal = initialValue;
     }
-    else if( newMetric == "Kilometers")
+    else if( newMetric == "3")
     {
-       newValue = initialValue / 1000;
+       newValue = initialVal / 1000;
        newVal = newValue;
     }
 
@@ -4610,30 +4607,78 @@ class ConverterPage : Core::Group
   method string ConvertKilometers( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
-    var float initialValue = initialValue.parse_float( -1.0 );
+    var float initialVal = initialValue.parse_float( -1.0 );
     var float newValue = 0.0;
 
-    if( newMetric == "Milimeters" )
+    if( newMetric == "0" )
     {
-       newValue = initialValue * 1e+6;
+       newValue = initialVal * 1000000;
        newVal = newValue;
     }
-    else if( newMetric == "Centimeters")
+    else if( newMetric == "1")
     {
-       newValue = initialValue * 100000;
+       newValue = initialVal * 100000;
        newVal = newValue;
     }
-    else if( newMetric == "Meters")
+    else if( newMetric == "2")
     {
-       newValue = initialValue * 1000;
+       newValue = initialVal * 1000;
        newVal = newValue;
     }
-    else if( newMetric == "Kilometers")
+    else if( newMetric == "3")
     {
        newVal = initialValue;
     }
 
     return newVal;
+  }
+
+  $rect <690,180,890,220>
+  property string FirstMetric = "2";
+
+  $rect <690,220,890,260>
+  onset FirstMetric
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure FirstMetric == value )
+      return;
+
+    // Remember the property's new value.
+    pure FirstMetric = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <690,260,890,300>
+  onget FirstMetric
+  {
+    return pure FirstMetric;
+  }
+
+  $rect <690,330,890,370>
+  property string SecondMetric = "2";
+
+  $rect <690,370,890,410>
+  onset SecondMetric
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure SecondMetric == value )
+      return;
+
+    // Remember the property's new value.
+    pure SecondMetric = value;
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <690,410,890,450>
+  onget SecondMetric
+  {
+    return pure SecondMetric;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -4654,8 +4699,6 @@ class ConverterPage : Core::Group
   $member ConvertValue
   $member OnSelectFirstMetric
   $member OnSelectSecondMetric
-  $member FirstMetric
-  $member SecondMetric
   $member Note
   $member Note1
   $member Note2
@@ -4663,6 +4706,12 @@ class ConverterPage : Core::Group
   $member ConvertCentimeters
   $member ConvertMeters
   $member ConvertKilometers
+  $member FirstMetric
+  $member OnSetFirstMetric
+  $member OnGetFirstMetric
+  $member SecondMetric
+  $member OnSetSecondMetric
+  $member OnGetSecondMetric
 }
 
 $rect <-40,690,160,730>

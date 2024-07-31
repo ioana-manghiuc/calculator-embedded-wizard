@@ -25,10 +25,15 @@
 *******************************************************************************/
 
 var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn't yet loaded!"
-);if(EmWiApp.acj)throw new Error("The unit file 'Templates.js' included twice!");
-EmWiApp.acj=(function(){var B=EmWiApp;var E={};
+);if(EmWiApp.aci)throw new Error("The unit file 'Templates.js' included twice!");
+EmWiApp.aci=(function(){var B=EmWiApp;var E={};
 
-
-E._Init=function(){};E._ReInit=function(){};E.CP=function(D){};return E;})();
+E.D0={_Init:function(aArg){B.Core.V._Init.call(this,aArg);this.__proto__=E.D0;},_className:
+"Templates::ComboBox"};E.Fy={_Init:function(aArg){B.Core.V._Init.call(this,aArg);
+this.__proto__=E.Fy;},_className:"Templates::List"};E.Gi={_Init:function(aArg){B.
+Core.V._Init.call(this,aArg);this.__proto__=E.Gi;},_className:"Templates::ListItem"
+};
+E._Init=function(){E.D0.__proto__=B.Core.V;E.Fy.__proto__=B.Core.V;E.Gi.__proto__=
+B.Core.V;};E._ReInit=function(){};E.DN=function(D){};return E;})();
 
 /* Embedded Wizard */

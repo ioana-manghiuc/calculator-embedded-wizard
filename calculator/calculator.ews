@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::ConverterPage;
+attr active = Application::Home;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::ConverterPage.ConvertCentimeters;
+attr currentCodeInspector = Application::Home.SwitchedOff;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -41,61 +41,44 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-914,75>;
+  attr scrollTo = <-914,-117>;
   attr zoom = 0.75;
 }
 
 view class Application::ConverterPage
 {
   attr enableWireMode = false;
-  attr scrollTo = <-209,89>;
+  attr scrollTo = <-209,137>;
   attr zoom = 0.75;
 }
 
-codeview Application::ConverterPage.ConvertValue
+view class Application::Home
 {
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,4>;
-  attr codeSelEnd = <24,16>;
-  attr codeSelStart = <24,16>;
+  attr enableWireMode = false;
+  attr scrollTo = <-7,-199>;
+  attr zoom = 1.0;
 }
 
-codeview Application::ConverterPage.ConvertCentimeters
+codeview Application::Home.SwitchedOff
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <35,20>;
-  attr codeSelStart = <35,20>;
+  attr codeSelEnd = <38,4>;
+  attr codeSelStart = <38,4>;
 }
 
-codeview Application::ConverterPage.ConvertMeters
+codeview Application::Home.SwitchedOn
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <3,11>;
-  attr codeSelStart = <21,12>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <35,1>;
+  attr codeSelStart = <35,1>;
 }
 
-codeview Application::ConverterPage.ConvertKilometers
+codeview Application::Home.OpenConverter
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,9>;
-  attr codeSelEnd = <33,16>;
-  attr codeSelStart = <33,16>;
-}
-
-codeview Application::ConverterPage.ConvertMilimeters
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,8>;
-  attr codeSelEnd = <34,20>;
-  attr codeSelStart = <34,20>;
-}
-
-codeview Application::ConverterPage.onConvertValue
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,13>;
-  attr codeSelEnd = <54,13>;
-  attr codeSelStart = <54,13>;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <39,4>;
+  attr codeSelStart = <39,4>;
 }
