@@ -37,11 +37,11 @@ unit Views
 
 // The 'default' Language. Each project has to contain at least one language brick \
 // called 'Default'
-$rect <570,230,760,270>
+$rect <570,210,760,250>
 language Default;
 
 // This unit is intended to contain the application class and other GUI components.
-$rect <310,230,500,270>
+$rect <310,210,500,250>
 unit Application
 {
   attr Directory = .\;
@@ -56,19 +56,19 @@ note group Note1
 // Profile Configuration
 note group Note2
 {
-  attr Bounds = <300,20,790,140>;
+  attr Bounds = <290,20,780,140>;
 }
 
 // Languages
 note group Note3
 {
-  attr Bounds = <550,180,780,300>;
+  attr Bounds = <550,160,780,280>;
 }
 
 // Project Unit
 note group Note5
 {
-  attr Bounds = <290,180,520,300>;
+  attr Bounds = <290,160,520,280>;
 }
 
 // This is a profile member for the project. This profile controls the code generation \
@@ -79,7 +79,7 @@ profile Win32 : Windows.Software.RGBA8888
   attr Verbose = false;
   attr ScreenSize = <340,590>;
   attr Optimization = High;
-  attr ApplicationClass = Application::Application;
+  attr ApplicationClass = Application::Home;
   attr CleanOutputDirectories = false;
   attr FontConversion = Windows;
   attr OutputFileNameExtension = cpp;
@@ -87,7 +87,6 @@ profile Win32 : Windows.Software.RGBA8888
   attr OutputDirectory = .\GeneratedCode;
   attr ApplicationTitle = "calculator";
   attr ApplicationName = calculator;
-  attr PostProcess = .\Win32\Application\Project\MSVC\MSVC_ew_post_process.cmd;
 
   $rect <10,10,154,50>
   macro Author = "Dipl. Ing. Paul Banach and Dipl. Ing. Manfred Schweyer, Copyright (C) TARA Systems GmbH";
@@ -114,5 +113,5 @@ profile Web : Web.WebGL.RGBA8888
   attr FontConversion = Windows;
   attr CleanOutputDirectories = false;
   attr Obfuscation = true;
-  attr ApplicationClass = Application::Application;
+  attr ApplicationClass = Application::Home;
 }

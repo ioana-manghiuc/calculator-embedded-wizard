@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::NumKeyBtns;
+attr active = Application::ConverterPage;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.CalculateExpression;
+attr currentCodeInspector = Application::ConverterPage.ConvertCentimeters;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,52 +32,70 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
+  attr enableWireMode = false;
   attr grid = 10;
-  attr scrollTo = <-2,-87>;
+  attr scrollTo = <-156,-135>;
   attr zoom = 0.75;
 }
 
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-665,-131>;
+  attr scrollTo = <-914,75>;
   attr zoom = 0.75;
 }
 
-view class Application::Application
+view class Application::ConverterPage
 {
   attr enableWireMode = false;
-  attr scrollTo = <-559,-38>;
+  attr scrollTo = <-209,89>;
   attr zoom = 0.75;
 }
 
-view class Application::NumKeyBtns
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-58,-99>;
-  attr zoom = 0.75;
-}
-
-codeview Application::Application.CalculateExpression
+codeview Application::ConverterPage.ConvertValue
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,79>;
-  attr codeSelEnd = <15,83>;
-  attr codeSelStart = <15,83>;
+  attr codeFirstPos = <0,4>;
+  attr codeSelEnd = <24,16>;
+  attr codeSelStart = <24,16>;
 }
 
-codeview Application::Application.RemoveExtraSymbols
+codeview Application::ConverterPage.ConvertCentimeters
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <77,5>;
-  attr codeSelStart = <77,5>;
+  attr codeSelEnd = <35,20>;
+  attr codeSelStart = <35,20>;
 }
 
-codeview Application::Application.ResetVariables
+codeview Application::ConverterPage.ConvertMeters
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <4,0>;
-  attr codeSelStart = <4,0>;
+  attr codeFirstPos = <0,9>;
+  attr codeSelEnd = <3,11>;
+  attr codeSelStart = <21,12>;
+}
+
+codeview Application::ConverterPage.ConvertKilometers
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,9>;
+  attr codeSelEnd = <33,16>;
+  attr codeSelStart = <33,16>;
+}
+
+codeview Application::ConverterPage.ConvertMilimeters
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,8>;
+  attr codeSelEnd = <34,20>;
+  attr codeSelStart = <34,20>;
+}
+
+codeview Application::ConverterPage.onConvertValue
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,13>;
+  attr codeSelEnd = <54,13>;
+  attr codeSelStart = <54,13>;
 }
