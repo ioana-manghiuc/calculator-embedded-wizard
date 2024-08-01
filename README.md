@@ -9,14 +9,15 @@ For executing operations (*addition, subtraction, multiplication, division, expo
 
 The data structures used (vector, stack, queue) have been implemented in the Chora Programming Language. The stack and queue structures use simple elements, which hold data and a reference to the next element. The vector structure uses elements that hold data, as well as references to the next and previous elements.
 
-The battery component simulates the calculator losing battery as it is being used. When the battery runs out the calculator "shuts off" (if keys are pressed nothing will show in the result textbox), and the user is prompted to "add a new battery" which means entering a new battery level by using the horizontal slider (whose values range from 20 to 100, so that the user can't add a dead battery). Then the calculator powers back on.
+The battery component simulates the calculator losing battery as it is being used. When the battery runs out the calculator "shuts off" (if keys are pressed nothing will show in the result textbox), and the user is prompted to "add a new battery" which means entering a new battery level by using the horizontal slider (its values range from 20 to 100, so that the user can't add a dead battery). Then the calculator powers back on.
 
-All the buttons integrated into the virtual keyboard are customized using the Face Bitmap property and change their appearance when pressed (the FaceFrame changes when in or out of focus). 
+The second page is a Length Converter for *milimeters, centimeters, meters,* and *kilometers*. The user can switch between the two dialogs by pressing the button in the top-left corner which opens a menu.
 
-<img align="center" width="250" src="https://github.com/user-attachments/assets/b42dad6a-97b6-4493-bc61-660e5f24d675">
+<img align="center" width="250" src="https://github.com/user-attachments/assets/5b3a630b-ddb2-4ace-8af0-1d1efdd80915">
+<img align="center" width="250" src="https://github.com/user-attachments/assets/022292b6-098a-4ea1-b211-9563c0dd3ca8">
 
 \
-Since the application uses images for the buttons, run the HTML file in localhost for them to be visible in the browser. The easiest way to do this is:
+Since the application uses images for the buttons and battery, run the HTML file in localhost for them to be visible in the browser. The easiest way to do this is:
 - use **Node.js** (instructions for installation here: https://nodejs.org/en/download/package-manager )
 - run the command **npm install -g serve** in CMD
 - navigate to the path of the _EmWiApp.html_ file (_calculator\Web directory_) in CMD, and run **serve**
