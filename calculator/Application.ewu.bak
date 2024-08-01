@@ -794,7 +794,7 @@ class Application : Core::Group
   // Battery Dialog
   note group Note5
   {
-    attr Bounds = <1000,470,1630,660>;
+    attr Bounds = <1000,470,1630,670>;
   }
 
   $rect <1420,510,1620,550>
@@ -951,44 +951,8 @@ $rect <-300,240,-100,280>
 $output false
 class NumKeyBtns : Core::Group
 {
-  $rect <340,370,540,410>
+  $rect <340,340,540,380>
   inherited property Bounds = <0,0,300,440>;
-
-  $rect <360,100,560,140>
-  inherited method UpdateLayout()
-  {
-    // Always invoke the inherited method.
-    super( aSize );
-
-    /*
-
-      HINT:
-
-      This method exists for sophisticated layout calculation. Please note, that in 
-      most cases it is completely sufficient to use the views property 'Layout' to
-      determine how the view should behave when the component is resized.
-
-    */
-
-    /*
-
-      TO DO:
-
-      Put here the code to calculate new position and size of enclosed views. The
-      current (new) size of the component itself is passed in the parameter aSize.
-      For example:
-
-        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
-
-    */
-  }
-
-  $rect <360,50,560,90>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited method.
-    super( aState );
-  }
 
   $rect <870,40,1110,80>
   object WidgetSet::PushButtonConfig DigitOpConfig
@@ -1178,7 +1142,7 @@ class NumKeyBtns : Core::Group
     preset FaceBitmapDefault = Application::EqualsBtn;
   }
 
-  $rect <360,150,560,190>
+  $rect <360,60,560,100>
   slot onActivateKey
   {
     sender; /* the method is called from the sender object */
@@ -1223,7 +1187,7 @@ class NumKeyBtns : Core::Group
     preset Appearance = DigitOpConfig;
   }
 
-  $rect <360,290,560,330>
+  $rect <360,260,560,300>
   object Core::Timer FlashKeyTimer
   {
     preset OnTrigger = triggerTimer;
@@ -1232,7 +1196,7 @@ class NumKeyBtns : Core::Group
     preset Enabled = false;
   }
 
-  $rect <600,290,800,330>
+  $rect <600,260,800,300>
   slot triggerTimer
   {
     sender; /* the method is called from the sender object */
@@ -1242,13 +1206,13 @@ class NumKeyBtns : Core::Group
   // Flash effect
   note group Note
   {
-    attr Bounds = <340,240,820,360>;
+    attr Bounds = <340,210,820,330>;
   }
 
   // Handling pressed key
   note group Note1
   {
-    attr Bounds = <340,0,820,220>;
+    attr Bounds = <340,0,820,190>;
   }
 
   // Push Button Configurations
@@ -1499,8 +1463,6 @@ class NumKeyBtns : Core::Group
   // and the expected order of the members don't depend. Merging of changes in the 
   // project files is simplified.
   $member Bounds
-  $member UpdateLayout
-  $member UpdateViewState
   $member Border
   $member DigitOpConfig
   $member EqualsConfig
@@ -4175,7 +4137,7 @@ $rect <-300,20,-100,60>
 $output false
 class Home : Core::Root
 {
-  $rect <680,-20,880,20>
+  $rect <400,50,600,90>
   inherited property Bounds = <0,0,340,600>;
 
   $rect <20,20,160,60>
@@ -4191,95 +4153,114 @@ class Home : Core::Root
     preset Bounds = <0,0,340,600>;
   }
 
-  $rect <460,80,700,120>
-  object WidgetSet::ToggleButtonConfig ToggleButtonConfig
-  {
-    preset FaceOnFrameActive = 0;
-    preset FaceOnFrameFocused = 0;
-    preset FaceOnFrameDisabled = 1;
-    preset FaceOnFrameDefault = 1;
-    preset FaceOnBitmapActive = Application::ToggleMenu;
-    preset FaceOnBitmapFocused = Application::ToggleMenu;
-    preset FaceOnBitmapDisabled = Application::ToggleMenu;
-    preset FaceOnBitmapDefault = Application::ToggleMenu;
-    preset FaceOffFrameActive = 0;
-    preset FaceOffFrameFocused = 0;
-    preset FaceOffFrameDisabled = 1;
-    preset FaceOffFrameDefault = 1;
-    preset FaceOffBitmapActive = Application::ToggleMenu;
-    preset FaceOffBitmapFocused = Application::ToggleMenu;
-    preset FaceOffBitmapDisabled = Application::ToggleMenu;
-    preset FaceOffBitmapDefault = Application::ToggleMenu;
-  }
-
   $rect <20,20,160,60>
   object Application::ConverterPage ConverterPg
   {
     preset Bounds = <0,0,340,600>;
-    preset Enabled = false;
+    preset Enabled = true;
     preset Visible = false;
   }
 
   $rect <20,20,160,60>
   object Application::SelectionMenu MenuView
   {
-    preset StackingPriority = 1;
+    preset StackingPriority = 2;
     preset Bounds = <0,0,340,600>;
     preset Enabled = false;
     preset Visible = false;
   }
 
-  $rect <468,26,668,66>
-  slot SwitchedOn
+  $rect <420,230,620,270>
+  slot OpenConverter
   {
-    this.MenuView.Visible = true;
-    this.MenuView.Enabled = true;
-    this.MenuView.ConverterBtn.OnActivate = this.OpenConverter;
+    GetRoot().DismissDialog( MenuView, Effects::SlideLeftCentered, null, null, null, null, null );
+    this.PushButton.IconFrame = 1;
+    GetRoot().DismissDialog( StandardPg, null, null, null, null, null, null );
+    GetRoot().PresentDialog( ConverterPg, null, null, null, null, null, null, null, null, null );
   }
 
-  $rect <470,-20,670,20>
-  slot SwitchedOff
+  $rect <400,0,600,40>
+  inherited method Init()
   {
-    this.MenuView.Visible = false;
-    this.MenuView.Enabled = false;
-    this.StandardPg.Visible = true;
-    this.StandardPg.Enabled = true;
-    this.ConverterPg.Visible = false;
-    this.ConverterPg.Enabled = false;
+    GetRoot().PresentDialog( StandardPg, null, null, null, null, null, null, null, null, null );
+    MenuView.ConverterBtn.OnActivate = this.OpenConverter;
+    MenuView.StandardBtn.OnActivate = this.OpenStandardPage;
+    this.PushButton.StackingPriority = 3;
+    this.PushButton.IconFrame = 1;
+  }
+
+  $rect <400,110,640,150>
+  object WidgetSet::PushButtonConfig PushButtonConfig
+  {
+    preset FaceFrameActive = 0;
+    preset FaceFrameFocused = 0;
+    preset FaceFrameDisabled = 1;
+    preset FaceFrameDefault = 1;
+    preset FaceBitmapActive = Application::ToggleMenu;
+    preset FaceBitmapFocused = Application::ToggleMenu;
+    preset FaceBitmapDisabled = Application::ToggleMenu;
+    preset FaceBitmapDefault = Application::ToggleMenu;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::ToggleButton ToggleButton
+  object WidgetSet::PushButton PushButton
   {
-    preset Bounds = <6,5,36,39>;
-    preset OnSwitchOn = SwitchedOn;
-    preset OnSwitchOff = SwitchedOff;
+    preset StackingPriority = 0;
+    preset Bounds = <8,10,38,44>;
+    preset OnPress = null;
+    preset OnActivate = TogglePages;
     preset Label = "Caption";
-    preset Appearance = ToggleButtonConfig;
+    preset Appearance = PushButtonConfig;
   }
 
-  $rect <470,130,670,170>
-  slot OpenConverter
+  $rect <420,280,620,320>
+  slot OpenStandardPage
   {
-    this.MenuView.Visible = false;
-    this.MenuView.Enabled = false;
-    this.StandardPg.Visible = false;
-    this.StandardPg.Enabled = false;
-    this.StandardPg.Keypad.Enabled = false;
-    this.ConverterPg.Visible = true;
-    this.ConverterPg.Enabled = true;
-    this.ConverterPg.Keypad.Enabled = true;
+    GetRoot().DismissDialog( MenuView, Effects::SlideLeftCentered, null, null, null, null, null );
+    this.PushButton.IconFrame = 1;
+    GetRoot().DismissDialog( ConverterPg, null, null, null, null, null, null );
+    GetRoot().PresentDialog( StandardPg, null, null, null, null, null, null, null, null, null );
   }
+
+  $rect <420,330,620,370>
+  slot TogglePages
+  {
+    GetRoot().PresentDialog( MenuView, Effects::SlideRightCentered, null, null, null, null, null, null, null, null );
+    this.PushButton.IconFrame = 0;
+  }
+
+  // Handle Dialogs
+  note group Note
+  {
+    attr Bounds = <400,180,640,390>;
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Init
+  $member Bounds
+  $member Bgk
+  $member StandardPg
+  $member ConverterPg
+  $member MenuView
+  $member OpenConverter
+  $member PushButtonConfig
+  $member PushButton
+  $member OpenStandardPage
+  $member TogglePages
+  $member Note
 }
 
 $rect <-300,190,-100,230>
 $output false
 class ConverterPage : Core::Group
 {
-  $rect <670,540,870,580>
+  $rect <660,470,860,510>
   inherited property Bounds = <0,0,340,600>;
 
-  $rect <420,70,620,110>
+  $rect <410,30,610,70>
   inherited method Init()
   {
     this.Keypad.Border.Visible = false;
@@ -4306,6 +4287,7 @@ class ConverterPage : Core::Group
     this.Keypad.BackBtn.Bounds.y = 150;
     this.Keypad.Clear.Bounds.x = 221;
     this.Keypad.Clear.Bounds.y = 220;
+    this.Keypad.Enabled = true;
   }
 
   $rect <20,20,160,60>
@@ -4317,7 +4299,7 @@ class ConverterPage : Core::Group
     preset NoOfItems = 4;
   }
 
-  $rect <420,120,620,160>
+  $rect <410,80,610,120>
   slot OnLoadItemsOne
   {
     var string name;
@@ -4345,7 +4327,7 @@ class ConverterPage : Core::Group
     preset NoOfItems = 4;
   }
 
-  $rect <420,170,620,210>
+  $rect <410,130,610,170>
   slot OnLoadItemsTwo
   {
     var string name;
@@ -4370,7 +4352,7 @@ class ConverterPage : Core::Group
     preset Bounds = <44,48,284,98>;
     preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
     preset String = "0";
-    preset Font = Application::BatteryFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
@@ -4380,24 +4362,25 @@ class ConverterPage : Core::Group
     preset Bounds = <49,159,284,209>;
     preset Alignment = Views::TextAlignment[AlignHorzLeft, AlignVertCenter];
     preset String = "0";
-    preset Font = Application::BatteryFont;
+    preset Font = Application::DigitalResFont;
     preset Color = #000000FF;
   }
 
   $rect <20,20,160,60>
   object Application::NumKeyBtns Keypad
   {
+    preset StackingPriority = 0;
     preset Bounds = <19,148,319,588>;
   }
 
-  $rect <420,290,620,330>
+  $rect <410,250,610,290>
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = onConvertValue;
     preset OnHold = null;
   }
 
-  $rect <420,340,620,380>
+  $rect <410,300,610,340>
   slot onConvertValue
   {
     var string str = "";
@@ -4457,11 +4440,10 @@ class ConverterPage : Core::Group
 
   }
 
-  $rect <420,390,620,430>
+  $rect <410,350,610,390>
   method string ConvertValue( arg string val, arg string initialMetric, arg string newMetric )
   {
     var string newVal = "";
-    trace initialMetric;
 
     if( initialMetric == "0" )
     {
@@ -4483,13 +4465,13 @@ class ConverterPage : Core::Group
     return newVal;
   }
 
-  $rect <690,70,890,110>
+  $rect <680,30,880,70>
   slot OnSelectFirstMetric
   {
     FirstMetric = string( ComboBoxOne.SelectedItem );
   }
 
-  $rect <690,120,890,160>
+  $rect <680,80,880,120>
   slot OnSelectSecondMetric
   {
     SecondMetric = string( ComboBoxTwo.SelectedItem );
@@ -4498,22 +4480,22 @@ class ConverterPage : Core::Group
   // Initialization
   note group Note
   {
-    attr Bounds = <400,30,640,230>;
+    attr Bounds = <390,-10,630,190>;
   }
 
   // Converter
   note group Note1
   {
-    attr Bounds = <400,250,640,640>;
+    attr Bounds = <390,210,630,600>;
   }
 
   // Metrics
   note group Note2
   {
-    attr Bounds = <670,30,910,490>;
+    attr Bounds = <660,-10,900,450>;
   }
 
-  $rect <427,436,627,476>
+  $rect <417,396,617,436>
   method string ConvertMilimeters( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
@@ -4543,7 +4525,7 @@ class ConverterPage : Core::Group
     return newVal;
   }
 
-  $rect <420,480,620,520>
+  $rect <410,440,610,480>
   method string ConvertCentimeters( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
@@ -4573,7 +4555,7 @@ class ConverterPage : Core::Group
     return newVal;
   }
 
-  $rect <420,530,620,570>
+  $rect <410,490,610,530>
   method string ConvertMeters( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
@@ -4603,7 +4585,7 @@ class ConverterPage : Core::Group
     return newVal;
   }
 
-  $rect <420,580,620,620>
+  $rect <410,540,610,580>
   method string ConvertKilometers( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
@@ -4633,10 +4615,10 @@ class ConverterPage : Core::Group
     return newVal;
   }
 
-  $rect <690,180,890,220>
+  $rect <680,140,880,180>
   property string FirstMetric = "2";
 
-  $rect <690,220,890,260>
+  $rect <680,180,880,220>
   onset FirstMetric
   {
     // The value doesn't change - nothing to do.
@@ -4651,16 +4633,16 @@ class ConverterPage : Core::Group
     // Now you can handle the alternation of the property.
   }
 
-  $rect <690,260,890,300>
+  $rect <680,220,880,260>
   onget FirstMetric
   {
     return pure FirstMetric;
   }
 
-  $rect <690,330,890,370>
+  $rect <680,290,880,330>
   property string SecondMetric = "2";
 
-  $rect <690,370,890,410>
+  $rect <680,330,880,370>
   onset SecondMetric
   {
     // The value doesn't change - nothing to do.
@@ -4675,10 +4657,16 @@ class ConverterPage : Core::Group
     // Now you can handle the alternation of the property.
   }
 
-  $rect <690,410,890,450>
+  $rect <680,370,880,410>
   onget SecondMetric
   {
     return pure SecondMetric;
+  }
+
+  $rect <20,20,160,60>
+  object Application::ComboBox Outline
+  {
+    preset Bounds = <669,522,719,569>;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -4687,6 +4675,7 @@ class ConverterPage : Core::Group
   // project files is simplified.
   $member Init
   $member Bounds
+  $member Outline
   $member ComboBoxOne
   $member OnLoadItemsOne
   $member ComboBoxTwo
@@ -4740,15 +4729,6 @@ class SelectionMenu : Core::Group
     preset Color = #A6B0BCFF;
   }
 
-  $rect <20,20,160,60>
-  object Views::Text Text
-  {
-    preset Bounds = <40,6,140,36>;
-    preset String = "Standard";
-    preset Font = Application::BtnFont;
-    preset Color = #000000FF;
-  }
-
   $rect <410,60,650,100>
   object WidgetSet::PushButtonConfig PushButtonConfig
   {
@@ -4776,6 +4756,41 @@ class SelectionMenu : Core::Group
     preset Label = "Caption";
     preset Appearance = PushButtonConfig;
   }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ConverterBtn1
+  {
+    preset Bounds = <723,11,853,51>;
+    preset Label = "Caption";
+    preset Appearance = PushButtonConfig;
+  }
+
+  $rect <410,110,650,150>
+  object WidgetSet::PushButtonConfig StandardBtnConfig
+  {
+    preset LabelFont = Application::BtnFont;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton StandardBtn
+  {
+    preset Bounds = <43,10,143,40>;
+    preset Label = "Standard";
+    preset Appearance = StandardBtnConfig;
+  }
+
+  // Directives to adapt the order of the above members according to how these members 
+  // where arranged when the project content was stored. In this manner the storage 
+  // and the expected order of the members don't depend. Merging of changes in the 
+  // project files is simplified.
+  $member Bounds
+  $member ConverterBtn1
+  $member Background
+  $member PushButtonConfig
+  $member Separator
+  $member ConverterBtn
+  $member StandardBtnConfig
+  $member StandardBtn
 }
 
 $rect <190,690,390,730>
@@ -4794,7 +4809,7 @@ resource Resources::Bitmap ConverterBtn
 // This class is used internally within Application::ComboBox widget and the associated \
 // Application::ComboBoxList component. You will probably never need to directly \
 // instantiate and control this item component.
-$rect <-300,650,-100,690>
+$rect <460,640,660,680>
 $output false
 class ComboBoxItem : Templates::ListItem
 {
@@ -5063,7 +5078,7 @@ class ComboBoxItem : Templates::ListItem
   object Views::Rectangle Background
   {
     preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <0,0,180,40>;
+    preset Bounds = <6,6,171,36>;
     preset Radius = 7;
     preset Color = #E2E6E9FF;
   }
@@ -5072,7 +5087,7 @@ class ComboBoxItem : Templates::ListItem
   object Views::Text Text
   {
     preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <5,5,181,35>;
+    preset Bounds = <15,8,164,33>;
     preset Ellipsis = true;
     preset Alignment = Views::TextAlignment[AlignHorzAuto, AlignVertCenter];
     preset String = "Text";
@@ -5121,7 +5136,7 @@ class ComboBoxItem : Templates::ListItem
 // The class Application::ComboBoxList is used internally within Application::ComboBox \
 // widget. You will probably never need to directly instantiate and control this \
 // list component.
-$rect <-300,600,-100,640>
+$rect <460,590,660,630>
 $output false
 class ComboBoxList : Templates::List
 {
@@ -5408,7 +5423,7 @@ class ComboBoxList : Templates::List
 // In order to trigger the combo box to reload one or more items, invoke the method \
 // @InvalidateItems(). The box will thereupon schedule the necessary loading steps \
 // automatically.
-$rect <-300,550,-100,590>
+$rect <460,540,660,580>
 $output false
 class ComboBox : Templates::ComboBox
 {
@@ -5470,7 +5485,7 @@ class ComboBox : Templates::ComboBox
 
     if ( !isEnabled )
     {
-      Background1.Color   = #BFC3C6FF;
+      Background1.Color   = #8493B1FF;
       Background2.Visible = false;
       Image.FrameNumber   = 1;
       Image.Color         = #AAAAAAFF;
@@ -5479,7 +5494,7 @@ class ComboBox : Templates::ComboBox
 
     else if ( isOpened )
     {
-      Background1.Color   = #BFC3C6FF;
+      Background1.Color   = #8493B1FF;
       Background2.Visible = false;
       Image.FrameNumber   = 0;
       Image.Color         = #000000FF;
@@ -5488,7 +5503,7 @@ class ComboBox : Templates::ComboBox
 
     else if ( isPressed )
     {
-      Background1.Color   = #BFC3C6FF;
+      Background1.Color   = #8493B1FF;
       Background2.Visible = true;
       Image.FrameNumber   = 1;
       Image.Color         = #FFFFFFFF;
@@ -5497,7 +5512,7 @@ class ComboBox : Templates::ComboBox
 
     else if ( isSelected )
     {
-      Background1.Color   = #C5C9D7FF;
+      Background1.Color   = #8493B1FF;
       Background2.Visible = false;
       Image.FrameNumber   = 1;
       Image.Color         = #000000FF;
@@ -5507,7 +5522,7 @@ class ComboBox : Templates::ComboBox
     // Enabled but not pressed nor selected.
     else
     {
-      Background1.Color   = #BFC3C6FF;
+      Background1.Color   = #8493B1FF;
       Background2.Visible = false;
       Image.FrameNumber   = 1;
       Image.Color         = #000000FF;
@@ -5869,7 +5884,7 @@ class ComboBox : Templates::ComboBox
     preset Layout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,250,40>;
     preset Radius = 7;
-    preset Color = #BFC3C6FF;
+    preset Color = #6E7B94FF;
   }
 
   $rect <20,20,160,60>
@@ -6054,5 +6069,5 @@ class ComboBox : Templates::ComboBox
 // ComboBox
 note group Note5
 {
-  attr Bounds = <-320,510,-80,710>;
+  attr Bounds = <440,500,680,700>;
 }

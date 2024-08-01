@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Home;
+attr active = Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Home.SwitchedOff;
+attr currentCodeInspector = Application::Home.TogglePages;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,7 +32,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-156,-135>;
   attr zoom = 0.75;
@@ -41,44 +40,73 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-914,-117>;
+  attr scrollTo = <-914,-70>;
   attr zoom = 0.75;
 }
 
 view class Application::ConverterPage
 {
   attr enableWireMode = false;
-  attr scrollTo = <-209,137>;
+  attr scrollTo = <-209,-82>;
   attr zoom = 0.75;
+}
+
+view class Application::Application
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-161,-247>;
+  attr zoom = 0.5;
 }
 
 view class Application::Home
 {
   attr enableWireMode = false;
-  attr scrollTo = <-7,-199>;
+  attr scrollTo = <-415,-67>;
+  attr zoom = 0.75;
+}
+
+view class Application::SelectionMenu
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-332,-103>;
+  attr zoom = 0.75;
+}
+
+view class Application::Battery
+{
+  attr enableWireMode = false;
+  attr scrollTo = <-7,-55>;
   attr zoom = 1.0;
 }
 
-codeview Application::Home.SwitchedOff
+codeview Application::Home.OpenStandardPage
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <38,4>;
-  attr codeSelStart = <38,4>;
-}
-
-codeview Application::Home.SwitchedOn
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <35,1>;
-  attr codeSelStart = <35,1>;
+  attr codeSelEnd = <30,1>;
+  attr codeSelStart = <30,1>;
 }
 
 codeview Application::Home.OpenConverter
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <39,4>;
-  attr codeSelStart = <39,4>;
+  attr codeSelEnd = <0,1>;
+  attr codeSelStart = <30,1>;
+}
+
+codeview Application::Home.TogglePages
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <44,1>;
+  attr codeSelStart = <44,1>;
+}
+
+codeview Application::Home.Init
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <54,1>;
+  attr codeSelStart = <54,1>;
 }
