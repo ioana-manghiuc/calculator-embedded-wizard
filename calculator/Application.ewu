@@ -152,6 +152,10 @@ class Application : Core::Group
         CorrectInput = true;
         cursorPosition = Text.String.length;
       }
+      else
+      {
+        CorrectInput = false;
+      }
     }
 
 
@@ -281,7 +285,7 @@ class Application : Core::Group
     return res; 
   }
 
-  $rect <730,350,930,390>
+  $rect <730,440,930,480>
   method bool IsExpressionValid( arg string expression )
   {
     // check for valid operators
@@ -319,13 +323,13 @@ class Application : Core::Group
     return true;
   }
 
-  $rect <730,300,930,340>
+  $rect <730,390,930,430>
   method bool IsDigit( arg char op )
   {
     return ( (op >= '0') && (op <= '9') || op == '.');
   }
 
-  $rect <730,200,930,240>
+  $rect <730,290,930,330>
   method bool CorrectParentheses( arg string expression )
   {
     var Application::CharStack stk = new Application::CharStack;
@@ -350,7 +354,7 @@ class Application : Core::Group
     return stk.IsEmpty();
   }
 
-  $rect <730,250,940,290>
+  $rect <730,340,940,380>
   method bool OperatorsCorrectlyUsed( arg string expression )
   {
     var int32 i = 0;
@@ -359,29 +363,36 @@ class Application : Core::Group
     {  
       for ( ; i < expression.length; i++ )
       {
-       if (i == 0)
+       if(i == 0)
         {
-          if ( !((expression[i] >= '0' && expression[i] <= '9') || expression[i] == '-' || expression[i] == '(') )
+          if( !((expression[i] >= '0' && expression[i] <= '9') || expression[i] == '-' || expression[i] == '(') )
           {
             return false; 
           }
         }
         else
         {
-          if ( expression[i] == '-' && IsOperator(expression[i - 1]) && !IsDigit(expression[i + 1]) )
+          if( IsMinus(expression[i]) && OperatorNotMinus(expression[i - 1]) && !IsDigit(expression[i + 1]) )
           {
               return false;
           }
-          if ( IsOperator(expression[i]) && IsOperator(expression[i - 1]) && expression[i - 1] == '-' && expression[i] == '-' )
+          if( IsMinus(expression[i]) && IsDigit(expression[i - 1]) && IsOperator(expression[i + 1]) )
+          {
+            return false;
+          }
+          if( OperatorNotMinus(expression[i]) && OperatorNotMinus(expression[i - 1]) )
+          {
+            return false;
+          }
+          if( IsMinus(expression[i]) && IsMinus(expression[i - 1]) )
+          {
+            return false;
+          }
+          if( expression[i] == '.' && expression[i - 1] == '.' )
           {
             return false; 
-          }
-          if ( expression[i] == '.' && expression[i - 1] == '.' )
-          {
-            return false; 
-          }
-          
-          if ( i == expression.length - 1 && IsOperator(expression[i]) )
+          }      
+          if( i == expression.length - 1 && IsOperator(expression[i]) )
           {
             return false;  
           }
@@ -392,7 +403,7 @@ class Application : Core::Group
     return true;
   }
 
-  $rect <730,100,930,140>
+  $rect <730,200,930,240>
   method bool IsParenthesis( arg char op )
   {
     if( op == '(' || op == ')')
@@ -401,7 +412,7 @@ class Application : Core::Group
     return false;
   }
 
-  $rect <730,150,930,190>
+  $rect <730,240,930,280>
   method bool CharactersAllowed( arg string expression )
   {
     var int32 i = 0;
@@ -416,7 +427,7 @@ class Application : Core::Group
     return true;
   }
 
-  $rect <730,450,930,490>
+  $rect <730,540,930,580>
   method bool IsWhiteSpace( arg char op )
   {
     return ( op == ' ' || op == '\t' );
@@ -438,7 +449,7 @@ class Application : Core::Group
   // Validations
   note group Note1
   {
-    attr Bounds = <690,0,980,670>;
+    attr Bounds = <690,0,980,750>;
   }
 
   // Error Dialog
@@ -453,7 +464,7 @@ class Application : Core::Group
     attr Bounds = <1000,0,1420,160>;
   }
 
-  $rect <730,550,930,590>
+  $rect <730,640,930,680>
   method bool IsNumber( arg string expression )
   {
     var int32 i = 0;
@@ -469,7 +480,7 @@ class Application : Core::Group
     return true;
   }
 
-  $rect <730,500,930,540>
+  $rect <730,590,930,630>
   method bool IsDot( arg char op )
   {
     return op == '.';
@@ -488,7 +499,8 @@ class Application : Core::Group
             continue;
         }
         else if ( IsDigit(expression[i]) || (expression[i] == '.' && IsDigit(expression[i + 1])) ||
-                 (expression[i] == '-' && (i == 0 || IsOperator(expression[i - 1]) || expression[i - 1] == '(') && (IsDigit(expression[i + 1]) || expression[i + 1] == '.')) )
+                 (expression[i] == '-' && (i == 0 || IsOperator(expression[i - 1]) || expression[i - 1] == '(') 
+                 && (IsDigit(expression[i + 1]) || expression[i + 1] == '.')) )
         {
             var Application::Tuple gr = GetNumberFromPosition(i, expression);
             var string number = gr.IdentifiedNumber;
@@ -515,7 +527,7 @@ class Application : Core::Group
 
   }
 
-  $rect <730,400,930,440>
+  $rect <730,490,930,530>
   method bool IsSpace( arg char op )
   {
     return op == '\0' || op == '\t' || op =='\n';
@@ -530,6 +542,7 @@ class Application : Core::Group
 
     tokens = TokenizeExpression( expression );
     var Application::StringElement token = tokens.Front;
+    tokens.Print();
 
     while( token != null )
     {
@@ -648,7 +661,7 @@ class Application : Core::Group
     return result;
   }
 
-  $rect <730,600,930,640>
+  $rect <730,690,930,730>
   method bool IsNegativeNumber( arg string expression )
   {
     var string subexpr = expression.right(expression.length - 1);
@@ -1089,6 +1102,18 @@ class Application : Core::Group
     }
   }
 
+  $rect <730,100,930,140>
+  method bool IsMinus( arg char op )
+  {
+    return op == '-';
+  }
+
+  $rect <730,150,930,190>
+  method bool OperatorNotMinus( arg char op )
+  {
+    return ( op == '+' || op == 'x' || op == '/' ||  op == '%' || op == '^');
+  }
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -1158,6 +1183,8 @@ class Application : Core::Group
   $member OnGetBatteryLvl
   $member OnSetBatteryLvl
   $member UpdateProperty2
+  $member IsMinus
+  $member OperatorNotMinus
 }
 
 $rect <460,20,660,60>
@@ -2409,7 +2436,7 @@ class Battery : Core::Group
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
-    preset Period = 500;
+    preset Period = 7000;
     preset Enabled = true;
   }
 
@@ -2573,7 +2600,7 @@ class Battery : Core::Group
   }
 
   $rect <200,120,400,160>
-  property int32 BatteryPercentage = 15;
+  property int32 BatteryPercentage = 101;
 
   $rect <600,120,800,160>
   onget BatteryPercentage
@@ -4764,9 +4791,10 @@ class ConverterPage : Core::Group
       str = Keypad.keyString;
     }
 
-    if( str == "C" || str == "c" || ValueOne.String == "0" )
+    if( str == "C" || str == "c" || ( ValueOne.String == "0" && str != ".") )
     {
       ValueOne.String = "";
+      ValueTwo.String = "";
     }
 
     if(KeyHandler.Code == Core::KeyCode.Left)
