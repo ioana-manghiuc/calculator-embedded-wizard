@@ -28,12 +28,12 @@ var EmWiApp;if(!EmWiApp)throw new Error("The application file '_project.js' isn'
 );if(EmWiApp.aci)throw new Error("The unit file 'Templates.js' included twice!");
 EmWiApp.aci=(function(){var B=EmWiApp;var E={};
 
-E.D6={_Init:function(aArg){B.Core.L._Init.call(this,aArg);this.__proto__=E.D6;},_className:
-"Templates::ComboBox"};E.F_={_Init:function(aArg){B.Core.L._Init.call(this,aArg);
-this.__proto__=E.F_;},_className:"Templates::List"};E.GJ={_Init:function(aArg){B.
-Core.L._Init.call(this,aArg);this.__proto__=E.GJ;},_className:"Templates::ListItem"
+E.D9={_Init:function(aArg){B.Core.L._Init.call(this,aArg);this.__proto__=E.D9;},_className:
+"Templates::ComboBox"};E.Gb={_Init:function(aArg){B.Core.L._Init.call(this,aArg);
+this.__proto__=E.Gb;},_className:"Templates::List"};E.GO={_Init:function(aArg){B.
+Core.L._Init.call(this,aArg);this.__proto__=E.GO;},_className:"Templates::ListItem"
 };
-E._Init=function(){E.D6.__proto__=B.Core.L;E.F_.__proto__=B.Core.L;E.GJ.__proto__=
-B.Core.L;};E._ReInit=function(){};E.Ec=function(D){};return E;})();
+E._Init=function(){E.D9.__proto__=B.Core.L;E.Gb.__proto__=B.Core.L;E.GO.__proto__=
+B.Core.L;};E._ReInit=function(){};E.Ef=function(D){};return E;})();
 
 /* Embedded Wizard */
