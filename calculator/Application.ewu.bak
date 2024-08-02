@@ -149,6 +149,7 @@ class Application : Core::Group
       if(IsExpressionValid(Text.String))
       {
         Text.String = EvaluateRPN(Text.String);
+        CorrectInput = true;
         cursorPosition = Text.String.length;
       }
     }
@@ -219,7 +220,7 @@ class Application : Core::Group
     attr Bounds = <380,180,670,530>;
   }
 
-  $rect <1050,50,1250,90>
+  $rect <1100,50,1300,90>
   method int32 GetPriorityOfOperator( arg char op )
   {
     var int32 priority = 0;
@@ -245,7 +246,7 @@ class Application : Core::Group
     return priority;
   }
 
-  $rect <1035,100,1260,140>
+  $rect <1085,100,1310,140>
   method Application::Tuple GetNumberFromPosition( arg int32 startPos, arg string expression )
   {
     var int32 endPos;
@@ -289,28 +290,28 @@ class Application : Core::Group
 
     if ( expression == "" )
     {
-         signal onOpenDialog;
-         ErrorDialog.ErrorText.String = "Expression is null.";
+         CorrectInput = false;
+         ErrorTxt = "Expression is null.";
          return false;
     }
     else
     {
         if( !CorrectParentheses(expression) )
         {
-           signal onOpenDialog;
-           ErrorDialog.ErrorText.String = "Parantheses used incorrectly.";
+           CorrectInput = false;
+           ErrorTxt = "Parantheses used incorrectly.";
            return false;
         }
         else if ( !CharactersAllowed(expression) )
         {
-           signal onOpenDialog;
-           ErrorDialog.ErrorText.String = "Expression contains characters that are not allowed.";
+           CorrectInput = false;
+           ErrorTxt = "Expression contains characters that are not allowed.";
            return false;
         }
         else if( !OperatorsCorrectlyUsed(expression) )
         {
-           signal onOpenDialog;
-           ErrorDialog.ErrorText.String = "Operators used incorrectly.";
+           CorrectInput = false;
+           ErrorTxt = "Operators used incorrectly.";
            return false;
         }    
     }
@@ -421,32 +422,7 @@ class Application : Core::Group
     return ( op == ' ' || op == '\t' );
   }
 
-  $rect <20,20,160,60>
-  object Application::ErrorDialog ErrorDialog
-  {
-    preset StackingPriority = 3;
-    preset Bounds = <-270,238,-20,338>;
-    preset Visible = false;
-    preset OnCloseDialog = onDialogHandled;
-  }
-
-  $rect <1050,280,1250,320>
-  slot onOpenDialog
-  {
-    Int32Effect.Enabled = true;
-    ErrorDialog.Visible = true;
-    ErrorDialog.Bounds.x = 45;
-    ErrorDialog.OnCloseDialog = onDialogHandled;
-  }
-
-  $rect <1050,330,1250,370>
-  slot onDialogHandled
-  {
-    ErrorDialog.Bounds.x = -270;
-    ErrorDialog.Visible = false;
-  }
-
-  $rect <1050,230,1250,270>
+  $rect <380,600,580,640>
   inherited method Init()
   {
     signal BatteryDialog.onUseBattery;
@@ -459,17 +435,6 @@ class Application : Core::Group
     preset Visible = true;
   }
 
-  $rect <1050,380,1250,420>
-  object Effects::Int32Effect Int32Effect
-  {
-    preset NoOfCycles = 3;
-    preset CycleDuration = 400;
-    preset InterCycleDelay = 0;
-    preset Enabled = true;
-    preset Value1 = 155;
-    preset Outlet = ^ErrorDialog.Opacity;
-  }
-
   // Validations
   note group Note1
   {
@@ -479,13 +444,13 @@ class Application : Core::Group
   // Error Dialog
   note group Note2
   {
-    attr Bounds = <1000,180,1290,450>;
+    attr Bounds = <1000,180,1420,450>;
   }
 
   // Get Methods
   note group Note3
   {
-    attr Bounds = <1000,0,1290,160>;
+    attr Bounds = <1000,0,1420,160>;
   }
 
   $rect <730,550,930,590>
@@ -718,32 +683,33 @@ class Application : Core::Group
   {
     if( BatteryDialog.BatteryPercentage == 0 )
     {
+      BatteryLvl = 0;
       PowerOff();
     }
   }
 
-  $rect <1380,40,1580,80>
+  $rect <1460,40,1660,80>
   var color ScreenOn = #CFE4F8FF;
 
-  $rect <1380,90,1580,130>
+  $rect <1460,90,1660,130>
   var color ScreenOnB = #99A8B7FF;
 
-  $rect <1380,140,1580,180>
+  $rect <1460,140,1660,180>
   var color ScreenT = #FFFFFFFF;
 
-  $rect <1380,190,1580,230>
+  $rect <1460,190,1660,230>
   var color ScreenOff = #4E555CFF;
 
-  $rect <1380,240,1580,280>
+  $rect <1460,240,1660,280>
   var color ScreenOffBL = #948F64FF;
 
-  $rect <1380,290,1580,330>
+  $rect <1460,290,1660,330>
   var color ScreenOffBR = #9E986AFF;
 
   // Screen Colors & Methods
   note group Note4
   {
-    attr Bounds = <1330,0,1620,450>;
+    attr Bounds = <1440,0,1680,450>;
   }
 
   $rect <20,20,160,60>
@@ -753,7 +719,7 @@ class Application : Core::Group
     preset Visible = false;
   }
 
-  $rect <1220,510,1410,550>
+  $rect <1240,510,1430,550>
   object Core::PropertyObserver StateObserver
   {
     preset OnEvent = onStateTrue;
@@ -762,7 +728,7 @@ class Application : Core::Group
 
   // This slot method is executed when the associated property observer 'PropertyObserver' \
   // is notified.
-  $rect <1210,560,1410,600>
+  $rect <1240,560,1440,600>
   slot onStateTrue
   {
     if ( BatteryDialog.State == true )
@@ -775,7 +741,7 @@ class Application : Core::Group
     }
   }
 
-  $rect <1380,340,1580,380>
+  $rect <1460,340,1660,380>
   method void TurnScreenOn()
   {
     OutputBgk.Color = ScreenOn;
@@ -783,7 +749,7 @@ class Application : Core::Group
     OutputBgk.ColorBR = ScreenOnB;
   }
 
-  $rect <1380,390,1580,430>
+  $rect <1460,390,1660,430>
   method void TurnScreenOff()
   {
     OutputBgk.Color = ScreenOff;
@@ -794,10 +760,10 @@ class Application : Core::Group
   // Battery Dialog
   note group Note5
   {
-    attr Bounds = <1000,470,1630,670>;
+    attr Bounds = <1000,470,1680,670>;
   }
 
-  $rect <1420,510,1620,550>
+  $rect <1450,510,1650,550>
   object Core::PropertyObserver NewBatteryObserver
   {
     preset OnEvent = onValidBattery;
@@ -806,7 +772,7 @@ class Application : Core::Group
 
   // This slot method is executed when the associated property observer 'PropertyObserver' \
   // is notified.
-  $rect <1420,560,1620,600>
+  $rect <1450,560,1650,600>
   slot onValidBattery
   {
     if( ReplaceBatteryDialog.NewBatteryLvl >= 20 || ReplaceBatteryDialog.Enabled == false)
@@ -815,18 +781,19 @@ class Application : Core::Group
     }
     else if ( ReplaceBatteryDialog.NewBatteryLvl < 20)
     {
-      signal onOpenDialog;
-      ErrorDialog.ErrorText.String = "Battery not charged.";
+      CorrectInput = false;
+      ErrorTxt = "Battery not charged.";
     }
   }
 
-  $rect <1210,610,1410,650>
+  $rect <1240,610,1440,650>
   method void PowerOn()
   {
     KeyHandler.Enabled = true;
     TurnScreenOn();
     ResetVariables();
     BatteryDialog.State = false;
+    BatteryLvl = ReplaceBatteryDialog.NewBatteryLvl;
     BatteryDialog.BatteryPercentage = ReplaceBatteryDialog.NewBatteryLvl;
     BatteryDialog.Text.Color = BatteryDialog.Green;
     BatteryDialog.Visible = true; 
@@ -850,6 +817,276 @@ class Application : Core::Group
     }
 
     return cleanExpression;
+  }
+
+  $rect <1210,230,1410,270>
+  property bool CorrectInput = true;
+
+  $rect <1210,280,1410,320>
+  onget CorrectInput
+  {
+    // Per default return the value stored already in the property.
+    return pure CorrectInput;
+
+    /*
+
+      TO DO:
+
+      If the property should return the value stored in the underlying device
+      or in the middleware, remove the above 'return' statement and instead do
+      following:
+
+      Declare a local variable to receive the value from the underlying device.
+      The type of the variable has to correspond to the data type of the property.
+      For example in case of an 'int32' property:
+      
+        var int32 result;
+
+      Implement a native statement to access the value and to store it in the
+      variable 'result'. Then return the value. For example:
+
+        $if !$prototyper
+          native ( result )
+          {
+            result = YourDevice_GetSomeValue();
+          }
+        $endif
+
+        return result;
+
+    */
+  }
+
+  $rect <1010,280,1210,320>
+  onset CorrectInput
+  {
+    // The property doesn't change -> nothing to do.
+    if ( pure CorrectInput == value )
+      return;
+
+    // Remember the new value in the internal memory of the property.
+    pure CorrectInput = value;
+
+    // For target code generation you will use your specific device API 
+    // to change the affected value.
+    $if !$prototyper
+      native ( value )
+      {
+        /*
+           TO DO:
+
+           You can call a function of your own device API or you simply
+           modify a variable existing in your middleware to reflect the
+           new value:
+
+           YourDevice_SetSomeValue( value );
+
+           or
+
+           YourDevice_SomeVariable = value;
+        */
+      }
+    $endif
+
+    // Notify all associated property observers.
+    notifyobservers ^CorrectInput;
+  }
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <1010,230,1210,270>
+  $output true
+  method void UpdateProperty( arg int32 aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure CorrectInput )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure CorrectInput = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^CorrectInput;
+    }
+  }
+
+  $rect <1210,330,1410,370>
+  property string ErrorTxt;
+
+  $rect <1210,380,1410,420>
+  onget ErrorTxt
+  {
+    // Per default return the value stored already in the property.
+    return pure ErrorTxt;
+
+    /*
+
+      TO DO:
+
+      If the property should return the value stored in the underlying device
+      or in the middleware, remove the above 'return' statement and instead do
+      following:
+
+      Declare a local variable to receive the value from the underlying device.
+      The type of the variable has to correspond to the data type of the property.
+      For example in case of an 'int32' property:
+      
+        var int32 result;
+
+      Implement a native statement to access the value and to store it in the
+      variable 'result'. Then return the value. For example:
+
+        $if !$prototyper
+          native ( result )
+          {
+            result = YourDevice_GetSomeValue();
+          }
+        $endif
+
+        return result;
+
+    */
+  }
+
+  $rect <1010,380,1210,420>
+  onset ErrorTxt
+  {
+    // The property doesn't change -> nothing to do.
+    if ( pure ErrorTxt == value )
+      return;
+
+    // Remember the new value in the internal memory of the property.
+    pure ErrorTxt = value;
+
+    // For target code generation you will use your specific device API 
+    // to change the affected value.
+    $if !$prototyper
+      native ( value )
+      {
+        /*
+           TO DO:
+
+           You can call a function of your own device API or you simply
+           modify a variable existing in your middleware to reflect the
+           new value:
+
+           YourDevice_SetSomeValue( value );
+
+           or
+
+           YourDevice_SomeVariable = value;
+        */
+      }
+    $endif
+
+    // Notify all associated property observers.
+    notifyobservers ^ErrorTxt;
+  }
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <1010,330,1210,370>
+  $output true
+  method void UpdateProperty1( arg int32 aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure ErrorTxt )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure ErrorTxt = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^ErrorTxt;
+    }
+  }
+
+  $rect <1200,690,1400,730>
+  property int32 BatteryLvl = 101;
+
+  $rect <1600,690,1800,730>
+  onget BatteryLvl
+  {
+    // Per default return the value stored already in the property.
+    return pure BatteryLvl;
+
+    /*
+
+      TO DO:
+
+      If the property should return the value stored in the underlying device
+      or in the middleware, remove the above 'return' statement and instead do
+      following:
+
+      Declare a local variable to receive the value from the underlying device.
+      The type of the variable has to correspond to the data type of the property.
+      For example in case of an 'int32' property:
+      
+        var int32 result;
+
+      Implement a native statement to access the value and to store it in the
+      variable 'result'. Then return the value. For example:
+
+        $if !$prototyper
+          native ( result )
+          {
+            result = YourDevice_GetSomeValue();
+          }
+        $endif
+
+        return result;
+
+    */
+  }
+
+  $rect <1400,690,1600,730>
+  onset BatteryLvl
+  {
+    // The property doesn't change -> nothing to do.
+    if ( pure BatteryLvl == value )
+      return;
+
+    // Remember the new value in the internal memory of the property.
+    pure BatteryLvl = value;
+
+    // For target code generation you will use your specific device API 
+    // to change the affected value.
+    $if !$prototyper
+      native ( value )
+      {
+        /*
+           TO DO:
+
+           You can call a function of your own device API or you simply
+           modify a variable existing in your middleware to reflect the
+           new value:
+
+           YourDevice_SetSomeValue( value );
+
+           or
+
+           YourDevice_SomeVariable = value;
+        */
+      }
+    $endif
+
+    // Notify all associated property observers.
+    notifyobservers ^BatteryLvl;
+  }
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <1000,690,1200,730>
+  $output true
+  method void UpdateProperty2( arg int32 aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure BatteryLvl )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure BatteryLvl = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^BatteryLvl;
+    }
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -891,11 +1128,7 @@ class Application : Core::Group
   $member TokenizeExpression
   $member ShuntingYardAlgorithm
   $member EvaluateRPN
-  $member ErrorDialog
-  $member onOpenDialog
-  $member onDialogHandled
   $member BatteryDialog
-  $member Int32Effect
   $member Note1
   $member Note2
   $member Note3
@@ -913,6 +1146,18 @@ class Application : Core::Group
   $member onValidBattery
   $member PowerOn
   $member RemoveExtraSymbols
+  $member CorrectInput
+  $member OnGetCorrectInput
+  $member OnSetCorrectInput
+  $member UpdateProperty
+  $member ErrorTxt
+  $member OnGetErrorTxt
+  $member OnSetErrorTxt
+  $member UpdateProperty1
+  $member BatteryLvl
+  $member OnGetBatteryLvl
+  $member OnSetBatteryLvl
+  $member UpdateProperty2
 }
 
 $rect <460,20,660,60>
@@ -2164,7 +2409,7 @@ class Battery : Core::Group
   object Core::Timer Timer
   {
     preset OnTrigger = onUseBattery;
-    preset Period = 7000;
+    preset Period = 500;
     preset Enabled = true;
   }
 
@@ -2328,7 +2573,7 @@ class Battery : Core::Group
   }
 
   $rect <200,120,400,160>
-  property int32 BatteryPercentage = 101;
+  property int32 BatteryPercentage = 15;
 
   $rect <600,120,800,160>
   onget BatteryPercentage
@@ -4137,7 +4382,7 @@ $rect <-300,20,-100,60>
 $output false
 class Home : Core::Root
 {
-  $rect <400,50,600,90>
+  $rect <650,120,850,160>
   inherited property Bounds = <0,0,340,600>;
 
   $rect <20,20,160,60>
@@ -4170,16 +4415,18 @@ class Home : Core::Root
     preset Visible = false;
   }
 
-  $rect <420,230,620,270>
+  $rect <410,70,610,110>
   slot OpenConverter
   {
     GetRoot().DismissDialog( MenuView, Effects::SlideLeftCentered, null, null, null, null, null );
     this.PushButton.IconFrame = 1;
-    GetRoot().DismissDialog( StandardPg, null, null, null, null, null, null );
+    if( CurrentPage == "Standard" )
+      GetRoot().DismissDialog( StandardPg, null, null, null, null, null, null );
     GetRoot().PresentDialog( ConverterPg, null, null, null, null, null, null, null, null, null );
+    CurrentPage = "Converter";
   }
 
-  $rect <400,0,600,40>
+  $rect <650,70,850,110>
   inherited method Init()
   {
     GetRoot().PresentDialog( StandardPg, null, null, null, null, null, null, null, null, null );
@@ -4189,7 +4436,7 @@ class Home : Core::Root
     this.PushButton.IconFrame = 1;
   }
 
-  $rect <400,110,640,150>
+  $rect <650,170,890,210>
   object WidgetSet::PushButtonConfig PushButtonConfig
   {
     preset FaceFrameActive = 0;
@@ -4213,26 +4460,131 @@ class Home : Core::Root
     preset Appearance = PushButtonConfig;
   }
 
-  $rect <420,280,620,320>
+  $rect <410,120,610,160>
   slot OpenStandardPage
   {
     GetRoot().DismissDialog( MenuView, Effects::SlideLeftCentered, null, null, null, null, null );
     this.PushButton.IconFrame = 1;
-    GetRoot().DismissDialog( ConverterPg, null, null, null, null, null, null );
+    if( CurrentPage == "Converter" )
+      GetRoot().DismissDialog( ConverterPg, null, null, null, null, null, null );
     GetRoot().PresentDialog( StandardPg, null, null, null, null, null, null, null, null, null );
+    CurrentPage = "Standard";
   }
 
-  $rect <420,330,620,370>
+  $rect <410,170,610,210>
   slot TogglePages
   {
     GetRoot().PresentDialog( MenuView, Effects::SlideRightCentered, null, null, null, null, null, null, null, null );
     this.PushButton.IconFrame = 0;
   }
 
-  // Handle Dialogs
+  // Handle Pages
   note group Note
   {
-    attr Bounds = <400,180,640,390>;
+    attr Bounds = <390,20,630,280>;
+  }
+
+  $rect <410,220,610,260>
+  var string CurrentPage = "Standard";
+
+  $rect <20,20,160,60>
+  object Application::ErrorDialog ErrorDialog
+  {
+    preset StackingPriority = 3;
+    preset Bounds = <-270,238,-20,338>;
+  }
+
+  $rect <410,350,610,390>
+  object Core::PropertyObserver ObserveCalcError
+  {
+    preset OnEvent = onIncorrectExpr;
+    preset Outlet = ^StandardPg.CorrectInput;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <610,350,810,390>
+  slot onIncorrectExpr
+  {
+    if( StandardPg.CorrectInput == false )
+    {
+      signal onOpenErrorDialog;
+      ErrorDialog.ErrorText.String = StandardPg.ErrorTxt;
+    }
+  }
+
+  $rect <410,400,610,440>
+  object Core::PropertyObserver ObserveConverterErr
+  {
+    preset OnEvent = onErrorSignaled;
+    preset Outlet = ^ConverterPg.CorrectInput;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver1' \
+  // is notified.
+  $rect <610,400,810,440>
+  slot onErrorSignaled
+  {
+    if( ConverterPg.CorrectInput == false )
+    {
+      signal onOpenErrorDialog;
+      ErrorDialog.ErrorText.String = "Expression contains characters that are not allowed.";
+    }
+  }
+
+  $rect <410,450,610,490>
+  slot onOpenErrorDialog
+  {
+    Int32Effect.Enabled = true;
+    ErrorDialog.Visible = true;
+    ErrorDialog.Bounds.x = 45;
+    ErrorDialog.OnCloseDialog = onDialogHandled;
+  }
+
+  $rect <650,220,850,260>
+  object Effects::Int32Effect Int32Effect
+  {
+    preset NoOfCycles = 3;
+    preset CycleDuration = 400;
+    preset InterCycleDelay = 0;
+    preset Enabled = true;
+    preset Value1 = 155;
+    preset Outlet = ^ErrorDialog.Opacity;
+  }
+
+  $rect <620,450,820,490>
+  slot onDialogHandled
+  {
+    ErrorDialog.Bounds.x = -270;
+    ErrorDialog.Visible = false;
+  }
+
+  $rect <410,500,610,540>
+  object Core::PropertyObserver ObserveBatteryLevel
+  {
+    preset OnEvent = onBatteryChanged;
+    preset Outlet = ^StandardPg.BatteryLvl;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <610,500,810,540>
+  slot onBatteryChanged
+  {
+    if( StandardPg.BatteryLvl == 0 )
+    {
+      this.ConverterPg.KeyHandler.Enabled = false;
+    }
+    else
+    {
+      this.ConverterPg.KeyHandler.Enabled = true;
+    }
+  }
+
+  // Handle Error & Battery Dialog
+  note group Note1
+  {
+    attr Bounds = <390,300,840,560>;
   }
 
   // Directives to adapt the order of the above members according to how these members 
@@ -4251,6 +4603,18 @@ class Home : Core::Root
   $member OpenStandardPage
   $member TogglePages
   $member Note
+  $member CurrentPage
+  $member ErrorDialog
+  $member ObserveCalcError
+  $member onIncorrectExpr
+  $member ObserveConverterErr
+  $member onErrorSignaled
+  $member onOpenErrorDialog
+  $member Int32Effect
+  $member onDialogHandled
+  $member ObserveBatteryLevel
+  $member onBatteryChanged
+  $member Note1
 }
 
 $rect <-300,190,-100,230>
@@ -4373,14 +4737,14 @@ class ConverterPage : Core::Group
     preset Bounds = <19,148,319,588>;
   }
 
-  $rect <410,250,610,290>
+  $rect <410,240,610,280>
   object Core::KeyPressHandler KeyHandler
   {
     preset OnPress = onConvertValue;
     preset OnHold = null;
   }
 
-  $rect <410,300,610,340>
+  $rect <410,290,610,330>
   slot onConvertValue
   {
     var string str = "";
@@ -4434,13 +4798,21 @@ class ConverterPage : Core::Group
 
     if (str == "=" )
     {
-       ValueTwo.String = ConvertValue(ValueOne.String, FirstMetric, SecondMetric);
+      if( CharactersAllowed(ValueOne.String) )
+      {
+        ValueTwo.String = ConvertValue(ValueOne.String, FirstMetric, SecondMetric);  
+        CorrectInput = true;
+      }
+      else
+      {
+        CorrectInput = false;
+      }
     }
 
 
   }
 
-  $rect <410,350,610,390>
+  $rect <410,340,610,380>
   method string ConvertValue( arg string val, arg string initialMetric, arg string newMetric )
   {
     var string newVal = "";
@@ -4486,7 +4858,7 @@ class ConverterPage : Core::Group
   // Converter
   note group Note1
   {
-    attr Bounds = <390,210,630,600>;
+    attr Bounds = <390,200,630,640>;
   }
 
   // Metrics
@@ -4495,7 +4867,7 @@ class ConverterPage : Core::Group
     attr Bounds = <660,-10,900,450>;
   }
 
-  $rect <417,396,617,436>
+  $rect <410,390,610,430>
   method string ConvertMilimeters( arg string initialValue, arg string newMetric )
   {
     var string newVal = "";
@@ -4669,6 +5041,110 @@ class ConverterPage : Core::Group
     preset Bounds = <669,522,719,569>;
   }
 
+  $rect <410,590,610,630>
+  method bool CharactersAllowed( arg string expression )
+  {
+    var int32 i = 0;
+
+    for( ; i < expression.length; i++ )
+    {
+      if ( !((expression[i] >= '0') && (expression[i] <= '9') || expression[i] == '.') )
+        return false;
+    }
+
+    return true;
+  }
+
+  $rect <590,670,790,710>
+  property bool CorrectInput = true;
+
+  $rect <990,670,1190,710>
+  onget CorrectInput
+  {
+    // Per default return the value stored already in the property.
+    return pure CorrectInput;
+
+    /*
+
+      TO DO:
+
+      If the property should return the value stored in the underlying device
+      or in the middleware, remove the above 'return' statement and instead do
+      following:
+
+      Declare a local variable to receive the value from the underlying device.
+      The type of the variable has to correspond to the data type of the property.
+      For example in case of an 'int32' property:
+      
+        var int32 result;
+
+      Implement a native statement to access the value and to store it in the
+      variable 'result'. Then return the value. For example:
+
+        $if !$prototyper
+          native ( result )
+          {
+            result = YourDevice_GetSomeValue();
+          }
+        $endif
+
+        return result;
+
+    */
+  }
+
+  $rect <790,670,990,710>
+  onset CorrectInput
+  {
+    // The property doesn't change -> nothing to do.
+    if ( pure CorrectInput == value )
+      return;
+
+    // Remember the new value in the internal memory of the property.
+    pure CorrectInput = value;
+
+    // For target code generation you will use your specific device API 
+    // to change the affected value.
+    $if !$prototyper
+      native ( value )
+      {
+        /*
+           TO DO:
+
+           You can call a function of your own device API or you simply
+           modify a variable existing in your middleware to reflect the
+           new value:
+
+           YourDevice_SetSomeValue( value );
+
+           or
+
+           YourDevice_SomeVariable = value;
+        */
+      }
+    $endif
+
+    // Notify all associated property observers.
+    notifyobservers ^CorrectInput;
+  }
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <390,670,590,710>
+  $output true
+  method void UpdateProperty( arg int32 aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure CorrectInput )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure CorrectInput = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^CorrectInput;
+    }
+  }
+
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
   // and the expected order of the members don't depend. Merging of changes in the 
@@ -4701,6 +5177,11 @@ class ConverterPage : Core::Group
   $member SecondMetric
   $member OnSetSecondMetric
   $member OnGetSecondMetric
+  $member CharactersAllowed
+  $member CorrectInput
+  $member OnGetCorrectInput
+  $member OnSetCorrectInput
+  $member UpdateProperty
 }
 
 $rect <-40,690,160,730>
