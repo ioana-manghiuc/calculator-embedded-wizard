@@ -14,7 +14,7 @@ The battery component simulates the calculator losing battery as it is being use
 The second page is a Length Converter for *milimeters, centimeters, meters,* and *kilometers*. The user can switch between the two dialogs by pressing the button in the top-left corner which opens a menu.
 
 <img align="center" width="250" src="https://github.com/user-attachments/assets/5b3a630b-ddb2-4ace-8af0-1d1efdd80915">
-<img align="center" width="250" src="https://github.com/user-attachments/assets/022292b6-098a-4ea1-b211-9563c0dd3ca8">
+<img align="center" width="250" src="https://github.com/user-attachments/assets/3b6141d2-936c-42a8-9e42-59fb9358d738">
 
 \
 Since the application uses images for the buttons and battery, run the HTML file in localhost for them to be visible in the browser. The easiest way to do this is:
