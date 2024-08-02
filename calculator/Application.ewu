@@ -4175,8 +4175,10 @@ class Home : Core::Root
   {
     GetRoot().DismissDialog( MenuView, Effects::SlideLeftCentered, null, null, null, null, null );
     this.PushButton.IconFrame = 1;
-    GetRoot().DismissDialog( StandardPg, null, null, null, null, null, null );
+    if( CurrentPage == "Standard" )
+      GetRoot().DismissDialog( StandardPg, null, null, null, null, null, null );
     GetRoot().PresentDialog( ConverterPg, null, null, null, null, null, null, null, null, null );
+    CurrentPage = "Converter";
   }
 
   $rect <400,0,600,40>
@@ -4218,8 +4220,10 @@ class Home : Core::Root
   {
     GetRoot().DismissDialog( MenuView, Effects::SlideLeftCentered, null, null, null, null, null );
     this.PushButton.IconFrame = 1;
-    GetRoot().DismissDialog( ConverterPg, null, null, null, null, null, null );
+    if( CurrentPage == "Converter" )
+      GetRoot().DismissDialog( ConverterPg, null, null, null, null, null, null );
     GetRoot().PresentDialog( StandardPg, null, null, null, null, null, null, null, null, null );
+    CurrentPage = "Standard";
   }
 
   $rect <420,330,620,370>
@@ -4232,8 +4236,11 @@ class Home : Core::Root
   // Handle Dialogs
   note group Note
   {
-    attr Bounds = <400,180,640,390>;
+    attr Bounds = <400,180,640,440>;
   }
+
+  $rect <420,380,620,420>
+  var string CurrentPage = "Standard";
 
   // Directives to adapt the order of the above members according to how these members 
   // where arranged when the project content was stored. In this manner the storage 
@@ -4251,6 +4258,7 @@ class Home : Core::Root
   $member OpenStandardPage
   $member TogglePages
   $member Note
+  $member CurrentPage
 }
 
 $rect <-300,190,-100,230>

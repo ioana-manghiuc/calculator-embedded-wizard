@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application;
+attr active = Application::Home;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Home.TogglePages;
+attr currentCodeInspector = Application::Home.OpenConverter;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -40,20 +40,18 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-914,-70>;
+  attr scrollTo = <-629,-70>;
   attr zoom = 0.75;
 }
 
 view class Application::ConverterPage
 {
-  attr enableWireMode = false;
   attr scrollTo = <-209,-82>;
   attr zoom = 0.75;
 }
 
 view class Application::Application
 {
-  attr enableWireMode = false;
   attr scrollTo = <-161,-247>;
   attr zoom = 0.5;
 }
@@ -61,21 +59,19 @@ view class Application::Application
 view class Application::Home
 {
   attr enableWireMode = false;
-  attr scrollTo = <-415,-67>;
+  attr scrollTo = <-415,77>;
   attr zoom = 0.75;
 }
 
 view class Application::SelectionMenu
 {
-  attr enableWireMode = false;
   attr scrollTo = <-332,-103>;
   attr zoom = 0.75;
 }
 
 view class Application::Battery
 {
-  attr enableWireMode = false;
-  attr scrollTo = <-7,-55>;
+  attr scrollTo = <-274,-151>;
   attr zoom = 1.0;
 }
 
@@ -83,24 +79,24 @@ codeview Application::Home.OpenStandardPage
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <30,1>;
-  attr codeSelStart = <30,1>;
+  attr codeSelEnd = <23,5>;
+  attr codeSelStart = <15,5>;
 }
 
 codeview Application::Home.OpenConverter
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <0,1>;
-  attr codeSelStart = <30,1>;
+  attr codeSelEnd = <28,2>;
+  attr codeSelStart = <28,2>;
 }
 
 codeview Application::Home.TogglePages
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <44,1>;
-  attr codeSelStart = <44,1>;
+  attr codeSelEnd = <113,0>;
+  attr codeSelStart = <113,0>;
 }
 
 codeview Application::Home.Init
