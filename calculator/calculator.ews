@@ -1,9 +1,9 @@
 $version 1.0
 
-attr active = Application::Battery;
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::Application.OperatorsCorrectlyUsed;
+attr currentCodeInspector = Application::ConverterPage.UpdateProperty;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -80,4 +80,36 @@ codeview Application::Application.CalculateExpression
   attr codeFirstPos = <0,80>;
   attr codeSelEnd = <25,95>;
   attr codeSelStart = <25,95>;
+}
+
+codeview Application::Application.UpdateProperty
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <15,1>;
+  attr codeSelStart = <15,1>;
+}
+
+codeview Application::Application.UpdateProperty1
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <15,1>;
+  attr codeSelStart = <15,1>;
+}
+
+codeview Application::Application.UpdateProperty2
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::ConverterPage.UpdateProperty
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <15,1>;
+  attr codeSelStart = <15,1>;
 }
