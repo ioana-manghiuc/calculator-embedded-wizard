@@ -542,7 +542,6 @@ class Application : Core::Group
 
     tokens = TokenizeExpression( expression );
     var Application::StringElement token = tokens.Front;
-    tokens.Print();
 
     while( token != null )
     {
@@ -909,7 +908,7 @@ class Application : Core::Group
   // about an alternation of its setting or state value.
   $rect <1010,230,1210,270>
   $output true
-  method void UpdateProperty( arg int32 aNewValue )
+  method void UpdateProperty( arg bool aNewValue )
   {
     // Only if the reported value does differ from the one stored currently in the property.
     if ( aNewValue != pure CorrectInput )
@@ -999,7 +998,7 @@ class Application : Core::Group
   // about an alternation of its setting or state value.
   $rect <1010,330,1210,370>
   $output true
-  method void UpdateProperty1( arg int32 aNewValue )
+  method void UpdateProperty1( arg string aNewValue )
   {
     // Only if the reported value does differ from the one stored currently in the property.
     if ( aNewValue != pure ErrorTxt )
@@ -5164,7 +5163,7 @@ class ConverterPage : Core::Group
   // about an alternation of its setting or state value.
   $rect <390,670,590,710>
   $output true
-  method void UpdateProperty( arg int32 aNewValue )
+  method void UpdateProperty( arg bool aNewValue )
   {
     // Only if the reported value does differ from the one stored currently in the property.
     if ( aNewValue != pure CorrectInput )

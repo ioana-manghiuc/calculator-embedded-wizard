@@ -1,5 +1,5 @@
 # calculator-embedded-wizard
-A project implemented using Embedded Wizard 13. 
+A project implemented using Embedded Wizard Studio. 
 
 For executing operations (*addition, subtraction, multiplication, division, exponentiation, percentage*), either the device's **physical keyboard** or the **virtual** one can be used. The application handles key events using PushButtons (virtual) and a KeyPressHandler (physical). The logic for executing these operations is implemented to evaluate arithmetic expressions and contains the following steps:
 - expression is validated: operators & parentheses must be used correctly, and it must only contain allowed characters (digits and operators). If the expression is not valid, an Error Dialog pops up which signals where the error came from; 

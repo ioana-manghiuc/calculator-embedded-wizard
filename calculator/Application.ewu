@@ -303,7 +303,7 @@ class Application : Core::Group
         if( !CorrectParentheses(expression) )
         {
            CorrectInput = false;
-           ErrorTxt = "Parantheses used incorrectly.";
+           ErrorTxt = "Parentheses used incorrectly.";
            return false;
         }
         else if ( !CharactersAllowed(expression) )
@@ -542,7 +542,6 @@ class Application : Core::Group
 
     tokens = TokenizeExpression( expression );
     var Application::StringElement token = tokens.Front;
-    tokens.Print();
 
     while( token != null )
     {

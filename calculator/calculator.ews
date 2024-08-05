@@ -3,7 +3,7 @@ $version 1.0
 attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr connectInspectors = false;
-attr currentCodeInspector = Application::ConverterPage.UpdateProperty;
+attr currentCodeInspector = Application::Application.IsExpressionValid;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
 attr extractDoc_DeleteOldFiles = false;
@@ -32,7 +32,6 @@ view Project
 {
   attr aspectRatio = 1.0;
   attr enableGrid = true;
-  attr enableWireMode = false;
   attr grid = 10;
   attr scrollTo = <-156,-135>;
   attr zoom = 0.75;
@@ -41,75 +40,68 @@ view Project
 view unit Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-561,-121>;
-  attr zoom = 0.75;
-}
-
-view class Application::ConverterPage
-{
-  attr enableWireMode = false;
-  attr scrollTo = <-218,-7>;
+  attr scrollTo = <-561,119>;
   attr zoom = 0.75;
 }
 
 view class Application::Application
 {
   attr enableWireMode = false;
-  attr scrollTo = <-81,-115>;
+  attr scrollTo = <-13,47>;
   attr zoom = 0.5;
 }
 
 view class Application::Battery
 {
   attr enableWireMode = false;
-  attr scrollTo = <-7,-7>;
+  attr scrollTo = <-7,233>;
   attr zoom = 1.0;
 }
 
-codeview Application::Application.OperatorsCorrectlyUsed
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,30>;
-  attr codeSelEnd = <7,30>;
-  attr codeSelStart = <7,30>;
-}
-
-codeview Application::Application.CalculateExpression
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,80>;
-  attr codeSelEnd = <25,95>;
-  attr codeSelStart = <25,95>;
-}
-
-codeview Application::Application.UpdateProperty
+codeview Application::StrVector.Print
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <15,1>;
-  attr codeSelStart = <15,1>;
+  attr codeSelEnd = <2,4>;
+  attr codeSelStart = <2,4>;
 }
 
-codeview Application::Application.UpdateProperty1
+codeview Application::Application.EvaluateRPN
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <15,1>;
-  attr codeSelStart = <15,1>;
-}
-
-codeview Application::Application.UpdateProperty2
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
+  attr codeFirstPos = <0,13>;
   attr codeSelEnd = <0,0>;
   attr codeSelStart = <0,0>;
 }
 
-codeview Application::ConverterPage.UpdateProperty
+codeview Application::Application.ShuntingYardAlgorithm
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeSelEnd = <15,1>;
-  attr codeSelStart = <15,1>;
+  attr codeSelEnd = <52,5>;
+  attr codeSelStart = <52,5>;
+}
+
+codeview Application::FloatStack.Pop
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeSelEnd = <2,4>;
+  attr codeSelStart = <2,4>;
+}
+
+codeview Application::Application.CorrectParentheses
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,4>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <0,0>;
+}
+
+codeview Application::Application.IsExpressionValid
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,12>;
+  attr codeSelEnd = <23,15>;
+  attr codeSelStart = <23,15>;
 }
