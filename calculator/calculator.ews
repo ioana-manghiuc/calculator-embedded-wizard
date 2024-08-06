@@ -39,7 +39,6 @@ view Project
 
 view unit Application
 {
-  attr enableWireMode = false;
   attr scrollTo = <-561,119>;
   attr zoom = 0.75;
 }
@@ -53,7 +52,6 @@ view class Application::Application
 
 view class Application::Battery
 {
-  attr enableWireMode = false;
   attr scrollTo = <-7,233>;
   attr zoom = 1.0;
 }
